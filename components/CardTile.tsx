@@ -24,13 +24,20 @@ export const CardTile: React.FC<CardTileProps> = ({
 
       <div className="flex flex-col justify-between flex-1">
         <div>
-          <h3 className="text-xl font-bold mb-2">{name}</h3>
-          <p className="text-gray-600 text-sm mb-4">{ingredients.join(", ")}</p>
+          <h3 className="text-2xl font-bold mb-2 text-orange-700">{name}</h3>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-1 text-gray-800">
+              Ingredients:
+            </label>
+            <p className="text-gray-600 text-sm">{ingredients.join(", ")}</p>
+          </div>
         </div>
 
         <div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Rozmiar:</label>
+            <label className="block text-sm font-semibold mb-2 text-gray-800">
+              Size:
+            </label>
             <div className="flex gap-2">
               {sizes.map((sizeOption) => (
                 <button
