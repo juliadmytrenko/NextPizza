@@ -26,17 +26,47 @@ const CardTilesMock = [
       { size: 50, price: 45 },
     ],
   },
+  {
+    name: "Pepperoni",
+    image: "/images/pepperoni.jpg",
+    ingredients: ["Sos pomidorowy", "Ser mozzarella", "Pepperoni"],
+    sizes: [
+      { size: 30, price: 25 },
+      { size: 40, price: 35 },
+      { size: 50, price: 45 },
+    ],
+  },
+  {
+    name: "Pepperoni",
+    image: "/images/pepperoni.jpg",
+    ingredients: ["Sos pomidorowy", "Ser mozzarella", "Pepperoni"],
+    sizes: [
+      { size: 30, price: 25 },
+      { size: 40, price: 35 },
+      { size: 50, price: 45 },
+    ],
+  },
+  {
+    name: "Pepperoni",
+    image: "/images/pepperoni.jpg",
+    ingredients: ["Sos pomidorowy", "Ser mozzarella", "Pepperoni"],
+    sizes: [
+      { size: 30, price: 25 },
+      { size: 40, price: 35 },
+      { size: 50, price: 45 },
+    ],
+  },
 ];
 
 export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <h1 className="text-5xl font-bold text-zinc-800 dark:text-zinc-200">
-          {CardTilesMock.map((card) => (
-            <CardTile key={card.name} {...card} />
+      <main className="flex min-h-screen w-full max-w-6xl flex-col items-center justify-center py-32 px-16 bg-white dark:bg-black">
+        <div className="flex flex-col gap-4 w-full max-w-4xl">
+          {CardTilesMock.map((card, index) => (
+            <CardTile key={`${card.name}-${index}`} {...card} />
           ))}
-        </h1>
+        </div>
       </main>
     </div>
   );
