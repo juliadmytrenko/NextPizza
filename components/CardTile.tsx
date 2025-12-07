@@ -17,14 +17,9 @@ export const CardTile: React.FC<CardTileProps> = ({
   const [selectedSize, setSelectedSize] = React.useState(sizes[0]);
 
   return (
-    <div className="border rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex gap-4">
-      <div className="relative w-48 h-48 flex-shrink-0">
-        <Image
-          src={image}
-          alt={name}
-          fill
-          className="object-cover rounded-md"
-        />
+    <div className="border-2 border-orange-200 rounded-xl p-5 shadow-lg hover:shadow-2xl hover:border-orange-400 transition-all duration-300 flex gap-5 bg-gradient-to-br from-white to-orange-50">
+      <div className="relative w-48 h-48 flex-shrink-0 rounded-lg overflow-hidden shadow-md">
+        <Image src={image} alt={name} fill className="object-cover" />
       </div>
 
       <div className="flex flex-col justify-between flex-1">
