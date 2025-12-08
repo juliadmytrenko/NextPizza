@@ -34,7 +34,7 @@ export const Cart = () => {
       {isCartOpen && (
         <>
           {/* Sidebar */}
-          <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-50 flex flex-col">
+          <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white/95 backdrop-blur-md shadow-2xl z-50 flex flex-col">
             {/* Header */}
             <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 flex justify-between items-center">
               <h2 className="text-2xl font-bold">Your Cart</h2>

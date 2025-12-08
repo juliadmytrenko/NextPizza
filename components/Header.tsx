@@ -19,19 +19,19 @@ export const Header = () => {
           <nav className="flex gap-8 mr-8">
             <a
               href="#pizzas"
-              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors"
+              className="text-orange-600 hover:text-orange-700 font-semibold transition-colors"
             >
               Pizzas
             </a>
             <a
               href="#sauces"
-              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors"
+              className="text-orange-600 hover:text-orange-700 font-semibold transition-colors"
             >
               Sauces
             </a>
             <a
               href="#drinks"
-              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors "
+              className="text-orange-600 hover:text-orange-700 font-semibold transition-colors "
             >
               Drinks
             </a>
