@@ -102,7 +102,7 @@ export const Cart = () => {
                           >
                             -
                           </button>
-                          <span className="w-8 text-center font-semibold">
+                          <span className="w-8 text-center font-semibold text-gray-800">
                             {item.quantity}
                           </span>
                           <button
