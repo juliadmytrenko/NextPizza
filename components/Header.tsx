@@ -16,7 +16,7 @@ export const Header = () => {
               priority
             />
           </div>
-          <nav className="flex gap-8">
+          <nav className="flex gap-8 mr-8">
             <a
               href="#pizzas"
               className="text-gray-700 hover:text-orange-600 font-semibold transition-colors"
@@ -31,9 +31,21 @@ export const Header = () => {
             </a>
             <a
               href="#drinks"
-              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors"
+              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors "
             >
               Drinks
+            </a>
+            <a
+              href="#about"
+              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors"
+            >
+              About
+            </a>
+            <a
+              href="#contact"
+              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors"
+            >
+              Contact
             </a>
           </nav>
         </div>
