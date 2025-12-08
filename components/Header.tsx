@@ -15,6 +15,26 @@ export const Header = () => {
               priority
             />
           </div>
+          <nav className="flex gap-8 mr-8">
+            <a
+              href="#pizzas"
+              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors"
+            >
+              Pizzas
+            </a>
+            <a
+              href="#sauces"
+              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors"
+            >
+              Sauces
+            </a>
+            <a
+              href="#drinks"
+              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors"
+            >
+              Drinks
+            </a>
+          </nav>
         </div>
       </div>
     </header>

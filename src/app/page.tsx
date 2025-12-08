@@ -146,21 +146,30 @@ export default function Home() {
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex min-h-screen w-full max-w-6xl flex-col items-center justify-center py-32 px-16 bg-white dark:bg-black">
         <div className="flex flex-col gap-4 w-full max-w-4xl">
-          <h3 className="text-3xl font-bold text-orange-700 text-center mb-4">
+          <h3
+            id="pizzas"
+            className="text-3xl font-bold text-orange-700 text-center my-4 pt-8"
+          >
             Pizzas
           </h3>
           {PizzasMock.map((card, index) => (
             <CardTile key={`${card.name}-${index}`} {...card} />
           ))}
           <br />
-          <h3 className="text-3xl font-bold text-orange-700 text-center mb-4">
+          <h3
+            id="sauces"
+            className="text-3xl font-bold text-orange-700 text-center my-4 pt-8 "
+          >
             Sauces
           </h3>
           {SaucesMock.map((card, index) => (
             <CardTile key={`${card.name}-${index}`} {...card} />
           ))}
           <br />
-          <h3 className="text-3xl font-bold text-orange-700 text-center mb-4">
+          <h3
+            id="drinks"
+            className="text-3xl font-bold text-orange-700 text-center my-4 pt-8 "
+          >
             Drinks
           </h3>
           {DrinksMock.map((card, index) => (
