@@ -17,7 +17,7 @@ export const CardTile: React.FC<CardTileProps> = ({
   sizes,
 }) => {
   const [selectedSize, setSelectedSize] = React.useState(sizes[0]);
-  const { addToCart } = useCart();
+  const { addToCart, setIsCartOpen } = useCart();
 
   const handleAddToCart = () => {
     addToCart({
@@ -26,6 +26,7 @@ export const CardTile: React.FC<CardTileProps> = ({
       price: selectedSize.price,
       image,
     });
+    setIsCartOpen(true);
   };
 
   return (

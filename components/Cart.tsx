@@ -1,10 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useCart } from "../context/CartContext";
 import Image from "next/image";
 
 export const Cart = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const {
     cart,
     removeFromCart,
@@ -12,13 +11,15 @@ export const Cart = () => {
     getTotalPrice,
     getTotalItems,
     clearCart,
+    isCartOpen,
+    setIsCartOpen,
   } = useCart();
 
   return (
     <>
       {/* Floating Cart Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsCartOpen(!isCartOpen)}
         className="fixed bottom-6 right-6 z-30 bg-orange-500 hover:bg-orange-600 text-white p-4 rounded-full shadow-2xl transition-all hover:scale-110"
       >
         <span className="text-2xl">🛒</span>
@@ -30,21 +31,15 @@ export const Cart = () => {
       </button>
 
       {/* Cart Sidebar */}
-      {isOpen && (
+      {isCartOpen && (
         <>
-          {/* Overlay */}
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
-            onClick={() => setIsOpen(false)}
-          ></div>
-
           {/* Sidebar */}
           <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-50 flex flex-col">
             {/* Header */}
             <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 flex justify-between items-center">
               <h2 className="text-2xl font-bold">Your Cart</h2>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => setIsCartOpen(false)}
                 className="text-white hover:text-gray-200 text-3xl font-bold"
               >
                 ×
@@ -145,10 +140,10 @@ export const Cart = () => {
                     Checkout
                   </button>
                   <button
-                    onClick={clearCart}
-                    className="w-full bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 rounded-lg font-semibold transition-colors"
+                    onClick={() => setIsCartOpen(false)}
+                    className="w-full bg-orange-200 hover:bg-orange-300 text-orange-800 py-2 rounded-lg font-semibold transition-colors"
                   >
-                    Clear Cart
+                    Kontynuuj zakupy
                   </button>
                 </div>
               </div>
