@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 
@@ -15,7 +16,7 @@ export const Header = () => {
               priority
             />
           </div>
-          <nav className="flex gap-8 mr-8">
+          <nav className="flex gap-8">
             <a
               href="#pizzas"
               className="text-gray-700 hover:text-orange-600 font-semibold transition-colors"

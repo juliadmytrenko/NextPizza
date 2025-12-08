@@ -1,5 +1,7 @@
+"use client";
 import React from "react";
 import Image from "next/image";
+import { useCart } from "../context/CartContext";
 
 interface CardTileProps {
   name: string;
@@ -15,6 +17,16 @@ export const CardTile: React.FC<CardTileProps> = ({
   sizes,
 }) => {
   const [selectedSize, setSelectedSize] = React.useState(sizes[0]);
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    addToCart({
+      name,
+      size: selectedSize.size,
+      price: selectedSize.price,
+      image,
+    });
+  };
 
   return (
     <div className="border-2 border-orange-200 rounded-xl p-5 shadow-lg hover:shadow-2xl hover:border-orange-400 transition-all duration-300 flex gap-5 bg-gradient-to-br from-white to-orange-50">
@@ -59,7 +71,10 @@ export const CardTile: React.FC<CardTileProps> = ({
             <span className="text-2xl font-bold text-orange-600">
               {selectedSize.price} zł
             </span>
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 text-sm rounded-md transition-colors">
+            <button
+              onClick={handleAddToCart}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 text-sm rounded-md transition-colors"
+            >
               Dodaj do koszyka
             </button>
           </div>
