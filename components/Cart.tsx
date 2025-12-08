@@ -143,7 +143,7 @@ export const Cart = () => {
                     onClick={() => setIsCartOpen(false)}
                     className="w-full bg-orange-200 hover:bg-orange-300 text-orange-800 py-2 rounded-lg font-semibold transition-colors"
                   >
-                    Kontynuuj zakupy
+                    Continue Shopping
                   </button>
                 </div>
               </div>

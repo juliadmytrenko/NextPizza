@@ -76,7 +76,7 @@ export const CardTile: React.FC<CardTileProps> = ({
               onClick={handleAddToCart}
               className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 text-sm rounded-md transition-colors"
             >
-              Dodaj do koszyka
+              Add to Cart
             </button>
           </div>
         </div>
