@@ -30,7 +30,7 @@ const CardTilesMock = [
   },
   {
     name: "Hawaiian",
-    image: "/images/pepperoni.jpg",
+    image: "/images/hawaii.jpg",
     ingredients: ["Tomato sauce", "Mozzarella cheese", "Ham", "Pineapple"],
     category: "pizza",
     sizes: [
@@ -41,7 +41,7 @@ const CardTilesMock = [
   },
   {
     name: "Quattro Formaggi",
-    image: "/images/pepperoni.jpg",
+    image: "/images/4cheese.jpg",
     ingredients: [
       "Cream sauce",
       "Mozzarella",
