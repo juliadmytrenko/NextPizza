@@ -144,11 +144,11 @@ const DrinksMock = CardTilesMock.filter((card) => card.category === "drinks");
 export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center font-sans">
-      <main className="bg-black flex min-h-screen w-full max-w-6xl flex-col items-center justify-center py-16 px-16">
+      <main className="bg-black flex min-h-screen w-full max-w-6xl flex-col items-center justify-center py-8 sm:py-12 md:py-16 px-4 sm:px-8 md:px-16">
         <div className="flex flex-col gap-4 w-full max-w-4xl">
           <h3
             id="pizzas"
-            className="text-3xl font-bold text-orange-700 text-center "
+            className="text-2xl sm:text-3xl font-bold text-orange-700 text-center "
           >
             Pizzas
           </h3>
@@ -158,7 +158,7 @@ export default function Home() {
           <br />
           <h3
             id="sauces"
-            className="text-3xl font-bold text-orange-700 text-center"
+            className="text-2xl sm:text-3xl font-bold text-orange-700 text-center"
           >
             Sauces
           </h3>
@@ -168,7 +168,7 @@ export default function Home() {
           <br />
           <h3
             id="drinks"
-            className="text-3xl font-bold text-orange-700 text-center"
+            className="text-2xl sm:text-3xl font-bold text-orange-700 text-center"
           >
             Drinks
           </h3>
@@ -178,23 +178,23 @@ export default function Home() {
 
           {/* About Us Section */}
           <div id="about" className="mt-8 pt-8 scroll-mt-24">
-            <h3 className="text-3xl font-bold text-orange-700 text-center mb-6">
+            <h3 className="text-2xl sm:text-3xl font-bold text-orange-700 text-center mb-6">
               About Us
             </h3>
-            <div className="border-2 border-orange-200 rounded-xl p-8 shadow-lg bg-gradient-to-br from-white to-orange-50">
-              <p className="text-gray-700 text-lg leading-relaxed mb-4">
+            <div className="border-2 border-orange-200 rounded-xl p-4 sm:p-6 md:p-8 shadow-lg bg-gradient-to-br from-white to-orange-50">
+              <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed mb-4">
                 Welcome to Next Pizza! We are passionate about creating
                 delicious, authentic pizzas using only the finest ingredients.
                 Our recipes have been perfected over years of experience,
                 bringing you the perfect combination of crispy crust, flavorful
                 sauce, and premium toppings.
               </p>
-              <p className="text-gray-700 text-lg leading-relaxed mb-4">
+              <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed mb-4">
                 Every pizza is made fresh to order, ensuring that you receive
                 the highest quality product every time. From classic Margherita
                 to creative specialty pizzas, we have something for everyone.
               </p>
-              <p className="text-gray-700 text-lg leading-relaxed">
+              <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed">
                 Thank you for choosing Next Pizza. We look forward to serving
                 you!
               </p>
@@ -202,32 +202,32 @@ export default function Home() {
           </div>
           {/* Contact Section */}
           <div id="contact" className="mt-6">
-            <h3 className="text-3xl font-bold text-orange-700 text-center my-6">
+            <h3 className="text-2xl sm:text-3xl font-bold text-orange-700 text-center my-6">
               Contact
             </h3>
-            <div className="border-2 border-orange-200 rounded-xl p-8 shadow-lg bg-gradient-to-br from-white to-orange-50">
-              <div className="grid md:grid-cols-2 gap-6">
+            <div className="border-2 border-orange-200 rounded-xl p-4 sm:p-6 md:p-8 shadow-lg bg-gradient-to-br from-white to-orange-50">
+              <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
-                  <h4 className="text-xl font-bold text-orange-600 mb-3">
+                  <h4 className="text-lg sm:text-xl font-bold text-orange-600 mb-3">
                     Location
                   </h4>
-                  <p className="text-gray-700 mb-2">123 Pizza Street</p>
-                  <p className="text-gray-700 mb-2">New York, NY 10001</p>
-                  <p className="text-gray-700">United States</p>
+                  <p className="text-gray-700 mb-2 text-sm sm:text-base">123 Pizza Street</p>
+                  <p className="text-gray-700 mb-2 text-sm sm:text-base">New York, NY 10001</p>
+                  <p className="text-gray-700 text-sm sm:text-base">United States</p>
                 </div>
                 <div>
-                  <h4 className="text-xl font-bold text-orange-600 mb-3">
+                  <h4 className="text-lg sm:text-xl font-bold text-orange-600 mb-3">
                     Get in Touch
                   </h4>
-                  <p className="text-gray-700 mb-2">
+                  <p className="text-gray-700 mb-2 text-sm sm:text-base">
                     <span className="font-semibold">Phone:</span> +1 (555)
                     123-4567
                   </p>
-                  <p className="text-gray-700 mb-2">
+                  <p className="text-gray-700 mb-2 text-sm sm:text-base break-words">
                     <span className="font-semibold">Email:</span>{" "}
                     info@nextpizza.com
                   </p>
-                  <p className="text-gray-700">
+                  <p className="text-gray-700 text-sm sm:text-base">
                     <span className="font-semibold">Hours:</span> Mon-Sun 11:00
                     AM - 11:00 PM
                   </p>
