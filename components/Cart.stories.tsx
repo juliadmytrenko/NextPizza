@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { Cart } from './Cart';
-import { CartProvider } from '../context/CartContext';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { Cart } from "./Cart";
+import { CartProvider } from "../context/CartContext";
 
 const meta = {
-  title: 'Components/Cart',
+  title: "Components/Cart",
   component: Cart,
   decorators: [
     (Story) => (
@@ -13,9 +13,9 @@ const meta = {
     ),
   ],
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 } satisfies Meta<typeof Cart>;
 
 export default meta;
@@ -26,13 +26,13 @@ export const Default: Story = {};
 export const WithItems: Story = {
   decorators: [
     (Story) => {
-      const { addToCart } = require('../context/CartContext').useCart();
+      const { addToCart } = require("../context/CartContext").useCart();
       React.useEffect(() => {
         addToCart({
-          name: 'Margherita Pizza',
+          name: "Margherita Pizza",
           size: 30,
           price: 20,
-          image: '/images/margherita.jpg',
+          image: "/images/margherita.jpg",
         });
       }, []);
       return <Story />;

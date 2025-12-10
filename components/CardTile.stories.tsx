@@ -3,7 +3,7 @@ import { CardTile } from "./CardTile";
 import { CartProvider } from "../context/CartContext";
 
 const meta = {
-  title: "Pizza/CardTile",
+  title: "Components/CardTile",
   component: CardTile,
   decorators: [
     (Story) => (
