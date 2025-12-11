@@ -15,7 +15,7 @@ export const Cart = () => {
     isCartOpen,
     setIsCartOpen,
   } = useCart();
-  
+
   const pathname = usePathname();
 
   return (
@@ -39,11 +39,11 @@ export const Cart = () => {
       {isCartOpen && (
         <>
           {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-black/50 z-40 sm:hidden"
+          <div
+            className="fixed inset-0 bg-black/50 z-40"
             onClick={() => setIsCartOpen(false)}
           />
-          
+
           {/* Sidebar */}
           <div className="fixed right-0 top-0 h-full w-full sm:max-w-md bg-white/95 backdrop-blur-md shadow-2xl z-50 flex flex-col">
             {/* Header */}
@@ -147,7 +147,7 @@ export const Cart = () => {
                   </span>
                 </div>
                 <div className="space-y-2">
-                  <a 
+                  <a
                     href="/address"
                     className="block w-full bg-orange-500 hover:bg-orange-600 text-white py-2.5 sm:py-3 rounded-lg font-bold text-base sm:text-lg transition-colors text-center"
                   >
