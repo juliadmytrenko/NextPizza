@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAddress } from "../../../context/AddressContext";
 
 export default function AddressPage() {
   const router = useRouter();
+  const { setAddressData } = useAddress();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -28,9 +30,10 @@ export default function AddressPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission (e.g., save to state, API call)
+    // Save address data to context
+    setAddressData(formData);
     console.log("Form submitted:", formData);
-    router.push("/checkout"); // Navigate to checkout or confirmation page
+    router.push("/checkout");
   };
 
   return (

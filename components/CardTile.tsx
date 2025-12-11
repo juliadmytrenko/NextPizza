@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { useCart } from "../context/CartContext";
+import { usePathname } from "next/navigation";
 
 interface CardTileProps {
   name: string;
@@ -18,6 +19,8 @@ export const CardTile: React.FC<CardTileProps> = ({
 }) => {
   const [selectedSize, setSelectedSize] = React.useState(sizes[0]);
   const { addToCart, setIsCartOpen } = useCart();
+  const pathname = usePathname();
+  const hideAddToCart = pathname === "/address" || pathname === "/checkout";
 
   const handleAddToCart = () => {
     addToCart({
@@ -72,12 +75,14 @@ export const CardTile: React.FC<CardTileProps> = ({
             <span className="text-xl sm:text-2xl font-bold text-orange-600">
               {selectedSize.price} zł
             </span>
-            <button
-              onClick={handleAddToCart}
-              className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 sm:px-3 sm:py-1.5 text-sm rounded-md transition-colors"
-            >
-              Add to Cart
-            </button>
+            {!hideAddToCart && (
+              <button
+                onClick={handleAddToCart}
+                className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 sm:px-3 sm:py-1.5 text-sm rounded-md transition-colors"
+              >
+                Add to Cart
+              </button>
+            )}
           </div>
         </div>
       </div>

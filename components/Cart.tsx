@@ -2,6 +2,7 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export const Cart = () => {
   const {
@@ -14,21 +15,25 @@ export const Cart = () => {
     isCartOpen,
     setIsCartOpen,
   } = useCart();
+  
+  const pathname = usePathname();
 
   return (
     <>
-      {/* Floating Cart Button */}
-      <button
-        onClick={() => setIsCartOpen(!isCartOpen)}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-30 bg-orange-500 hover:bg-orange-600 text-white p-3 sm:p-4 rounded-full shadow-2xl transition-all hover:scale-110"
-      >
-        <span className="text-xl sm:text-2xl">🛒</span>
-        {getTotalItems() > 0 && (
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
-            {getTotalItems()}
-          </span>
-        )}
-      </button>
+      {/* Floating Cart Button - Only show on main page */}
+      {pathname === "/" && (
+        <button
+          onClick={() => setIsCartOpen(!isCartOpen)}
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-30 bg-orange-500 hover:bg-orange-600 text-white p-3 sm:p-4 rounded-full shadow-2xl transition-all hover:scale-110"
+        >
+          <span className="text-xl sm:text-2xl">🛒</span>
+          {getTotalItems() > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+              {getTotalItems()}
+            </span>
+          )}
+        </button>
+      )}
 
       {/* Cart Sidebar */}
       {isCartOpen && (
