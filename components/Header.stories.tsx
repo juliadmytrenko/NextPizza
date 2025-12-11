@@ -1,14 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { Header } from './Header';
-import { CartProvider } from '../context/CartContext';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { Header } from "./Header";
+import { CartProvider } from "../context/CartContext";
 
 const meta = {
-  title: 'Components/Header',
+  title: "Components/Header",
   component: Header,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   decorators: [
     (Story) => (
       <CartProvider>
