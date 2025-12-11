@@ -53,31 +53,31 @@ export const Header = () => {
           {/* Desktop navigation */}
           <nav className="hidden md:flex gap-4 lg:gap-8 items-center">
             <a
-              href="#pizzas"
+              href="/#pizzas"
               className="text-orange-600 hover:text-orange-700 font-semibold transition-colors text-sm lg:text-base"
             >
               Pizzas
             </a>
             <a
-              href="#sauces"
+              href="/#sauces"
               className="text-orange-600 hover:text-orange-700 font-semibold transition-colors text-sm lg:text-base"
             >
               Sauces
             </a>
             <a
-              href="#drinks"
+              href="/#drinks"
               className="text-orange-600 hover:text-orange-700 font-semibold transition-colors text-sm lg:text-base"
             >
               Drinks
             </a>
             <a
-              href="#about"
+              href="/#about"
               className="text-gray-700 hover:text-orange-600 font-semibold transition-colors text-sm lg:text-base"
             >
               About
             </a>
             <a
-              href="#contact"
+              href="/#contact"
               className="text-gray-700 hover:text-orange-600 font-semibold transition-colors text-sm lg:text-base"
             >
               Contact
@@ -89,35 +89,35 @@ export const Header = () => {
         {isMenuOpen && (
           <nav className="md:hidden flex flex-col gap-3 pb-4">
             <a
-              href="#pizzas"
+              href="/#pizzas"
               onClick={() => setIsMenuOpen(false)}
               className="text-orange-600 hover:text-orange-700 font-semibold transition-colors py-2"
             >
               Pizzas
             </a>
             <a
-              href="#sauces"
+              href="/#sauces"
               onClick={() => setIsMenuOpen(false)}
               className="text-orange-600 hover:text-orange-700 font-semibold transition-colors py-2"
             >
               Sauces
             </a>
             <a
-              href="#drinks"
+              href="/#drinks"
               onClick={() => setIsMenuOpen(false)}
               className="text-orange-600 hover:text-orange-700 font-semibold transition-colors py-2"
             >
               Drinks
             </a>
             <a
-              href="#about"
+              href="/#about"
               onClick={() => setIsMenuOpen(false)}
               className="text-gray-700 hover:text-orange-600 font-semibold transition-colors py-2"
             >
               About
             </a>
             <a
-              href="#contact"
+              href="/#contact"
               onClick={() => setIsMenuOpen(false)}
               className="text-gray-700 hover:text-orange-600 font-semibold transition-colors py-2"
             >

@@ -142,9 +142,12 @@ export const Cart = () => {
                   </span>
                 </div>
                 <div className="space-y-2">
-                  <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2.5 sm:py-3 rounded-lg font-bold text-base sm:text-lg transition-colors">
+                  <a 
+                    href="/address"
+                    className="block w-full bg-orange-500 hover:bg-orange-600 text-white py-2.5 sm:py-3 rounded-lg font-bold text-base sm:text-lg transition-colors text-center"
+                  >
                     Checkout
-                  </button>
+                  </a>
                   <button
                     onClick={() => setIsCartOpen(false)}
                     className="w-full bg-orange-200 hover:bg-orange-300 text-orange-800 py-2 rounded-lg font-semibold transition-colors"
