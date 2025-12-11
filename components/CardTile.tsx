@@ -33,7 +33,7 @@ export const CardTile: React.FC<CardTileProps> = ({
   };
 
   return (
-    <div className="rounded-xl p-3 sm:p-5 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col sm:flex-row gap-3 sm:gap-5 bg-gradient-to-br from-white to-orange-50">
+    <div className="rounded-xl p-3 sm:p-5 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col sm:flex-row gap-3 sm:gap-5 bg-gradient-to-br from-white to-orange-50 border-2 border-orange-400">
       <div className="relative w-full sm:w-48 h-48 flex-shrink-0 rounded-lg shadow-md">
         <Image
           src={image}
