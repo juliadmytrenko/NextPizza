@@ -57,9 +57,5 @@ const CartWithItemsWrapper = () => {
 };
 
 export const WithItems: Story = {
-  render: () => (
-    <CartProvider>
-      <CartWithItemsWrapper />
-    </CartProvider>
-  ),
+  render: () => <CartWithItemsWrapper />,
 };
