@@ -3,6 +3,17 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAddress } from "../../../context/AddressContext";
 
+interface FormErrors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  street?: string;
+  city?: string;
+  postalCode?: string;
+  country?: string;
+}
+
 export default function AddressPage() {
   const router = useRouter();
   const { setAddressData } = useAddress();
@@ -18,6 +29,94 @@ export default function AddressPage() {
     additionalInfo: "",
   });
 
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+
+  const validateField = (name: string, value: string): string | undefined => {
+    switch (name) {
+      case "firstName":
+        if (!value.trim()) return "First name is required";
+        if (value.trim().length < 2)
+          return "First name must be at least 2 characters";
+        if (!/^[a-zA-Z\s\u00C0-\u017F]+$/.test(value))
+          return "First name can only contain letters";
+        return undefined;
+
+      case "lastName":
+        if (!value.trim()) return "Last name is required";
+        if (value.trim().length < 2)
+          return "Last name must be at least 2 characters";
+        if (!/^[a-zA-Z\s\u00C0-\u017F]+$/.test(value))
+          return "Last name can only contain letters";
+        return undefined;
+
+      case "email":
+        if (!value.trim()) return "Email is required";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+          return "Please enter a valid email address";
+        return undefined;
+
+      case "phone":
+        if (!value.trim()) return "Phone number is required";
+        const phoneDigits = value.replace(/\D/g, "");
+        if (phoneDigits.length < 9)
+          return "Phone number must be at least 9 digits";
+        if (phoneDigits.length > 15) return "Phone number is too long";
+        return undefined;
+
+      case "street":
+        if (!value.trim()) return "Street address is required";
+        if (value.trim().length < 3)
+          return "Street address must be at least 5 characters";
+        return undefined;
+
+      case "city":
+        if (!value.trim()) return "City is required";
+        if (value.trim().length < 2)
+          return "City name must be at least 2 characters";
+        if (!/^[a-zA-Z\s\u00C0-\u017F-]+$/.test(value))
+          return "City name can only contain letters";
+        return undefined;
+
+      case "postalCode":
+        if (!value.trim()) return "Postal code is required";
+        if (!/^[0-9A-Z\s-]+$/.test(value))
+          return "Please enter a valid postal code";
+        if (value.trim().length < 3) return "Postal code is too short";
+        return undefined;
+
+      case "country":
+        if (!value.trim()) return "Country is required";
+        if (value.trim().length < 2)
+          return "Country name must be at least 2 characters";
+        return undefined;
+
+      default:
+        return undefined;
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+    let isValid = true;
+
+    Object.keys(formData).forEach((key) => {
+      if (key !== "additionalInfo") {
+        const error = validateField(
+          key,
+          formData[key as keyof typeof formData]
+        );
+        if (error) {
+          newErrors[key as keyof FormErrors] = error;
+          isValid = false;
+        }
+      }
+    });
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -26,14 +125,51 @@ export default function AddressPage() {
       ...prev,
       [name]: value,
     }));
+
+    // Validate field on change if it has been touched
+    if (touched[name]) {
+      const error = validateField(name, value);
+      setErrors((prev) => ({
+        ...prev,
+        [name]: error,
+      }));
+    }
+  };
+
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setTouched((prev) => ({
+      ...prev,
+      [name]: true,
+    }));
+
+    const error = validateField(name, value);
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Save address data to context
-    setAddressData(formData);
-    console.log("Form submitted:", formData);
-    router.push("/checkout");
+
+    // Mark all fields as touched
+    const allTouched = Object.keys(formData).reduce((acc, key) => {
+      acc[key] = true;
+      return acc;
+    }, {} as { [key: string]: boolean });
+    setTouched(allTouched);
+
+    // Validate entire form
+    if (validateForm()) {
+      setAddressData(formData);
+      console.log("Form submitted:", formData);
+      router.push("/checkout");
+    } else {
+      console.log("Form has errors");
+    }
   };
 
   return (
@@ -59,9 +195,16 @@ export default function AddressPage() {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onBlur={handleBlur}
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.firstName && touched.firstName
+                    ? "border-red-500"
+                    : "border-gray-300"
+                }`}
               />
+              {errors.firstName && touched.firstName && (
+                <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+              )}
             </div>
 
             <div>
@@ -77,9 +220,16 @@ export default function AddressPage() {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onBlur={handleBlur}
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.lastName && touched.lastName
+                    ? "border-red-500"
+                    : "border-gray-300"
+                }`}
               />
+              {errors.lastName && touched.lastName && (
+                <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+              )}
             </div>
           </div>
 
@@ -94,9 +244,16 @@ export default function AddressPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onBlur={handleBlur}
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.email && touched.email
+                    ? "border-red-500"
+                    : "border-gray-300"
+                }`}
               />
+              {errors.email && touched.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
 
             <div>
@@ -109,9 +266,16 @@ export default function AddressPage() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onBlur={handleBlur}
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.phone && touched.phone
+                    ? "border-red-500"
+                    : "border-gray-300"
+                }`}
               />
+              {errors.phone && touched.phone && (
+                <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+              )}
             </div>
           </div>
         </div>
@@ -130,9 +294,16 @@ export default function AddressPage() {
               name="street"
               value={formData.street}
               onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onBlur={handleBlur}
+              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                errors.street && touched.street
+                  ? "border-red-500"
+                  : "border-gray-300"
+              }`}
             />
+            {errors.street && touched.street && (
+              <p className="text-red-500 text-sm mt-1">{errors.street}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -146,9 +317,16 @@ export default function AddressPage() {
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onBlur={handleBlur}
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.city && touched.city
+                    ? "border-red-500"
+                    : "border-gray-300"
+                }`}
               />
+              {errors.city && touched.city && (
+                <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+              )}
             </div>
 
             <div>
@@ -164,9 +342,16 @@ export default function AddressPage() {
                 name="postalCode"
                 value={formData.postalCode}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onBlur={handleBlur}
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.postalCode && touched.postalCode
+                    ? "border-red-500"
+                    : "border-gray-300"
+                }`}
               />
+              {errors.postalCode && touched.postalCode && (
+                <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>
+              )}
             </div>
 
             <div>
@@ -182,9 +367,16 @@ export default function AddressPage() {
                 name="country"
                 value={formData.country}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onBlur={handleBlur}
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.country && touched.country
+                    ? "border-red-500"
+                    : "border-gray-300"
+                }`}
               />
+              {errors.country && touched.country && (
+                <p className="text-red-500 text-sm mt-1">{errors.country}</p>
+              )}
             </div>
           </div>
 
