@@ -66,7 +66,7 @@ export default function AddressPage() {
 
       case "street":
         if (!value.trim()) return "Street address is required";
-        if (value.trim().length < 3)
+        if (value.trim().length < 5)
           return "Street address must be at least 5 characters";
         return undefined;
 
