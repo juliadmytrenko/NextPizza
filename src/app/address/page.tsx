@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAddress } from "../../../context/AddressContext";
+import { FormInput } from "../../../components/FormInput";
+import { FormTextarea } from "../../../components/FormTextarea";
 
 interface FormErrors {
   firstName?: string;
@@ -182,101 +184,57 @@ export default function AddressPage() {
           <h2 className="text-xl font-semibold">Personal Information</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="firstName"
-                className="block text-sm font-medium mb-1"
-              >
-                First Name *
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.firstName && touched.firstName
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
-              />
-              {errors.firstName && touched.firstName && (
-                <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
-              )}
-            </div>
+            <FormInput
+              id="firstName"
+              name="firstName"
+              label="First Name"
+              value={formData.firstName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.firstName}
+              touched={touched.firstName}
+              required
+            />
 
-            <div>
-              <label
-                htmlFor="lastName"
-                className="block text-sm font-medium mb-1"
-              >
-                Last Name *
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.lastName && touched.lastName
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
-              />
-              {errors.lastName && touched.lastName && (
-                <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
-              )}
-            </div>
+            <FormInput
+              id="lastName"
+              name="lastName"
+              label="Last Name"
+              value={formData.lastName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.lastName}
+              touched={touched.lastName}
+              required
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1">
-                Email *
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.email && touched.email
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
-              />
-              {errors.email && touched.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-              )}
-            </div>
+            <FormInput
+              id="email"
+              name="email"
+              label="Email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.email}
+              touched={touched.email}
+              required
+            />
 
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium mb-1">
-                Phone Number *
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.phone && touched.phone
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
-              />
-              {errors.phone && touched.phone && (
-                <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-              )}
-            </div>
+            <FormInput
+              id="phone"
+              name="phone"
+              label="Phone Number"
+              type="tel"
+              value={formData.phone}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.phone}
+              touched={touched.phone}
+              required
+            />
           </div>
         </div>
 
@@ -284,119 +242,65 @@ export default function AddressPage() {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Delivery Address</h2>
 
-          <div>
-            <label htmlFor="street" className="block text-sm font-medium mb-1">
-              Street Address *
-            </label>
-            <input
-              type="text"
-              id="street"
-              name="street"
-              value={formData.street}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.street && touched.street
-                  ? "border-red-500"
-                  : "border-gray-300"
-              }`}
-            />
-            {errors.street && touched.street && (
-              <p className="text-red-500 text-sm mt-1">{errors.street}</p>
-            )}
-          </div>
+          <FormInput
+            id="street"
+            name="street"
+            label="Street Address"
+            value={formData.street}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={errors.street}
+            touched={touched.street}
+            required
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label htmlFor="city" className="block text-sm font-medium mb-1">
-                City *
-              </label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.city && touched.city
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
-              />
-              {errors.city && touched.city && (
-                <p className="text-red-500 text-sm mt-1">{errors.city}</p>
-              )}
-            </div>
-
-            <div>
-              <label
-                htmlFor="postalCode"
-                className="block text-sm font-medium mb-1"
-              >
-                Postal Code *
-              </label>
-              <input
-                type="text"
-                id="postalCode"
-                name="postalCode"
-                value={formData.postalCode}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.postalCode && touched.postalCode
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
-              />
-              {errors.postalCode && touched.postalCode && (
-                <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>
-              )}
-            </div>
-
-            <div>
-              <label
-                htmlFor="country"
-                className="block text-sm font-medium mb-1"
-              >
-                Country *
-              </label>
-              <input
-                type="text"
-                id="country"
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.country && touched.country
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
-              />
-              {errors.country && touched.country && (
-                <p className="text-red-500 text-sm mt-1">{errors.country}</p>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="additionalInfo"
-              className="block text-sm font-medium mb-1"
-            >
-              Additional Information (Optional)
-            </label>
-            <textarea
-              id="additionalInfo"
-              name="additionalInfo"
-              value={formData.additionalInfo}
+            <FormInput
+              id="city"
+              name="city"
+              label="City"
+              value={formData.city}
               onChange={handleChange}
-              rows={3}
-              placeholder="Apartment number, delivery instructions, etc."
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onBlur={handleBlur}
+              error={errors.city}
+              touched={touched.city}
+              required
+            />
+
+            <FormInput
+              id="postalCode"
+              name="postalCode"
+              label="Postal Code"
+              value={formData.postalCode}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.postalCode}
+              touched={touched.postalCode}
+              required
+            />
+
+            <FormInput
+              id="country"
+              name="country"
+              label="Country"
+              value={formData.country}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.country}
+              touched={touched.country}
+              required
             />
           </div>
+
+          <FormTextarea
+            id="additionalInfo"
+            name="additionalInfo"
+            label="Additional Information (Optional)"
+            value={formData.additionalInfo}
+            onChange={handleChange}
+            rows={3}
+            placeholder="Apartment number, delivery instructions, etc."
+          />
         </div>
 
         <button
