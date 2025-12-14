@@ -3,13 +3,15 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "../../../context/CartContext";
 import { useAddress } from "../../../context/AddressContext";
+import { useOrders } from "../../../context/OrdersContext";
 import { useState } from "react";
 import Image from "next/image";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, getTotalPrice } = useCart();
+  const { cart, getTotalPrice, clearCart } = useCart();
   const { addressData } = useAddress();
+  const { addOrder } = useOrders();
   const [paymentMethod, setPaymentMethod] = useState<"blik" | "card" | "cash">(
     "blik"
   );
@@ -21,8 +23,34 @@ export default function CheckoutPage() {
   }, [addressData, router]);
 
   const handleConfirmOrder = () => {
-    console.log("Order confirmed", { cart, addressData, paymentMethod });
-    alert("Order placed successfully!");
+    if (!addressData || cart.length === 0) {
+      return;
+    }
+
+    addOrder({
+      items: cart.map((item) => ({
+        name: item.name,
+        size: item.size,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+      })),
+      totalPrice: getTotalPrice(),
+      customerName: `${addressData.firstName} ${addressData.lastName}`,
+      phone: addressData.phone,
+      email: addressData.email,
+      address: addressData.street,
+      city: addressData.city,
+      zipCode: addressData.postalCode,
+      notes: addressData.additionalInfo,
+      paymentMethod,
+    });
+
+    clearCart();
+    alert(
+      "Order placed successfully! Check the admin panel to see your order."
+    );
+    router.push("/");
   };
 
   if (!addressData) {
@@ -44,7 +72,9 @@ export default function CheckoutPage() {
             </h2>
             <div className="border-2 border-orange-200 rounded-xl p-4 sm:p-6 shadow-lg bg-gradient-to-br from-white to-orange-50">
               {cart.length === 0 ? (
-                <p className="text-center text-gray-500 py-4">Your cart is empty</p>
+                <p className="text-center text-gray-500 py-4">
+                  Your cart is empty
+                </p>
               ) : (
                 <>
                   <div className="space-y-4">
@@ -103,24 +133,38 @@ export default function CheckoutPage() {
                 </p>
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-600 mb-1">Contact</p>
-                <p className="text-base sm:text-lg text-gray-800">{addressData.email}</p>
-                <p className="text-base sm:text-lg text-gray-800">{addressData.phone}</p>
+                <p className="text-sm font-semibold text-gray-600 mb-1">
+                  Contact
+                </p>
+                <p className="text-base sm:text-lg text-gray-800">
+                  {addressData.email}
+                </p>
+                <p className="text-base sm:text-lg text-gray-800">
+                  {addressData.phone}
+                </p>
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-600 mb-1">Address</p>
-                <p className="text-base sm:text-lg text-gray-800">{addressData.street}</p>
+                <p className="text-sm font-semibold text-gray-600 mb-1">
+                  Address
+                </p>
+                <p className="text-base sm:text-lg text-gray-800">
+                  {addressData.street}
+                </p>
                 <p className="text-base sm:text-lg text-gray-800">
                   {addressData.city}, {addressData.postalCode}
                 </p>
-                <p className="text-base sm:text-lg text-gray-800">{addressData.country}</p>
+                <p className="text-base sm:text-lg text-gray-800">
+                  {addressData.country}
+                </p>
               </div>
               {addressData.additionalInfo && (
                 <div>
                   <p className="text-sm font-semibold text-gray-600 mb-1">
                     Additional Information
                   </p>
-                  <p className="text-base sm:text-lg text-gray-800">{addressData.additionalInfo}</p>
+                  <p className="text-base sm:text-lg text-gray-800">
+                    {addressData.additionalInfo}
+                  </p>
                 </div>
               )}
               <a
@@ -158,7 +202,9 @@ export default function CheckoutPage() {
                   onChange={() => setPaymentMethod("card")}
                   className="mr-3 w-4 h-4 text-orange-600"
                 />
-                <span className="font-semibold text-gray-800">Card Payment</span>
+                <span className="font-semibold text-gray-800">
+                  Card Payment
+                </span>
               </label>
               <label className="flex items-center p-3 sm:p-4 border-2 border-orange-200 rounded-lg cursor-pointer hover:bg-orange-100 hover:border-orange-400 transition-all">
                 <input
@@ -169,7 +215,9 @@ export default function CheckoutPage() {
                   onChange={() => setPaymentMethod("cash")}
                   className="mr-3 w-4 h-4 text-orange-600"
                 />
-                <span className="font-semibold text-gray-800">Cash on Delivery</span>
+                <span className="font-semibold text-gray-800">
+                  Cash on Delivery
+                </span>
               </label>
             </div>
           </section>

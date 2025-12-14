@@ -6,6 +6,8 @@ import { Main } from "../../components/Main";
 import { Footer } from "../../components/Footer";
 import { CartProvider } from "../../context/CartContext";
 import { AddressProvider } from "../../context/AddressContext";
+import { MenuProvider } from "../../context/MenuContext";
+import { OrdersProvider } from "../../context/OrdersContext";
 import { Cart } from "../../components/Cart";
 
 const lobster = Lobster({
@@ -24,7 +26,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Next Pizza - Delicious Pizza Delivered",
-  description: "Order delicious pizza online with Next Pizza. Fast delivery, fresh ingredients, and amazing taste!",
+  description:
+    "Order delicious pizza online with Next Pizza. Fast delivery, fresh ingredients, and amazing taste!",
 };
 
 export default function RootLayout({
@@ -37,14 +40,18 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${lobster.variable} antialiased flex flex-col min-h-screen`}
       >
-        <AddressProvider>
-          <CartProvider>
-            <Header></Header>
-            <Main>{children}</Main>
-            <Footer></Footer>
-            <Cart />
-          </CartProvider>
-        </AddressProvider>
+        <MenuProvider>
+          <OrdersProvider>
+            <AddressProvider>
+              <CartProvider>
+                <Header></Header>
+                <Main>{children}</Main>
+                <Footer></Footer>
+                <Cart />
+              </CartProvider>
+            </AddressProvider>
+          </OrdersProvider>
+        </MenuProvider>
       </body>
     </html>
   );

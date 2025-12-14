@@ -5,6 +5,7 @@ import { useState } from "react";
 import React from "react";
 import { CardTile } from "../../components/CardTile";
 import { Banner } from "../../components/Banner";
+import { useMenu } from "../../context/MenuContext";
 
 const CardTilesMock = [
   {
@@ -143,6 +144,12 @@ const SaucesMock = CardTilesMock.filter((card) => card.category === "sauces");
 const DrinksMock = CardTilesMock.filter((card) => card.category === "drinks");
 
 export default function Home() {
+  const { getMenuItemsByCategory } = useMenu();
+
+  const pizzas = getMenuItemsByCategory("pizza");
+  const sauces = getMenuItemsByCategory("sauces");
+  const drinks = getMenuItemsByCategory("drinks");
+
   return (
     <div>
       <Banner />
@@ -156,7 +163,7 @@ export default function Home() {
             >
               Pizzas
             </h3>
-            {PizzasMock.map((card, index) => (
+            {pizzas.map((card, index) => (
               <CardTile key={`${card.name}-${index}`} {...card} />
             ))}
             <br />
@@ -166,7 +173,7 @@ export default function Home() {
             >
               Sauces
             </h3>
-            {SaucesMock.map((card, index) => (
+            {sauces.map((card, index) => (
               <CardTile key={`${card.name}-${index}`} {...card} />
             ))}
             <br />
@@ -176,7 +183,7 @@ export default function Home() {
             >
               Drinks
             </h3>
-            {DrinksMock.map((card, index) => (
+            {drinks.map((card, index) => (
               <CardTile key={`${card.name}-${index}`} {...card} />
             ))}
 
