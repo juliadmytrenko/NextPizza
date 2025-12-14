@@ -86,6 +86,16 @@ export const WithErrorUntouched: Story = {
 };
 
 export const Interactive: Story = {
+  args: {
+    id: "interactive",
+    name: "interactive",
+    label: "Interactive Example",
+    type: "text",
+    value: "",
+    onChange: () => {},
+    onBlur: () => {},
+    placeholder: "Type at least 3 characters",
+  },
   render: () => {
     const [value, setValue] = useState("");
     const [touched, setTouched] = useState(false);
