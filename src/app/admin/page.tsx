@@ -4,6 +4,11 @@ import { useMenu } from "../../../context/MenuContext";
 import { useOrders } from "../../../context/OrdersContext";
 import Link from "next/link";
 
+interface MenuItemSize {
+  size: number;
+  price: number;
+}
+
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<"menu" | "orders">("orders");
 
@@ -199,16 +204,34 @@ function OrdersList() {
                   </button>
                 )}
                 {order.status === "ready" && (
-                  <button
-                    onClick={() => updateOrderStatus(order.id, "delivered")}
-                    className="bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-700 transition"
-                  >
-                    Mark as Delivered
-                  </button>
+                  <>
+                    <button
+                      onClick={() => updateOrderStatus(order.id, "preparing")}
+                      className="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
+                    >
+                      Back to Preparing
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (
+                          confirm(
+                            "Are you sure you want to mark this order as delivered?"
+                          )
+                        ) {
+                          updateOrderStatus(order.id, "delivered");
+                        }
+                      }}
+                      className="bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-700 transition"
+                    >
+                      Mark as Delivered
+                    </button>
+                  </>
                 )}
                 <button
                   onClick={() => {
-                    if (confirm("Are you sure you want to delete this order?")) {
+                    if (
+                      confirm("Are you sure you want to delete this order?")
+                    ) {
                       deleteOrder(order.id);
                     }
                   }}
@@ -375,7 +398,7 @@ function MenuItemForm({
     onSave({
       name: formData.name,
       image: formData.image,
-      ingredients: formData.ingredients.split(",").map((i) => i.trim()),
+      ingredients: formData.ingredients.split(",").map((i: string) => i.trim()),
       category: formData.category,
       sizes: formData.sizes,
     });
@@ -391,7 +414,7 @@ function MenuItemForm({
   const removeSize = (index: number) => {
     setFormData({
       ...formData,
-      sizes: formData.sizes.filter((_, i) => i !== index),
+      sizes: formData.sizes.filter((_: any, i: number) => i !== index),
     });
   };
 
@@ -469,14 +492,15 @@ function MenuItemForm({
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           Sizes & Prices
         </label>
-        {formData.sizes.map((size, index) => (
+
+        {formData.sizes.map((size: MenuItemSize, index: number) => (
           <div key={index} className="flex gap-2 mb-2">
             <input
               type="number"
               placeholder="Size"
               required
               value={size.size}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateSize(index, "size", parseInt(e.target.value))
               }
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -486,7 +510,7 @@ function MenuItemForm({
               placeholder="Price"
               required
               value={size.price}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateSize(index, "price", parseFloat(e.target.value))
               }
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
