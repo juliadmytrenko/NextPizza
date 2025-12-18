@@ -45,3 +45,5 @@ storybook-static
 
 /src/generated/prisma
 prisma/migrations
+
+/src/generated/prisma

@@ -1,11 +1,12 @@
 "use client";
 import Image from "next/image";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import { CardTile } from "../../components/CardTile";
 import { Banner } from "../../components/Banner";
 import { useMenu } from "../../context/MenuContext";
+import { prisma } from "../lib/prisma";
 
 const CardTilesMock = [
   {
@@ -145,10 +146,18 @@ const DrinksMock = CardTilesMock.filter((card) => card.category === "drinks");
 
 export default function Home() {
   const { getMenuItemsByCategory } = useMenu();
+  const [products, setProducts] = useState([]);
 
   const pizzas = getMenuItemsByCategory("pizza");
   const sauces = getMenuItemsByCategory("sauces");
   const drinks = getMenuItemsByCategory("drinks");
+
+  // const products = await prisma.product.findMany();
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data));
+  }, []);
 
   return (
     <div>
@@ -161,7 +170,7 @@ export default function Home() {
               id="pizzas"
               className="text-2xl sm:text-3xl font-bold text-orange-700 text-center "
             >
-              Pizzas
+              Pizzas {products.length}
             </h3>
             {pizzas.map((card, index) => (
               <CardTile key={`${card.name}-${index}`} {...card} />
