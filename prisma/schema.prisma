@@ -22,6 +22,7 @@ model Ingredient {
 model Product {
   id          Int                 @id @default(autoincrement())
   name        String
+  category    String // e.g. 'pizza', 'drinks', 'sauces'
   description String?
   price       Float
   imageUrl    String?
