@@ -32,11 +32,25 @@ export const CardTile: React.FC<CardTileProps> = ({
     setIsCartOpen(true);
   };
 
+  // Fallback logic for image: only allow valid URLs or absolute paths
+  const fallbackImage = "/images/fallback.png";
+  function isValidImageSrc(src: string | undefined) {
+    if (!src || typeof src !== "string" || src.trim().length === 0)
+      return false;
+    // Accept absolute URLs or root-relative paths
+    return (
+      src.startsWith("http://") ||
+      src.startsWith("https://") ||
+      src.startsWith("/")
+    );
+  }
+  const imgSrc = isValidImageSrc(image) ? image : fallbackImage;
+
   return (
     <div className="rounded-xl p-3 sm:p-5 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col sm:flex-row gap-3 sm:gap-5 bg-gradient-to-br from-white to-orange-50 border-2 border-orange-400">
       <div className="relative w-full sm:w-48 h-48 flex-shrink-0 rounded-lg shadow-md">
         <Image
-          src={image}
+          src={imgSrc}
           alt={name}
           fill
           className="object-cover rounded-lg"
