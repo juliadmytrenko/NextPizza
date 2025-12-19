@@ -336,16 +336,29 @@ function MenuManager() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Menu Management</h2>
         {categoryFilter !== "ingredient" ? (
-          <button
-            onClick={() => {
-              setIsEditing(true);
-              setEditingItem(null);
-            }}
-            className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition"
-            style={{ minWidth: 140, minHeight: 44 }}
-          >
-            Add New Item
-          </button>
+          isEditing ? (
+            <button
+              onClick={() => {
+                setIsEditing(false);
+                setEditingItem(null);
+              }}
+              className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-400 transition"
+              style={{ minWidth: 140, minHeight: 44 }}
+            >
+              Cancel
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setIsEditing(true);
+                setEditingItem(null);
+              }}
+              className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition"
+              style={{ minWidth: 140, minHeight: 44 }}
+            >
+              Add New Item
+            </button>
+          )
         ) : (
           <div style={{ minWidth: 140, minHeight: 44 }}></div>
         )}
@@ -668,7 +681,7 @@ function MenuItemForm({
         </button>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 mt-16">
         <button
           type="submit"
           className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition"
