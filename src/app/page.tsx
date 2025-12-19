@@ -156,8 +156,10 @@ export default function Home() {
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
+        console.log({ data });
         const pizzas = data.filter((item: any) => item.category === "pizza");
         setPizzas(pizzas);
+        console.log(pizzas[0]);
         const sauces = data.filter((item: any) => item.category === "sauces");
         setSauces(sauces);
         const drinks = data.filter((item: any) => item.category === "drinks");

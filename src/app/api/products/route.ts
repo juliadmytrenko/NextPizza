@@ -55,7 +55,7 @@ export async function GET() {
             Ingredient: true
           }
         }
-      }
+      },
     });
     return Response.json(products);
   } catch (error) {

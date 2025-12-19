@@ -1,27 +1,32 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { useCart } from "../context/CartContext";
 import { usePathname } from "next/navigation";
 
+interface IngredientObj {
+  Ingredient: { name: string };
+}
+
 interface CardTileProps {
   name: string;
   image: string;
-  ProductIngredients: string[];
-  sizes: { size: number; price: number }[];
+  ingredients?: IngredientObj[];
+  sizes: { size: number; price: number }[] | null | undefined;
 }
 
-export const CardTile: React.FC<CardTileProps> = ({
-  name,
-  image,
-  ProductIngredients,
-  sizes,
-}) => {
-  const [selectedSize, setSelectedSize] = React.useState({ size: 0, price: 0 });
+export const CardTile: React.FC<CardTileProps> = (props) => {
+  const { name, image, ProductIngredient, sizes } = props;
+  const ingredients = Array.isArray(ProductIngredient)
+    ? ProductIngredient.map((ing) => ing.Ingredient?.name).filter(Boolean)
+    : [];
   const { addToCart, setIsCartOpen } = useCart();
   const pathname = usePathname();
   const hideAddToCart = pathname === "/address" || pathname === "/checkout";
 
+  const [selectedSize, setSelectedSize] = React.useState(
+    sizes && sizes.length > 0 ? sizes[0] : { size: 0, price: 0 }
+  );
   const handleAddToCart = () => {
     addToCart({
       name,
@@ -31,6 +36,12 @@ export const CardTile: React.FC<CardTileProps> = ({
     });
     setIsCartOpen(true);
   };
+  useEffect(() => {
+    console.log(props);
+    // console.log(image);
+    // console.log(ProductIngredient);
+    // console.log(sizes);
+  }, []);
 
   // Fallback logic for image: only allow valid URLs or absolute paths
   const fallbackImage = "/images/fallback.png";
@@ -67,9 +78,9 @@ export const CardTile: React.FC<CardTileProps> = ({
               Ingredients:
             </label>
             <p className="text-gray-600 text-xs sm:text-sm">
-              {ProductIngredients !== undefined
-                ? ProductIngredients.join(", ")
-                : ""}
+              {ingredients.length > 0
+                ? ingredients.join(", ")
+                : "No ingredients"}
             </p>
           </div>
         </div>
@@ -80,6 +91,7 @@ export const CardTile: React.FC<CardTileProps> = ({
               Size:
             </label>
             <div className="flex flex-wrap gap-2">
+              {sizes}
               {(Array.isArray(sizes) ? sizes : []).map((sizeOption) => (
                 <button
                   key={sizeOption.size}
