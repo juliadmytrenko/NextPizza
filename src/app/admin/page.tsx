@@ -340,57 +340,60 @@ function MenuManager() {
         ))}
       </div>
 
-      {/* Ingredient Form */}
-      <form
-        onSubmit={handleIngredientSubmit}
-        className="mb-4 flex gap-2 items-end"
-      >
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">
-            Add Ingredient
-          </label>
-          <input
-            type="text"
-            value={ingredientName}
-            onChange={(e) => setIngredientName(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
-            placeholder="Ingredient name"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
-        >
-          Add
-        </button>
-        {ingredientMsg && (
-          <span className="ml-4 text-sm font-semibold text-gray-800 bg-gray-100 px-4 py-2 rounded-lg border border-gray-300">
-            {ingredientMsg}
-          </span>
-        )}
-      </form>
-
-      {/* Ingredient List */}
-      <div className="mb-8">
-        <label className="block text-sm font-semibold text-gray-700 mb-1">
-          All Ingredients
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {ingredients.length === 0 ? (
-            <span className="text-gray-500">No ingredients found.</span>
-          ) : (
-            ingredients.map((ing) => (
-              <span
-                key={ing.id}
-                className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-900"
-              >
-                {ing.name}
+      {/* Show ingredient form and list only for 'ingredient' category */}
+      {categoryFilter === "ingredient" && (
+        <>
+          <form
+            onSubmit={handleIngredientSubmit}
+            className="mb-4 flex gap-2 items-end"
+          >
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Add Ingredient
+              </label>
+              <input
+                type="text"
+                value={ingredientName}
+                onChange={(e) => setIngredientName(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
+                placeholder="Ingredient name"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
+            >
+              Add
+            </button>
+            {ingredientMsg && (
+              <span className="ml-4 text-sm font-semibold text-gray-800 bg-gray-100 px-4 py-2 rounded-lg border border-gray-300">
+                {ingredientMsg}
               </span>
-            ))
-          )}
-        </div>
-      </div>
+            )}
+          </form>
+
+          <div className="mb-8">
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              All Ingredients
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {ingredients.length === 0 ? (
+                <span className="text-gray-500">No ingredients found.</span>
+              ) : (
+                ingredients.map((ing) => (
+                  <span
+                    key={ing.id}
+                    className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-900"
+                  >
+                    {ing.name}
+                  </span>
+                ))
+              )}
+            </div>
+          </div>
+        </>
+      )}
 
       {isEditing ? (
         <MenuItemForm
