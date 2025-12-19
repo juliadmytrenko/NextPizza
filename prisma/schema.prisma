@@ -17,7 +17,7 @@ model Customer {
 
 model Ingredient {
   id                Int                 @id @default(autoincrement())
-  name              String
+  name              String              @unique
   ProductIngredient ProductIngredient[]
 }
 

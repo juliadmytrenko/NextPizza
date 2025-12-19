@@ -290,14 +290,36 @@ function MenuManager() {
 
   const handleIngredientSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!ingredientName.trim()) return;
+    const name = ingredientName.trim();
+    if (!name) return;
+    // Check for duplicate (case-insensitive)
+    const exists = ingredients.some(
+      (ing) => ing.name.toLowerCase() === name.toLowerCase()
+    );
+    if (exists) {
+      setIngredientMsg("Ingredient already in database");
+      setTimeout(() => setIngredientMsg(null), 2000);
+      return;
+    }
     try {
       const res = await fetch("/api/ingredient", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: ingredientName.trim() }),
+        body: JSON.stringify({ name }),
       });
-      if (!res.ok) throw new Error("API error");
+      if (!res.ok) {
+        // Try to parse error from API
+        let msg = "Error adding ingredient";
+        try {
+          const data = await res.json();
+          if (data?.error && /unique|exists|duplicate/i.test(data.error)) {
+            msg = "Ingredient already in database";
+          }
+        } catch {}
+        setIngredientMsg(msg);
+        setTimeout(() => setIngredientMsg(null), 2000);
+        return;
+      }
       setIngredientMsg("Ingredient added!");
       setIngredientName("");
       // Refresh ingredient list
@@ -313,15 +335,20 @@ function MenuManager() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Menu Management</h2>
-        <button
-          onClick={() => {
-            setIsEditing(true);
-            setEditingItem(null);
-          }}
-          className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition"
-        >
-          Add New Item
-        </button>
+        {categoryFilter !== "ingredient" ? (
+          <button
+            onClick={() => {
+              setIsEditing(true);
+              setEditingItem(null);
+            }}
+            className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition"
+            style={{ minWidth: 140, minHeight: 44 }}
+          >
+            Add New Item
+          </button>
+        ) : (
+          <div style={{ minWidth: 140, minHeight: 44 }}></div>
+        )}
       </div>
 
       <div className="flex gap-2 mb-6">
