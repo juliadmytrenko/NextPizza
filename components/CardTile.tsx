@@ -7,17 +7,17 @@ import { usePathname } from "next/navigation";
 interface CardTileProps {
   name: string;
   image: string;
-  ingredients: string[];
+  ProductIngredients: string[];
   sizes: { size: number; price: number }[];
 }
 
 export const CardTile: React.FC<CardTileProps> = ({
   name,
   image,
-  ingredients,
+  ProductIngredients,
   sizes,
 }) => {
-  const [selectedSize, setSelectedSize] = React.useState(sizes[0]);
+  const [selectedSize, setSelectedSize] = React.useState({ size: 0, price: 0 });
   const { addToCart, setIsCartOpen } = useCart();
   const pathname = usePathname();
   const hideAddToCart = pathname === "/address" || pathname === "/checkout";
@@ -67,7 +67,9 @@ export const CardTile: React.FC<CardTileProps> = ({
               Ingredients:
             </label>
             <p className="text-gray-600 text-xs sm:text-sm">
-              {ingredients.join(", ")}
+              {ProductIngredients !== undefined
+                ? ProductIngredients.join(", ")
+                : ""}
             </p>
           </div>
         </div>
@@ -78,7 +80,7 @@ export const CardTile: React.FC<CardTileProps> = ({
               Size:
             </label>
             <div className="flex flex-wrap gap-2">
-              {sizes.map((sizeOption) => (
+              {(Array.isArray(sizes) ? sizes : []).map((sizeOption) => (
                 <button
                   key={sizeOption.size}
                   onClick={() => setSelectedSize(sizeOption)}

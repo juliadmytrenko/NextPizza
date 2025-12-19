@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Key } from "react";
 
-import { useMenu } from "../../../context/MenuContext";
+// import { useMenu } from "../../../context/MenuContext";
 import { useOrders } from "../../../context/OrdersContext";
 import Link from "next/link";
 // import { createIngredient } from "../../actions/actions";
@@ -252,23 +252,46 @@ function OrdersList() {
 
 // MenuManager Component
 function MenuManager() {
-  const { menuItems, addMenuItem, updateMenuItem, deleteMenuItem } = useMenu();
+  const [menuItems, setMenuItems] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [categoryFilter, setCategoryFilter] = useState<
     "pizza" | "sauces" | "drinks" | "ingredient"
   >("pizza");
 
+  // Fetch menu items from API
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => setMenuItems(data))
+      .catch(() => setMenuItems([]));
+  }, []);
+
   const filteredItems = menuItems.filter(
     (item) => item.category === categoryFilter
   );
 
-  const handleSave = (formData: any) => {
-    if (editingItem?.id) {
-      updateMenuItem(editingItem.id, formData);
-    } else {
-      addMenuItem(formData);
-    }
+  const handleSave = async (formData: any) => {
+    try {
+      if (editingItem?.id) {
+        // Update menu item via API
+        await fetch(`/api/products/${editingItem.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+      } else {
+        // Add new menu item via API
+        await fetch("/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+      }
+      // Refresh menu items
+      const updated = await fetch("/api/products").then((r) => r.json());
+      setMenuItems(updated);
+    } catch {}
     setIsEditing(false);
     setEditingItem(null);
   };
@@ -463,16 +486,21 @@ function MenuManager() {
                     Ingredients: {item.ingredients.join(", ")}
                   </p>
                   <div className="flex gap-2 flex-wrap">
-                    {item.sizes.map((size, idx) => (
-                      <span
-                        key={idx}
-                        className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-900"
-                      >
-                        {size.size}
-                        {item.category === "pizza" ? "cm" : "ml"}: {size.price}{" "}
-                        zł
-                      </span>
-                    ))}
+                    {item.sizes.map(
+                      (
+                        size: { size: number; price: number },
+                        idx: Key | null | undefined
+                      ) => (
+                        <span
+                          key={idx}
+                          className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-900"
+                        >
+                          {size.size}
+                          {item.category === "pizza" ? "cm" : "ml"}:{" "}
+                          {size.price} zł
+                        </span>
+                      )
+                    )}
                   </div>
                 </div>
                 <div className="flex gap-2">
@@ -486,11 +514,18 @@ function MenuManager() {
                     Edit
                   </button>
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       if (
                         confirm("Are you sure you want to delete this item?")
                       ) {
-                        deleteMenuItem(item.id);
+                        await fetch(`/api/products/${item.id}`, {
+                          method: "DELETE",
+                        });
+                        // Refresh menu items
+                        const updated = await fetch("/api/products").then((r) =>
+                          r.json()
+                        );
+                        setMenuItems(updated);
                       }
                     }}
                     className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition"
@@ -698,4 +733,22 @@ function MenuItemForm({
       </div>
     </form>
   );
+}
+async function createIngredient(name: string) {
+  const trimmed = name.trim();
+  if (!trimmed) return;
+  const res = await fetch("/api/ingredient", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: trimmed }),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    let msg = "Error adding ingredient";
+    if (data?.error && /unique|exists|duplicate/i.test(data.error)) {
+      msg = "Ingredient already in database";
+    }
+    throw new Error(msg);
+  }
+  return await res.json();
 }
