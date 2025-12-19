@@ -256,13 +256,12 @@ function MenuManager() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [categoryFilter, setCategoryFilter] = useState<
-    "all" | "pizza" | "sauces" | "drinks"
-  >("all");
+    "pizza" | "sauces" | "drinks" | "ingredient"
+  >("pizza");
 
-  const filteredItems =
-    categoryFilter === "all"
-      ? menuItems
-      : menuItems.filter((item) => item.category === categoryFilter);
+  const filteredItems = menuItems.filter(
+    (item) => item.category === categoryFilter
+  );
 
   const handleSave = (formData: any) => {
     if (editingItem?.id) {
@@ -290,7 +289,7 @@ function MenuManager() {
       </div>
 
       <div className="flex gap-2 mb-6">
-        {["all", "pizza", "sauces", "drinks"].map((cat) => (
+        {["pizza", "sauces", "drinks", "ingredient"].map((cat) => (
           <button
             key={cat}
             onClick={() => setCategoryFilter(cat as any)}

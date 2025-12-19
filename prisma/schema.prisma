@@ -49,9 +49,16 @@ model Product {
   description       String?
   price             Float
   imageUrl          String?
-  category          String
+  category          Category
   OrderProduct      OrderProduct[]
   ProductIngredient ProductIngredient[]
+}
+
+enum Category {
+  pizza
+  sauces
+  drinks
+  ingredient
 }
 
 model ProductIngredient {
