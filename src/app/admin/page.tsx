@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useMenu } from "../../../context/MenuContext";
 import { useOrders } from "../../../context/OrdersContext";
 import Link from "next/link";
-import { createIngredient } from "../../actions/actions";
+// import { createIngredient } from "../../actions/actions";
 
 interface MenuItemSize {
   size: number;
@@ -273,6 +273,42 @@ function MenuManager() {
     setEditingItem(null);
   };
 
+  // Ingredient form state
+  const [ingredientName, setIngredientName] = useState("");
+  const [ingredientMsg, setIngredientMsg] = useState<string | null>(null);
+
+  // State for all ingredients from API
+  const [ingredients, setIngredients] = useState<any[]>([]);
+
+  // Load all ingredients on mount
+  useEffect(() => {
+    fetch("/api/ingredient")
+      .then((res) => res.json())
+      .then((data) => setIngredients(data))
+      .catch(() => setIngredients([]));
+  }, []);
+
+  const handleIngredientSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!ingredientName.trim()) return;
+    try {
+      const res = await fetch("/api/ingredient", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: ingredientName.trim() }),
+      });
+      if (!res.ok) throw new Error("API error");
+      setIngredientMsg("Ingredient added!");
+      setIngredientName("");
+      // Refresh ingredient list
+      const updated = await fetch("/api/ingredient").then((r) => r.json());
+      setIngredients(updated);
+    } catch (err) {
+      setIngredientMsg("Error adding ingredient");
+    }
+    setTimeout(() => setIngredientMsg(null), 2000);
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -304,6 +340,56 @@ function MenuManager() {
         ))}
       </div>
 
+      {/* Ingredient Form */}
+      <form
+        onSubmit={handleIngredientSubmit}
+        className="mb-4 flex gap-2 items-end"
+      >
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
+            Add Ingredient
+          </label>
+          <input
+            type="text"
+            value={ingredientName}
+            onChange={(e) => setIngredientName(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
+            placeholder="Ingredient name"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
+        >
+          Add
+        </button>
+        {ingredientMsg && (
+          <span className="ml-4 text-sm font-semibold text-gray-800 bg-gray-100 px-4 py-2 rounded-lg border border-gray-300">{ingredientMsg}</span>
+        )}
+      </form>
+
+      {/* Ingredient List */}
+      <div className="mb-8">
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          All Ingredients
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {ingredients.length === 0 ? (
+            <span className="text-gray-500">No ingredients found.</span>
+          ) : (
+            ingredients.map((ing) => (
+              <span
+                key={ing.id}
+                className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-900"
+              >
+                {ing.name}
+              </span>
+            ))
+          )}
+        </div>
+      </div>
+
       {isEditing ? (
         <MenuItemForm
           item={editingItem}
@@ -322,20 +408,20 @@ function MenuManager() {
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-800">
+                  <h3 className="text-xl font-bold text-gray-900">
                     {item.name}
                   </h3>
-                  <p className="text-sm text-gray-800 mb-2">
+                  <p className="text-sm text-gray-900 mb-2">
                     Category: {item.category}
                   </p>
-                  <p className="text-sm text-gray-800 mb-2">
+                  <p className="text-sm text-gray-900 mb-2">
                     Ingredients: {item.ingredients.join(", ")}
                   </p>
                   <div className="flex gap-2 flex-wrap">
                     {item.sizes.map((size, idx) => (
                       <span
                         key={idx}
-                        className="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800"
+                        className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-900"
                       >
                         {size.size}
                         {item.category === "pizza" ? "cm" : "ml"}: {size.price}{" "}
@@ -454,7 +540,7 @@ function MenuItemForm({
           required
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
         />
       </div>
 
@@ -467,7 +553,7 @@ function MenuItemForm({
           required
           value={formData.image}
           onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
         />
       </div>
 
@@ -480,7 +566,7 @@ function MenuItemForm({
           onChange={(e) =>
             setFormData({ ...formData, category: e.target.value as any })
           }
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
         >
           <option value="pizza">Pizza</option>
           <option value="sauces">Sauces</option>
@@ -498,7 +584,7 @@ function MenuItemForm({
           onChange={(e) =>
             setFormData({ ...formData, ingredients: e.target.value })
           }
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
           rows={3}
         />
       </div>
@@ -518,7 +604,7 @@ function MenuItemForm({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateSize(index, "size", parseInt(e.target.value))
               }
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
             />
             <input
               type="number"
@@ -528,7 +614,7 @@ function MenuItemForm({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateSize(index, "price", parseFloat(e.target.value))
               }
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
             />
             {formData.sizes.length > 1 && (
               <button
