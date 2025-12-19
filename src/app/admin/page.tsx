@@ -365,7 +365,9 @@ function MenuManager() {
           Add
         </button>
         {ingredientMsg && (
-          <span className="ml-4 text-sm font-semibold text-gray-800 bg-gray-100 px-4 py-2 rounded-lg border border-gray-300">{ingredientMsg}</span>
+          <span className="ml-4 text-sm font-semibold text-gray-800 bg-gray-100 px-4 py-2 rounded-lg border border-gray-300">
+            {ingredientMsg}
+          </span>
         )}
       </form>
 
