@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
+
 import { useMenu } from "../../../context/MenuContext";
 import { useOrders } from "../../../context/OrdersContext";
 import Link from "next/link";
+import { createIngredient } from "../../actions/actions";
 
 interface MenuItemSize {
   size: number;
@@ -376,6 +378,7 @@ function MenuManager() {
 }
 
 // MenuItemForm Component
+
 function MenuItemForm({
   item,
   onSave,
@@ -393,12 +396,25 @@ function MenuItemForm({
     sizes: item?.sizes || [{ size: 30, price: 0 }],
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const ingredientsArr = formData.ingredients
+      .split(",")
+      .map((i: string) => i.trim())
+      .filter((i: string) => i.length > 0);
+    // Add each ingredient individually
+    for (const ingredient of ingredientsArr) {
+      try {
+        await createIngredient(ingredient);
+      } catch (err) {
+        // Optionally handle error for each ingredient
+        console.error("Failed to create ingredient", ingredient, err);
+      }
+    }
     onSave({
       name: formData.name,
       image: formData.image,
-      ingredients: formData.ingredients.split(",").map((i: string) => i.trim()),
+      ingredients: ingredientsArr,
       category: formData.category,
       sizes: formData.sizes,
     });
