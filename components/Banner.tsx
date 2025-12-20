@@ -26,7 +26,7 @@ export const Banner: React.FC = () => {
           </div>
 
           {/* Right side - Image */}
-          <div className="relative h-[300px] sm:h-[350px] md:h-[400px] lg:h-[500px] rounded-[60px_20px_60px_20px] overflow-hidden shadow-2xl">
+          <div className="relative h-[280px] sm:h-[340px] md:h-[400px] lg:h-[460px] rounded-[60px_20px_60px_20px] overflow-hidden shadow-2xl">
             <Image
               src="/images/oven.webp"
               alt="Delicious pizza"
