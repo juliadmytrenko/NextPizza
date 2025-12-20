@@ -176,7 +176,7 @@ export default function Home() {
           <div className="flex flex-col gap-4 w-full max-w-4xl">
             <h3
               id="pizzas"
-              className="text-2xl sm:text-3xl font-bold text-orange-700 text-center "
+              className="text-2xl sm:text-3xl font-bold text-orange-700 text-center sm:mt-0 md:mt-8 lg:mt-0"
             >
               Pizzas {products.length}
             </h3>
