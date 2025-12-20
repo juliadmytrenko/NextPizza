@@ -15,6 +15,13 @@ model Customer {
   Order   Order[]
 }
 
+model Size {
+  id          Int           @id @default(autoincrement())
+  size        String
+  price       Float
+  ProductSize ProductSize[]
+}
+
 model Ingredient {
   id                Int                 @id @default(autoincrement())
   name              String              @unique
@@ -50,9 +57,19 @@ model Product {
   price             Float
   imageUrl          String?
   category          Category
-  prices            Json?
+  ProductSizes      ProductSize[] // <-- rename from 'sizes'
   OrderProduct      OrderProduct[]
   ProductIngredient ProductIngredient[]
+}
+
+model ProductSize {
+  productId Int
+  sizeId    Int
+  Size      Size    @relation(fields: [sizeId], references: [id])
+  Product   Product @relation(fields: [productId], references: [id])
+
+  @@id([productId, sizeId])
+  @@index([sizeId], map: "ProductSize_sizeId_fkey")
 }
 
 enum Category {

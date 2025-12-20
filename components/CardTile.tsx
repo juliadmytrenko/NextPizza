@@ -3,35 +3,31 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import { useCart } from "../context/CartContext";
 import { usePathname } from "next/navigation";
+import { Product } from "../src/app/page";
+import { SizeObj } from "../src/app/page";
 
-interface IngredientObj {
-  Ingredient: { name: string };
-}
-
-interface CardTileProps {
+interface CardTileInterface {
   name: string;
   image: string;
-  ingredients?: IngredientObj[];
-  sizes: { size: number; price: number }[] | null | undefined;
+  ingredients?: { Ingredient: { name: string } }[];
+  sizes?: SizeObj[];
 }
 
-export const CardTile: React.FC<CardTileProps> = (props) => {
-  const { name, image, ProductIngredient, sizes } = props;
-  const ingredients = Array.isArray(ProductIngredient)
-    ? ProductIngredient.map((ing) => ing.Ingredient?.name).filter(Boolean)
-    : [];
+export const CardTile: React.FC<CardTileInterface> = (props) => {
+  const { name, image, ingredients, sizes } = props;
   const { addToCart, setIsCartOpen } = useCart();
   const pathname = usePathname();
   const hideAddToCart = pathname === "/address" || pathname === "/checkout";
 
-  const [selectedSize, setSelectedSize] = React.useState(
-    sizes && sizes.length > 0 ? sizes[0] : { size: 0, price: 0 }
+  const [selectedPrice, setSelectedPrice] = React.useState<SizeObj | undefined>(
+    undefined
   );
   const handleAddToCart = () => {
+    if (!selectedPrice) return; // Prevent adding if no size is selected
     addToCart({
       name,
-      size: selectedSize.size,
-      price: selectedSize.price,
+      size: selectedPrice.Size.size,
+      price: selectedPrice.Size.price,
       image,
     });
     setIsCartOpen(true);
@@ -41,6 +37,10 @@ export const CardTile: React.FC<CardTileProps> = (props) => {
     // console.log(image);
     // console.log(ProductIngredient);
     // console.log(sizes);
+    ingredients?.forEach((ing) => {
+      console.log(ing.Ingredient.name);
+      console.log(ing.Ingredient.name);
+    });
   }, []);
 
   // Fallback logic for image: only allow valid URLs or absolute paths
@@ -78,8 +78,8 @@ export const CardTile: React.FC<CardTileProps> = (props) => {
               Ingredients:
             </label>
             <p className="text-gray-600 text-xs sm:text-sm">
-              {ingredients.length > 0
-                ? ingredients.join(", ")
+              {ingredients && ingredients.length > 0
+                ? ingredients.map((ing) => ing.Ingredient.name).join(", ")
                 : "No ingredients"}
             </p>
           </div>
@@ -91,26 +91,28 @@ export const CardTile: React.FC<CardTileProps> = (props) => {
               Size:
             </label>
             <div className="flex flex-wrap gap-2">
-              {sizes}
-              {(Array.isArray(sizes) ? sizes : []).map((sizeOption) => (
-                <button
-                  key={sizeOption.size}
-                  onClick={() => setSelectedSize(sizeOption)}
-                  className={`px-2 py-0.5 rounded border text-sm ${
-                    selectedSize.size === sizeOption.size
-                      ? "bg-orange-500 text-white border-orange-500"
-                      : "bg-white text-gray-700 border-gray-300"
-                  }`}
-                >
-                  {sizeOption.size}cm
-                </button>
-              ))}
+              {(Array.isArray(sizes) ? sizes : []).map(
+                (sizeOption: SizeObj, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSelectedPrice(sizeOption)}
+                    className={`px-2 py-0.5 rounded border text-sm ${
+                      selectedPrice &&
+                      selectedPrice.Size.size === sizeOption.Size.size
+                        ? "bg-orange-500 text-white border-orange-500"
+                        : "bg-white text-gray-700 border-gray-300"
+                    }`}
+                  >
+                    {sizeOption.Size.size}cm
+                  </button>
+                )
+              )}
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
             <span className="text-xl sm:text-2xl font-bold text-orange-600">
-              {selectedSize.price} zł
+              {selectedPrice?.Size.price} zł
             </span>
             {!hideAddToCart && (
               <button

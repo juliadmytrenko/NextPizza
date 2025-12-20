@@ -144,11 +144,27 @@ import { prisma } from "../lib/prisma";
 // const SaucesMock = CardTilesMock.filter((card) => card.category === "sauces");
 // const DrinksMock = CardTilesMock.filter((card) => card.category === "drinks");
 
+type IngredientObj = {
+  Ingredient: { name: string };
+};
+
+export type SizeObj = {
+  Size: { size: string; price: number };
+};
+
+export type Product = {
+  name: string;
+  image: string;
+  category: string;
+  ProductIngredient?: [];
+  ProductSize?: [];
+};
+
 export default function Home() {
-  const [products, setProducts] = useState([]);
-  const [pizzas, setPizzas] = useState([]);
-  const [sauces, setSauces] = useState([]);
-  const [drinks, setDrinks] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [pizzas, setPizzas] = useState<Product[]>([]);
+  const [sauces, setSauces] = useState<Product[]>([]);
+  const [drinks, setDrinks] = useState<Product[]>([]);
 
   // const products = await prisma.product.findMany();
   useEffect(() => {
@@ -156,7 +172,6 @@ export default function Home() {
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
-        console.log({ data });
         const pizzas = data.filter((item: any) => item.category === "pizza");
         setPizzas(pizzas);
         console.log(pizzas[0]);
@@ -180,8 +195,13 @@ export default function Home() {
             >
               Pizzas {products.length}
             </h3>
-            {pizzas.map((card, index) => (
-              <CardTile key={`${card.name}-${index}`} {...card} />
+            {pizzas.map((product, index) => (
+              <CardTile
+                key={`${product.name}-${index}`}
+                {...product}
+                ingredients={product.ProductIngredient}
+                sizes={product.ProductSize}
+              />
             ))}
             <br />
             <h3
@@ -190,8 +210,8 @@ export default function Home() {
             >
               Sauces
             </h3>
-            {sauces.map((card, index) => (
-              <CardTile key={`${card.name}-${index}`} {...card} />
+            {sauces.map((product, index) => (
+              <CardTile key={`${product.name}-${index}`} {...product} />
             ))}
             <br />
             <h3
@@ -200,8 +220,8 @@ export default function Home() {
             >
               Drinks
             </h3>
-            {drinks.map((card, index) => (
-              <CardTile key={`${card.name}-${index}`} {...card} />
+            {drinks.map((product, index) => (
+              <CardTile key={`${product.name}-${index}`} {...product} />
             ))}
 
             {/* About Us Section */}

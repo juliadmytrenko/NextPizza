@@ -54,7 +54,12 @@ export async function GET() {
           include: {
             Ingredient: true
           }
+        },
+        ProductSizes: {
+          include: {
+            Size: true
         }
+      }
       },
     });
     return Response.json(products);
