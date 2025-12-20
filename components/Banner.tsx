@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export const Banner: React.FC = () => {
   return (
-    <section className="min-h-[calc(100vh-7rem)] md:h-[calc(100vh-7rem)] flex items-center pt-4 pb-8 px-2">
+    <section className="min-h-[calc(100vh-7rem)] md:h-[calc(100vh-7rem)] flex items-center pt-4 pb-8 px-2 md:mt-32 lg:mt-0">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-center">
           {/* Left side - Text */}
