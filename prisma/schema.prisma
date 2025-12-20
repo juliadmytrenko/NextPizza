@@ -50,7 +50,7 @@ model Product {
   price             Float
   imageUrl          String?
   category          Category
-  sizes             Json?
+  prices            Json?
   OrderProduct      OrderProduct[]
   ProductIngredient ProductIngredient[]
 }
