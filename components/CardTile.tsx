@@ -37,7 +37,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
       name,
       size: selectedSize.Size.size,
       price: selectedSize.Size.price,
-      image: imageUrl,
+      imageUrl: imageUrl,
     });
     setIsCartOpen(true);
   };
