@@ -590,7 +590,7 @@ function MenuItemForm({
 }) {
   const [formData, setFormData] = useState({
     name: item?.name || "",
-    image: item?.image || "",
+    imageUrl: item?.imageUrl || "",
     ingredients: item?.ingredients?.join(", ") || "",
     category: item?.category || "pizza",
     sizes: item?.sizes || [{ size: 30, price: 0 }],
@@ -613,7 +613,7 @@ function MenuItemForm({
     }
     onSave({
       name: formData.name,
-      image: formData.image,
+      imageUrl: formData.imageUrl,
       ingredients: ingredientsArr,
       category: formData.category,
       sizes: formData.sizes,
@@ -666,8 +666,10 @@ function MenuItemForm({
         <input
           type="text"
           required
-          value={formData.image}
-          onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+          value={formData.imageUrl}
+          onChange={(e) =>
+            setFormData({ ...formData, imageUrl: e.target.value })
+          }
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
         />
       </div>

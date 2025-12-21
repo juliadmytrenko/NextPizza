@@ -40,6 +40,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
+    console.log("-------------");
+    console.log(savedCart);
     setIsHydrated(true);
   }, []);
 

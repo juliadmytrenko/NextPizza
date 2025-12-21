@@ -7,6 +7,7 @@ import { useOrders } from "../../../context/OrdersContext";
 import { useState } from "react";
 import Image from "next/image";
 import { isValidImageSrc } from "@/lib/utils";
+import { OrderCartItem } from "../../../components/OrderCartItem";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -34,7 +35,7 @@ export default function CheckoutPage() {
         size: Number(item.size),
         price: item.price,
         quantity: item.quantity,
-        image: item.image,
+        imageUrl: item.imageUrl,
       })),
       totalPrice: getTotalPrice(),
       customerName: `${addressData.firstName} ${addressData.lastName}`,
@@ -83,36 +84,14 @@ export default function CheckoutPage() {
                 <>
                   <div className="space-y-4">
                     {cart.map((item) => (
-                      <div
+                      <OrderCartItem
                         key={item.id}
-                        className="flex gap-3 sm:gap-4 py-3 border-b border-orange-200 last:border-b-0"
-                      >
-                        <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 rounded-lg overflow-hidden">
-                          <Image
-                            src={
-                              isValidImageSrc(item.image)
-                                ? item.image
-                                : fallbackImage
-                            }
-                            alt={item.name}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="flex-1 flex flex-col sm:flex-row sm:justify-between gap-2">
-                          <div>
-                            <p className="font-bold text-orange-700 text-base sm:text-lg">
-                              {item.name}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              Size: {item.size}cm | Quantity: {item.quantity}
-                            </p>
-                          </div>
-                          <p className="font-bold text-orange-600 text-lg">
-                            {item.price * item.quantity} zł
-                          </p>
-                        </div>
-                      </div>
+                        item={{
+                          ...item,
+                          imageUrl: item.imageUrl, // adapt property if needed
+                        }}
+                        fallbackImage={fallbackImage}
+                      />
                     ))}
                   </div>
                   <div className="flex justify-between pt-4 mt-4 border-t-2 border-orange-300">
