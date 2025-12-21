@@ -6,6 +6,7 @@ import { useAddress } from "../../../context/AddressContext";
 import { useOrders } from "../../../context/OrdersContext";
 import { useState } from "react";
 import Image from "next/image";
+import { isValidImageSrc } from "@/lib/utils";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -57,6 +58,9 @@ export default function CheckoutPage() {
     return null;
   }
 
+  // Fallback logic for image: only allow valid URLs or absolute paths
+  const fallbackImage = "/images/fallback.png";
+
   return (
     <div className="flex min-h-screen items-center justify-center font-sans bg-black">
       <main className="flex min-h-screen w-full max-w-6xl flex-col items-center justify-center py-8 sm:py-12 md:py-16 px-4 sm:px-8 md:px-16">
@@ -85,7 +89,11 @@ export default function CheckoutPage() {
                       >
                         <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 rounded-lg overflow-hidden">
                           <Image
-                            src={item.image}
+                            src={
+                              isValidImageSrc(item.image)
+                                ? item.image
+                                : fallbackImage
+                            }
                             alt={item.name}
                             fill
                             className="object-cover"
