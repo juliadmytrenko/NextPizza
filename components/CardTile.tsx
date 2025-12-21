@@ -9,17 +9,23 @@ interface CardTileInterface {
   image: string;
   ingredients?: { Ingredient: { name: string } }[];
   sizes?: { Size: { size: string; price: number } }[];
+  price: number;
 }
 
 export const CardTile: React.FC<CardTileInterface> = (props) => {
-  const { name, image, ingredients, sizes } = props;
+  const { name, image, ingredients, sizes, price } = props;
   const { addToCart, setIsCartOpen } = useCart();
   const pathname = usePathname();
   const hideAddToCart = pathname === "/address" || pathname === "/checkout";
 
-  const [selectedSize, setSelectedSize] = React.useState(sizes?.[0] ?? null);
+  const hasSizes = Array.isArray(sizes) && sizes.length > 0;
+  // If sizes exist, use first size as default, else use product price and default size label
+  const defaultSizeObj = hasSizes
+    ? sizes[0]
+    : { Size: { size: "default", price } };
+  const [selectedSize, setSelectedSize] = React.useState(defaultSizeObj);
   const handleAddToCart = () => {
-    if (!selectedSize) return; // Prevent adding if no size is selected
+    if (!selectedSize) return;
     addToCart({
       name,
       size: selectedSize.Size.size,
@@ -72,27 +78,29 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
         </div>
 
         <div>
-          <div className="mb-3 sm:mb-4">
-            <label className="block text-sm font-semibold mb-2 text-gray-800">
-              Size:
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {(Array.isArray(sizes) ? sizes : []).map((sizeOption, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedSize(sizeOption)}
-                  className={`px-2 py-0.5 rounded border text-sm ${
-                    selectedSize &&
-                    selectedSize.Size.size === sizeOption.Size.size
-                      ? "bg-orange-500 text-white border-orange-500"
-                      : "bg-white text-gray-700 border-gray-300"
-                  }`}
-                >
-                  {sizeOption.Size.size}cm
-                </button>
-              ))}
+          {hasSizes && (
+            <div className="mb-3 sm:mb-4">
+              <label className="block text-sm font-semibold mb-2 text-gray-800">
+                Size:
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {sizes.map((sizeOption, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSelectedSize(sizeOption)}
+                    className={`px-2 py-0.5 rounded border text-sm ${
+                      selectedSize &&
+                      selectedSize.Size.size === sizeOption.Size.size
+                        ? "bg-orange-500 text-white border-orange-500"
+                        : "bg-white text-gray-700 border-gray-300"
+                    }`}
+                  >
+                    {sizeOption.Size.size}cm
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
             <span className="text-xl sm:text-2xl font-bold text-orange-600">

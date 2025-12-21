@@ -160,6 +160,7 @@ export type Product = {
   category: string;
   ProductIngredient?: { Ingredient: { name: string } }[];
   ProductSize?: { Size: { size: string; price: number } }[];
+  price: number;
 };
 
 export default function Home() {
@@ -205,6 +206,7 @@ export default function Home() {
                 image={product.image}
                 ingredients={product.ProductIngredient}
                 sizes={product.ProductSize}
+                price={product.price}
               />
             ))}
             <br />
@@ -221,6 +223,7 @@ export default function Home() {
                 image={product.image}
                 ingredients={product.ProductIngredient}
                 sizes={product.ProductSize}
+                price={product.price}
               />
             ))}
             <br />
@@ -237,6 +240,7 @@ export default function Home() {
                 image={product.image}
                 ingredients={product.ProductIngredient}
                 sizes={product.ProductSize}
+                price={product.price}
               />
             ))}
 
