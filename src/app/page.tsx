@@ -156,7 +156,7 @@ type IngredientObj = {
 
 export type Product = {
   name: string;
-  image: string;
+  imageUrl: string;
   category: string;
   ProductIngredient?: { Ingredient: { name: string } }[];
   ProductSize?: { Size: { size: string; price: number } }[];
@@ -215,7 +215,7 @@ export default function Home() {
                   <CardTile
                     key={`${product.name}-${index}`}
                     name={product.name}
-                    image={product.image}
+                    imageUrl={product.imageUrl}
                     ingredients={product.ProductIngredient}
                     sizes={product.ProductSize}
                     price={product.price}
@@ -243,7 +243,7 @@ export default function Home() {
                   <CardTile
                     key={`${product.name}-${index}`}
                     name={product.name}
-                    image={product.image}
+                    imageUrl={product.imageUrl}
                     ingredients={product.ProductIngredient}
                     sizes={product.ProductSize}
                     price={product.price}
@@ -271,7 +271,7 @@ export default function Home() {
                   <CardTile
                     key={`${product.name}-${index}`}
                     name={product.name}
-                    image={product.image}
+                    imageUrl={product.imageUrl}
                     ingredients={product.ProductIngredient}
                     sizes={product.ProductSize}
                     price={product.price}

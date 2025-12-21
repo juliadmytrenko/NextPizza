@@ -3,17 +3,24 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import { useCart } from "../context/CartContext";
 import { usePathname } from "next/navigation";
+import { isValidImageSrc } from "@/lib/utils";
 
 interface CardTileInterface {
   name: string;
-  image: string;
+  imageUrl: string;
   ingredients?: { Ingredient: { name: string } }[];
   sizes?: { Size: { size: string; price: number } }[];
   price: number;
 }
 
+// Fallback logic for image: only allow valid URLs or absolute paths
+const fallbackImage = "/images/fallback.png";
+
 export const CardTile: React.FC<CardTileInterface> = (props) => {
-  const { name, image, ingredients, sizes, price } = props;
+  const { name, imageUrl, ingredients, sizes, price } = props;
+  const validInitialSrc = isValidImageSrc(imageUrl) ? imageUrl : fallbackImage;
+
+  const [imgSrc, setImgSrc] = React.useState(validInitialSrc);
   const { addToCart, setIsCartOpen } = useCart();
   const pathname = usePathname();
   const hideAddToCart = pathname === "/address" || pathname === "/checkout";
@@ -30,24 +37,10 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
       name,
       size: selectedSize.Size.size,
       price: selectedSize.Size.price,
-      image,
+      image: imageUrl,
     });
     setIsCartOpen(true);
   };
-
-  // Fallback logic for image: only allow valid URLs or absolute paths
-  const fallbackImage = "/images/fallback.png";
-  function isValidImageSrc(src: string | undefined) {
-    if (!src || typeof src !== "string" || src.trim().length === 0)
-      return false;
-    // Accept absolute URLs or root-relative paths
-    return (
-      src.startsWith("http://") ||
-      src.startsWith("https://") ||
-      src.startsWith("/")
-    );
-  }
-  const imgSrc = isValidImageSrc(image) ? image : fallbackImage;
 
   return (
     <div className="rounded-xl p-3 sm:p-5 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col sm:flex-row gap-3 sm:gap-5 bg-gradient-to-br from-white to-orange-50 border-2 border-orange-400">
@@ -57,6 +50,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
           alt={name}
           fill
           className="object-cover rounded-lg"
+          onError={() => setImgSrc("/images/fallback.png")}
         />
       </div>
 
