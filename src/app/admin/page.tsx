@@ -491,10 +491,13 @@ function MenuManager() {
                     Category: {item.category}
                   </p>
                   <p className="text-sm text-gray-900 mb-2">
-                    Ingredients: {item.Ingredient.name.join(", ")}
+                    Ingredients:{" "}
+                    {item.ProductIngredient.map(
+                      (ing: any) => ing.Ingredient.name
+                    ).join(", ")}
                   </p>
                   <div className="flex gap-2 flex-wrap">
-                    {item.sizes.map(
+                    {item.ProductSize.map(
                       (
                         size: { size: number; price: number },
                         idx: Key | null | undefined
