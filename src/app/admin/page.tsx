@@ -198,12 +198,20 @@ function OrdersList() {
                   </button>
                 )}
                 {order.status === "preparing" && (
-                  <button
-                    onClick={() => updateOrderStatus(order.id, "ready")}
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
-                  >
-                    Mark as Ready
-                  </button>
+                  <>
+                    <button
+                      onClick={() => updateOrderStatus(order.id, "pending")}
+                      className="bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-600 transition"
+                    >
+                      Back to Pending
+                    </button>
+                    <button
+                      onClick={() => updateOrderStatus(order.id, "ready")}
+                      className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
+                    >
+                      Mark as Ready
+                    </button>
+                  </>
                 )}
                 {order.status === "ready" && (
                   <>
@@ -217,8 +225,7 @@ function OrdersList() {
                       onClick={() => {
                         if (
                           confirm(
-                            "Are you sure you want to mark this order as delivered?"
-                          )
+                            "Are you sure you want to mark this order as delivered?")
                         ) {
                           updateOrderStatus(order.id, "delivered");
                         }
