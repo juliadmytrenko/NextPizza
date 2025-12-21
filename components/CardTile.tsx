@@ -95,7 +95,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
                         : "bg-white text-gray-700 border-gray-300"
                     }`}
                   >
-                    {sizeOption.Size.size}cm
+                    {sizeOption.Size.size}
                   </button>
                 ))}
               </div>
