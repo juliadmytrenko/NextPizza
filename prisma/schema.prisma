@@ -57,7 +57,7 @@ model Product {
   price             Float
   imageUrl          String?
   category          Category
-  ProductSizes      ProductSize[] // <-- rename from 'sizes'
+  ProductSize       ProductSize[] // <-- rename from 'sizes'
   OrderProduct      OrderProduct[]
   ProductIngredient ProductIngredient[]
 }

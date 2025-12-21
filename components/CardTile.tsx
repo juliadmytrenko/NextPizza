@@ -3,14 +3,12 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import { useCart } from "../context/CartContext";
 import { usePathname } from "next/navigation";
-import { Product } from "../src/app/page";
-import { SizeObj } from "../src/app/page";
 
 interface CardTileInterface {
   name: string;
   image: string;
   ingredients?: { Ingredient: { name: string } }[];
-  sizes?: SizeObj[];
+  sizes?: { Size: { size: string; price: number } }[];
 }
 
 export const CardTile: React.FC<CardTileInterface> = (props) => {
@@ -19,29 +17,29 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
   const pathname = usePathname();
   const hideAddToCart = pathname === "/address" || pathname === "/checkout";
 
-  const [selectedPrice, setSelectedPrice] = React.useState<SizeObj | undefined>(
-    undefined
-  );
+  const [selectedSize, setSelectedSize] = React.useState(sizes?.[0] ?? null);
   const handleAddToCart = () => {
-    if (!selectedPrice) return; // Prevent adding if no size is selected
+    if (!selectedSize) return; // Prevent adding if no size is selected
     addToCart({
       name,
-      size: selectedPrice.Size.size,
-      price: selectedPrice.Size.price,
+      size: selectedSize.Size.size,
+      price: selectedSize.Size.price,
       image,
     });
     setIsCartOpen(true);
   };
   useEffect(() => {
-    console.log(props);
+    // console.log(props);
     // console.log(image);
     // console.log(ProductIngredient);
     // console.log(sizes);
-    ingredients?.forEach((ing) => {
-      console.log(ing.Ingredient.name);
-      console.log(ing.Ingredient.name);
+    sizes?.forEach((size) => {
+      console.log(size);
+      console.log("-----------------");
+      // console.log(size.size);
+      // console.log(size.price);
     });
-  }, []);
+  }, [sizes]);
 
   // Fallback logic for image: only allow valid URLs or absolute paths
   const fallbackImage = "/images/fallback.png";
@@ -91,28 +89,26 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
               Size:
             </label>
             <div className="flex flex-wrap gap-2">
-              {(Array.isArray(sizes) ? sizes : []).map(
-                (sizeOption: SizeObj, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setSelectedPrice(sizeOption)}
-                    className={`px-2 py-0.5 rounded border text-sm ${
-                      selectedPrice &&
-                      selectedPrice.Size.size === sizeOption.Size.size
-                        ? "bg-orange-500 text-white border-orange-500"
-                        : "bg-white text-gray-700 border-gray-300"
-                    }`}
-                  >
-                    {sizeOption.Size.size}cm
-                  </button>
-                )
-              )}
+              {(Array.isArray(sizes) ? sizes : []).map((sizeOption, i) => (
+                <button
+                  key={i}
+                  onClick={() => setSelectedSize(sizeOption)}
+                  className={`px-2 py-0.5 rounded border text-sm ${
+                    selectedSize &&
+                    selectedSize.Size.size === sizeOption.Size.size
+                      ? "bg-orange-500 text-white border-orange-500"
+                      : "bg-white text-gray-700 border-gray-300"
+                  }`}
+                >
+                  {sizeOption.Size.size}cm
+                </button>
+              ))}
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
             <span className="text-xl sm:text-2xl font-bold text-orange-600">
-              {selectedPrice?.Size.price} zł
+              {selectedSize?.Size.price} zł
             </span>
             {!hideAddToCart && (
               <button

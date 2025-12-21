@@ -148,16 +148,18 @@ type IngredientObj = {
   Ingredient: { name: string };
 };
 
-export type SizeObj = {
-  Size: { size: string; price: number };
-};
+// export type ProductSize = {
+//   id: number;
+//   size: number;
+//   price: number;
+// };
 
 export type Product = {
   name: string;
   image: string;
   category: string;
-  ProductIngredient?: [];
-  ProductSize?: [];
+  ProductIngredient?: { Ingredient: { name: string } }[];
+  ProductSize?: { Size: { size: string; price: number } }[];
 };
 
 export default function Home() {
@@ -172,9 +174,10 @@ export default function Home() {
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
+        console.log(data);
         const pizzas = data.filter((item: any) => item.category === "pizza");
         setPizzas(pizzas);
-        console.log(pizzas[0]);
+        // console.log(pizzas[0]);
         const sauces = data.filter((item: any) => item.category === "sauces");
         setSauces(sauces);
         const drinks = data.filter((item: any) => item.category === "drinks");
@@ -198,7 +201,8 @@ export default function Home() {
             {pizzas.map((product, index) => (
               <CardTile
                 key={`${product.name}-${index}`}
-                {...product}
+                name={product.name}
+                image={product.image}
                 ingredients={product.ProductIngredient}
                 sizes={product.ProductSize}
               />
