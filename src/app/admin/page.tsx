@@ -225,7 +225,8 @@ function OrdersList() {
                       onClick={() => {
                         if (
                           confirm(
-                            "Are you sure you want to mark this order as delivered?")
+                            "Are you sure you want to mark this order as delivered?"
+                          )
                         ) {
                           updateOrderStatus(order.id, "delivered");
                         }
