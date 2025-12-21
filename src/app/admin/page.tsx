@@ -483,7 +483,7 @@ function MenuManager() {
                     Category: {item.category}
                   </p>
                   <p className="text-sm text-gray-900 mb-2">
-                    Ingredients: {item.ingredients.join(", ")}
+                    Ingredients: {item.Ingredient.name.join(", ")}
                   </p>
                   <div className="flex gap-2 flex-wrap">
                     {item.sizes.map(
