@@ -195,7 +195,7 @@ function OrdersList() {
                 <div className="space-y-1">
                   {order.items.map((item, idx) => (
                     <p key={idx} className="text-sm text-gray-600">
-                      {item.quantity}x {item.name} ({item.size}cm) -{" "}
+                      {item.quantity}x {item.name} ({item.size}) -{" "}
                       {item.price * item.quantity} zł
                     </p>
                   ))}
