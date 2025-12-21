@@ -41,7 +41,7 @@ export function OrderCartItem({
             {item.name}
           </p>
           <p className="text-sm text-gray-600">
-            Size: {item.size}cm | Quantity: {item.quantity}
+            {item.size ? `Size: ${item.size} | ` : ""} Quantity: {item.quantity}
           </p>
         </div>
         <p className="font-bold text-orange-600 text-lg">

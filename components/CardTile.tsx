@@ -27,9 +27,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
 
   const hasSizes = Array.isArray(sizes) && sizes.length > 0;
   // If sizes exist, use first size as default, else use product price and default size label
-  const defaultSizeObj = hasSizes
-    ? sizes[0]
-    : { Size: { size: "default", price } };
+  const defaultSizeObj = hasSizes ? sizes[0] : { Size: { size: "", price } };
   const [selectedSize, setSelectedSize] = React.useState(defaultSizeObj);
   const handleAddToCart = () => {
     if (!selectedSize) return;
