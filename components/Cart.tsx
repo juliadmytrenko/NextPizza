@@ -20,7 +20,7 @@ export const Cart = () => {
 
   // Fallback logic for image: only allow valid URLs or absolute paths
   const fallbackImage = "/images/fallback.png";
-  function isValidImageSrc(src) {
+  function isValidImageSrc(src: any) {
     if (!src || typeof src !== "string" || src.trim().length === 0)
       return false;
     return (

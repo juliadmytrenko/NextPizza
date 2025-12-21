@@ -73,6 +73,13 @@ function OrdersList() {
   const [filter, setFilter] = useState<
     "all" | "pending" | "preparing" | "ready"
   >("all");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (orders && Array.isArray(orders)) {
+      setLoading(false);
+    }
+  }, [orders]);
 
   const filteredOrders =
     filter === "all"
@@ -119,7 +126,23 @@ function OrdersList() {
         </div>
       </div>
 
-      {filteredOrders.length === 0 ? (
+      {loading ? (
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="border border-gray-200 rounded-lg p-4 animate-pulse bg-gray-100"
+            >
+              <div className="h-6 bg-gray-300 rounded w-1/3 mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
+              <div className="h-8 bg-gray-300 rounded w-1/2"></div>
+            </div>
+          ))}
+        </div>
+      ) : filteredOrders.length === 0 ? (
         <p className="text-center text-gray-500 py-8">No orders to display</p>
       ) : (
         <div className="space-y-4">
@@ -128,6 +151,7 @@ function OrdersList() {
               key={order.id}
               className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition"
             >
+              {/* ...existing code... */}
               <div className="flex justify-between items-start mb-3">
                 <div>
                   <p className="font-bold text-lg text-gray-800">
@@ -145,7 +169,7 @@ function OrdersList() {
                   {order.status}
                 </span>
               </div>
-
+              {/* ...existing code... */}
               <div className="grid md:grid-cols-2 gap-4 mb-3">
                 <div>
                   <p className="text-sm font-semibold text-gray-700">
@@ -163,7 +187,7 @@ function OrdersList() {
                   </p>
                 </div>
               </div>
-
+              {/* ...existing code... */}
               <div className="mb-3">
                 <p className="text-sm font-semibold text-gray-700 mb-2">
                   Items:
@@ -180,14 +204,14 @@ function OrdersList() {
                   Total: {order.totalPrice} zł
                 </p>
               </div>
-
+              {/* ...existing code... */}
               {order.notes && (
                 <div className="mb-3 bg-yellow-50 p-2 rounded">
                   <p className="text-sm font-semibold text-gray-700">Notes:</p>
                   <p className="text-sm text-gray-600">{order.notes}</p>
                 </div>
               )}
-
+              {/* ...existing code... */}
               <div className="flex gap-2 flex-wrap">
                 {order.status === "pending" && (
                   <button

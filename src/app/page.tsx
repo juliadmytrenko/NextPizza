@@ -168,6 +168,7 @@ export default function Home() {
   const [pizzas, setPizzas] = useState<Product[]>([]);
   const [sauces, setSauces] = useState<Product[]>([]);
   const [drinks, setDrinks] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // const products = await prisma.product.findMany();
   useEffect(() => {
@@ -175,14 +176,13 @@ export default function Home() {
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
-        console.log(data);
         const pizzas = data.filter((item: any) => item.category === "pizza");
         setPizzas(pizzas);
-        // console.log(pizzas[0]);
         const sauces = data.filter((item: any) => item.category === "sauces");
         setSauces(sauces);
         const drinks = data.filter((item: any) => item.category === "drinks");
         setDrinks(drinks);
+        setLoading(false);
       });
   }, []);
 
@@ -197,18 +197,30 @@ export default function Home() {
               id="pizzas"
               className="text-2xl sm:text-3xl font-bold text-orange-700 text-center sm:mt-0 md:mt-8 lg:mt-0"
             >
-              Pizzas {products.length}
+              Pizzas
             </h3>
-            {pizzas.map((product, index) => (
-              <CardTile
-                key={`${product.name}-${index}`}
-                name={product.name}
-                image={product.image}
-                ingredients={product.ProductIngredient}
-                sizes={product.ProductSize}
-                price={product.price}
-              />
-            ))}
+            {loading
+              ? [...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="rounded-xl p-3 sm:p-5 shadow-lg bg-gradient-to-br from-white to-orange-50 border-2 border-orange-400 animate-pulse"
+                  >
+                    <div className="relative w-full sm:w-48 h-48 flex-shrink-0 rounded-lg shadow-md bg-gray-200 mb-4"></div>
+                    <div className="h-6 bg-gray-300 rounded w-1/3 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+                  </div>
+                ))
+              : pizzas.map((product, index) => (
+                  <CardTile
+                    key={`${product.name}-${index}`}
+                    name={product.name}
+                    image={product.image}
+                    ingredients={product.ProductIngredient}
+                    sizes={product.ProductSize}
+                    price={product.price}
+                  />
+                ))}
             <br />
             <h3
               id="sauces"
@@ -216,16 +228,27 @@ export default function Home() {
             >
               Sauces
             </h3>
-            {sauces.map((product, index) => (
-              <CardTile
-                key={`${product.name}-${index}`}
-                name={product.name}
-                image={product.image}
-                ingredients={product.ProductIngredient}
-                sizes={product.ProductSize}
-                price={product.price}
-              />
-            ))}
+            {loading
+              ? [...Array(2)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="rounded-xl p-3 sm:p-5 shadow-lg bg-gradient-to-br from-white to-orange-50 border-2 border-orange-400 animate-pulse"
+                  >
+                    <div className="relative w-full sm:w-48 h-32 flex-shrink-0 rounded-lg shadow-md bg-gray-200 mb-4"></div>
+                    <div className="h-6 bg-gray-300 rounded w-1/3 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  </div>
+                ))
+              : sauces.map((product, index) => (
+                  <CardTile
+                    key={`${product.name}-${index}`}
+                    name={product.name}
+                    image={product.image}
+                    ingredients={product.ProductIngredient}
+                    sizes={product.ProductSize}
+                    price={product.price}
+                  />
+                ))}
             <br />
             <h3
               id="drinks"
@@ -233,16 +256,27 @@ export default function Home() {
             >
               Drinks
             </h3>
-            {drinks.map((product, index) => (
-              <CardTile
-                key={`${product.name}-${index}`}
-                name={product.name}
-                image={product.image}
-                ingredients={product.ProductIngredient}
-                sizes={product.ProductSize}
-                price={product.price}
-              />
-            ))}
+            {loading
+              ? [...Array(2)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="rounded-xl p-3 sm:p-5 shadow-lg bg-gradient-to-br from-white to-orange-50 border-2 border-orange-400 animate-pulse"
+                  >
+                    <div className="relative w-full sm:w-48 h-32 flex-shrink-0 rounded-lg shadow-md bg-gray-200 mb-4"></div>
+                    <div className="h-6 bg-gray-300 rounded w-1/3 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  </div>
+                ))
+              : drinks.map((product, index) => (
+                  <CardTile
+                    key={`${product.name}-${index}`}
+                    name={product.name}
+                    image={product.image}
+                    ingredients={product.ProductIngredient}
+                    sizes={product.ProductSize}
+                    price={product.price}
+                  />
+                ))}
 
             {/* About Us Section */}
             <div id="about" className="mt-8 pt-8 scroll-mt-24">
