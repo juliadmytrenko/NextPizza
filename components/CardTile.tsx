@@ -28,18 +28,6 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
     });
     setIsCartOpen(true);
   };
-  useEffect(() => {
-    // console.log(props);
-    // console.log(image);
-    // console.log(ProductIngredient);
-    // console.log(sizes);
-    sizes?.forEach((size) => {
-      console.log(size);
-      console.log("-----------------");
-      // console.log(size.size);
-      // console.log(size.price);
-    });
-  }, [sizes]);
 
   // Fallback logic for image: only allow valid URLs or absolute paths
   const fallbackImage = "/images/fallback.png";
