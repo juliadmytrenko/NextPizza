@@ -18,6 +18,17 @@ export const Cart = () => {
 
   const pathname = usePathname();
 
+  // Fallback logic for image: only allow valid URLs or absolute paths
+  const fallbackImage = "/images/fallback.png";
+  function isValidImageSrc(src) {
+    if (!src || typeof src !== "string" || src.trim().length === 0)
+      return false;
+    return (
+      src.startsWith("http://") ||
+      src.startsWith("https://") ||
+      src.startsWith("/")
+    );
+  }
   return (
     <>
       {/* Floating Cart Button - Only show on main page */}
@@ -74,7 +85,11 @@ export const Cart = () => {
                       <div className="flex gap-3">
                         <div className="relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden">
                           <Image
-                            src={item.image}
+                            src={
+                              isValidImageSrc(item.image)
+                                ? item.image
+                                : fallbackImage
+                            }
                             alt={item.name}
                             fill
                             className="object-cover"
