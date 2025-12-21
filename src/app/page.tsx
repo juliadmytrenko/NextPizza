@@ -215,7 +215,13 @@ export default function Home() {
               Sauces
             </h3>
             {sauces.map((product, index) => (
-              <CardTile key={`${product.name}-${index}`} {...product} />
+              <CardTile
+                key={`${product.name}-${index}`}
+                name={product.name}
+                image={product.image}
+                ingredients={product.ProductIngredient}
+                sizes={product.ProductSize}
+              />
             ))}
             <br />
             <h3
@@ -225,7 +231,13 @@ export default function Home() {
               Drinks
             </h3>
             {drinks.map((product, index) => (
-              <CardTile key={`${product.name}-${index}`} {...product} />
+              <CardTile
+                key={`${product.name}-${index}`}
+                name={product.name}
+                image={product.image}
+                ingredients={product.ProductIngredient}
+                sizes={product.ProductSize}
+              />
             ))}
 
             {/* About Us Section */}
