@@ -34,7 +34,7 @@ export const CartItem: React.FC<CartItemProps> = ({
         </div>
         <div className="flex-1">
           <h3 className="font-bold text-orange-700">{item.name}</h3>
-          <p className="text-sm text-gray-600">Size: {item.size}cm</p>
+          <p className="text-sm text-gray-600">Size: {item.size}</p>
           <p className="text-sm font-bold text-orange-600 mt-1">
             {item.price} zł
           </p>
