@@ -32,7 +32,7 @@ export default function CheckoutPage() {
     addOrder({
       items: cart.map((item) => ({
         name: item.name,
-        size: Number(item.size),
+        size: { size: item.size, price: item.price },
         price: item.price,
         quantity: item.quantity,
         imageUrl: item.imageUrl,

@@ -9,7 +9,7 @@ import React, {
 
 export interface OrderItem {
   name: string;
-  size: number;
+  size?: { size: string; price: number };
   price: number;
   quantity: number;
   imageUrl: string;
