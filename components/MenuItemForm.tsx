@@ -1,30 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface MenuItemSize {
   size: number;
   price: number;
 }
 
+interface Ingredient {
+  id: string;
+  name: string;
+}
+
 export default function MenuItemForm({ item, onSave, onCancel }: any) {
   const [formData, setFormData] = useState({
     name: item?.name || "",
     imageUrl: item?.imageUrl || "",
-    ingredients: item?.ingredients?.join(", ") || "",
+    ingredients: item?.ingredients || [],
     category: item?.category || "pizza",
     sizes: item?.sizes || [{ size: 30, price: 0 }],
   });
 
+  const [allIngredients, setAllIngredients] = useState<Ingredient[]>([]);
+
+  useEffect(() => {
+    fetch("/api/ingredients")
+      .then((res) => res.json())
+      .then((data) => setAllIngredients(data))
+      .catch(() => setAllIngredients([]));
+  }, []);
+
+  // Toggle ingredient selection
+  const toggleIngredient = (ingredient: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      ingredients: prev.ingredients.includes(ingredient)
+        ? prev.ingredients.filter((i: string) => i !== ingredient)
+        : [...prev.ingredients, ingredient],
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const ingredientsArr = formData.ingredients
-      .split(",")
-      .map((i: string) => i.trim())
-      .filter((i: string) => i.length > 0);
-
     onSave({
       name: formData.name,
       imageUrl: formData.imageUrl,
-      ingredients: ingredientsArr,
+      ingredients: formData.ingredients,
       category: formData.category,
       sizes: formData.sizes,
     });
@@ -100,17 +119,23 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
       </div>
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">
-          Ingredients (comma-separated)
+          Ingredients
         </label>
-        <textarea
-          required
-          value={formData.ingredients}
-          onChange={(e) =>
-            setFormData({ ...formData, ingredients: e.target.value })
-          }
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
-          rows={3}
-        />
+        <div className="flex flex-wrap gap-2">
+          {allIngredients.map((ingredient: Ingredient) => (
+            <span
+              key={ingredient.id}
+              onClick={() => toggleIngredient(ingredient.name)}
+              className={`cursor-pointer px-3 py-1 rounded-full border text-sm ${
+                formData.ingredients.includes(ingredient.name)
+                  ? "bg-orange-600 text-white border-orange-600"
+                  : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-orange-100"
+              }`}
+            >
+              {ingredient.name}
+            </span>
+          ))}
+        </div>
       </div>
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">

@@ -6,7 +6,7 @@ export default function IngredientForm() {
   const [ingredients, setIngredients] = useState<any[]>([]);
 
   React.useEffect(() => {
-    fetch("/api/ingredient")
+    fetch("/api/ingredients")
       .then((res) => res.json())
       .then((data) => setIngredients(data))
       .catch(() => setIngredients([]));
@@ -25,7 +25,7 @@ export default function IngredientForm() {
       return;
     }
     try {
-      const res = await fetch("/api/ingredient", {
+      const res = await fetch("/api/ingredients", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name }),
@@ -44,7 +44,7 @@ export default function IngredientForm() {
       }
       setIngredientMsg("Ingredient added!");
       setIngredientName("");
-      const updated = await fetch("/api/ingredient").then((r) => r.json());
+      const updated = await fetch("/api/ingredients").then((r) => r.json());
       setIngredients(updated);
     } catch (err) {
       setIngredientMsg("Error adding ingredient");

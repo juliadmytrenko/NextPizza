@@ -77,7 +77,7 @@ export default function AdminPage() {
 async function createIngredient(name: string) {
   const trimmed = name.trim();
   if (!trimmed) return;
-  const res = await fetch("/api/ingredient", {
+  const res = await fetch("/api/ingredients", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name: trimmed }),
