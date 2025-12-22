@@ -63,7 +63,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
   const removeSize = (index: number) => {
     setFormData((prev) => ({
       ...prev,
-      sizes: prev.sizes.filter((_, i) => i !== index),
+      sizes: prev.sizes.filter((_: any, i: number) => i !== index),
     }));
   };
 
