@@ -16,7 +16,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
     imageUrl: item?.imageUrl || "",
     ingredients: item?.ingredients || [],
     category: item?.category || "pizza",
-    sizes: item?.sizes || [{ size: 30, price: 0 }],
+    sizes: item?.sizes || [{ size: "30cm", price: 0 }],
   });
 
   const [allIngredients, setAllIngredients] = useState<Ingredient[]>([]);
@@ -147,7 +147,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
               type="text"
               placeholder="Size"
               required
-              value={size.size}
+              value={String(size.size)}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateSize(index, "size", e.target.value as any)
               }
@@ -157,7 +157,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
               type="number"
               placeholder="Price"
               required
-              value={size.price}
+              value={Number(size.price)}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateSize(index, "price", parseFloat(e.target.value))
               }
