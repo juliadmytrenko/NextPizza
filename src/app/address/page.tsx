@@ -306,6 +306,7 @@ export default function AddressPage() {
         <button
           type="submit"
           className="w-full bg-orange-500 text-white py-3 px-6 rounded-md font-semibold hover:bg-orange-600 transition-colors"
+          style={{ cursor: "pointer" }}
         >
           Continue to Checkout
         </button>

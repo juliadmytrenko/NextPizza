@@ -86,6 +86,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
                         ? "bg-orange-500 text-white border-orange-500"
                         : "bg-white text-gray-700 border-gray-300"
                     }`}
+                    style={{ cursor: "pointer" }}
                   >
                     {sizeOption.Size.size}
                   </button>
@@ -102,6 +103,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
               <button
                 onClick={handleAddToCart}
                 className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 sm:px-3 sm:py-1.5 text-sm rounded-md transition-colors"
+                style={{ cursor: "pointer" }}
               >
                 Add to Cart
               </button>

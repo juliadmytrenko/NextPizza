@@ -159,6 +159,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
                   ? "bg-orange-600 text-white border-orange-600"
                   : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-orange-100"
               }`}
+              style={{ cursor: "pointer" }}
             >
               {ingredient.name}
             </span>
@@ -192,6 +193,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
                 type="button"
                 onClick={() => removeSize(index)}
                 className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+                style={{ cursor: "pointer" }}
               >
                 Remove
               </button>
@@ -202,6 +204,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
           type="button"
           onClick={addSize}
           className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+          style={{ cursor: "pointer" }}
         >
           Add Size
         </button>
@@ -210,6 +213,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
         <button
           type="submit"
           className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition"
+          style={{ cursor: "pointer" }}
         >
           Save
         </button>
@@ -217,6 +221,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
           type="button"
           onClick={onCancel}
           className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-400 transition"
+          style={{ cursor: "pointer" }}
         >
           Cancel
         </button>

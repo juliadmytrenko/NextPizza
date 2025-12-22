@@ -213,6 +213,7 @@ export default function CheckoutPage() {
           <button
             onClick={handleConfirmOrder}
             className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-lg text-lg sm:text-xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.02]"
+            style={{ cursor: "pointer" }}
           >
             Confirm Order - {getTotalPrice()} zł
           </button>
