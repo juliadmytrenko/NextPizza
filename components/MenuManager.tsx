@@ -3,6 +3,7 @@ import { useMenu } from "../context/MenuContext";
 import MenuItemForm from "./MenuItemForm";
 import MenuItemCard from "./MenuItemCard";
 import IngredientForm from "./IngredientForm";
+import { error } from "console";
 
 export default function MenuManager({}: any) {
   const [menuItems, setMenuItems] = useState<any[]>([]);
@@ -34,6 +35,7 @@ export default function MenuManager({}: any) {
           body: JSON.stringify(formData),
         });
       } else {
+        console.log("POSTING");
         await fetch("/api/products", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -42,7 +44,12 @@ export default function MenuManager({}: any) {
       }
       const updated = await fetch("/api/products").then((r) => r.json());
       setMenuItems(updated);
-    } catch {}
+    } catch (error) {
+      alert("Error saving item");
+      console.log(error);
+      setIsEditing(false);
+      setEditingItem(null);
+    }
     setIsEditing(false);
     setEditingItem(null);
   };

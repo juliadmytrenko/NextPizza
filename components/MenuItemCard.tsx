@@ -21,17 +21,15 @@ export default function MenuItemCard({
             )}
           </p>
           <div className="flex gap-2 flex-wrap">
-            {item.ProductSize.map(
-              (size: { size: number; price: number }, idx: number) => (
-                <span
-                  key={idx}
-                  className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-900"
-                >
-                  {size.size}
-                  {item.category === "pizza" ? "cm" : "ml"}: {size.price} zł
-                </span>
-              )
-            )}
+            {item.ProductSize.map((size: any, idx: number) => (
+              <span
+                key={idx}
+                className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-900"
+              >
+                {size.Size?.size ?? size.size}:{" "}
+                {size.price ?? size.Size?.price ?? ""} zł
+              </span>
+            ))}
           </div>
         </div>
         <div className="flex gap-2">

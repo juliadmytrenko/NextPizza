@@ -16,6 +16,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
     imageUrl: item?.imageUrl || "",
     ingredients: item?.ingredients || [],
     category: item?.category || "pizza",
+    defaultPrice: item?.defaultPrice || 0,
     sizes: item?.sizes || [{ size: "30cm", price: 0 }],
   });
 
@@ -40,37 +41,45 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const { name, imageUrl, ingredients, category, defaultPrice, sizes } =
+      formData;
     onSave({
-      name: formData.name,
-      imageUrl: formData.imageUrl,
-      ingredients: formData.ingredients,
-      category: formData.category,
-      sizes: formData.sizes,
+      name,
+      imageUrl,
+      ingredients,
+      category,
+      defaultPrice,
+      sizes,
     });
   };
 
   const addSize = () => {
-    setFormData({
-      ...formData,
-      sizes: [...formData.sizes, { size: 0, price: 0 }],
-    });
+    setFormData((prev) => ({
+      ...prev,
+      sizes: [...prev.sizes, { size: "", price: 0 }],
+    }));
   };
 
   const removeSize = (index: number) => {
-    setFormData({
-      ...formData,
-      sizes: formData.sizes.filter((_: any, i: number) => i !== index),
-    });
+    setFormData((prev) => ({
+      ...prev,
+      sizes: prev.sizes.filter((_, i) => i !== index),
+    }));
   };
 
   const updateSize = (
     index: number,
     field: "size" | "price",
-    value: number
+    value: string | number
   ) => {
-    const newSizes = [...formData.sizes];
-    newSizes[index] = { ...newSizes[index], [field]: value };
-    setFormData({ ...formData, sizes: newSizes });
+    setFormData((prev) => {
+      const newSizes = [...prev.sizes];
+      newSizes[index] = {
+        ...newSizes[index],
+        [field]: field === "price" ? Number(value) : value,
+      };
+      return { ...prev, sizes: newSizes };
+    });
   };
 
   return (
@@ -83,7 +92,9 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
           type="text"
           required
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, name: e.target.value }))
+          }
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
         />
       </div>
@@ -96,7 +107,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
           required
           value={formData.imageUrl}
           onChange={(e) =>
-            setFormData({ ...formData, imageUrl: e.target.value })
+            setFormData((prev) => ({ ...prev, imageUrl: e.target.value }))
           }
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
         />
@@ -108,7 +119,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
         <select
           value={formData.category}
           onChange={(e) =>
-            setFormData({ ...formData, category: e.target.value as any })
+            setFormData((prev) => ({ ...prev, category: e.target.value }))
           }
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
         >
@@ -116,6 +127,23 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
           <option value="sauces">Sauces</option>
           <option value="drinks">Drinks</option>
         </select>
+      </div>
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          Default Price
+        </label>
+        <input
+          type="number"
+          required
+          value={formData.defaultPrice}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              defaultPrice: Number(e.target.value),
+            }))
+          }
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
+        />
       </div>
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">
@@ -148,9 +176,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
               placeholder="Size"
               required
               value={String(size.size)}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                updateSize(index, "size", e.target.value as any)
-              }
+              onChange={(e) => updateSize(index, "size", e.target.value)}
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
             />
             <input
@@ -158,9 +184,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
               placeholder="Price"
               required
               value={Number(size.price)}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                updateSize(index, "price", parseFloat(e.target.value))
-              }
+              onChange={(e) => updateSize(index, "price", e.target.value)}
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
             />
             {formData.sizes.length > 1 && (

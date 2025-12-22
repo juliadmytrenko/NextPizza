@@ -6,7 +6,6 @@ import { useOrders } from "../../../context/OrdersContext";
 import Link from "next/link";
 import OrdersList from "../../../components/OrdersList";
 import MenuManager from "../../../components/MenuManager";
-// import { createIngredient } from "../../actions/actions";
 
 interface MenuItemSize {
   size: number;
@@ -72,23 +71,4 @@ export default function AdminPage() {
       </div>
     </div>
   );
-}
-
-async function createIngredient(name: string) {
-  const trimmed = name.trim();
-  if (!trimmed) return;
-  const res = await fetch("/api/ingredients", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: trimmed }),
-  });
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    let msg = "Error adding ingredient";
-    if (data?.error && /unique|exists|duplicate/i.test(data.error)) {
-      msg = "Ingredient already in database";
-    }
-    throw new Error(msg);
-  }
-  return await res.json();
 }

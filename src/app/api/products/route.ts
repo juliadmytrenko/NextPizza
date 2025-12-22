@@ -4,11 +4,69 @@ import { prisma } from "../../../lib/prisma";
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const created = await prisma.product.create({ data });
-    return Response.json(created, { status: 201 });
-  } catch (error) {
+    const { name, imageUrl, category, price, defaultPrice, ingredients, sizes, description } = data;
+
+    // Validate required fields
+    if (!name || !imageUrl || !category) {
+      return Response.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Truncate imageUrl if needed
+    let safeImageUrl = typeof imageUrl === "string" && imageUrl.length > 191 ? imageUrl.slice(0, 191) : imageUrl;
+
+    // Ensure price is a valid number
+    let finalPrice = typeof price === "number" && !isNaN(price)
+      ? price
+      : typeof defaultPrice === "number" && !isNaN(defaultPrice)
+        ? defaultPrice
+        : 0;
+
+    // Find ingredient IDs by name
+    let ingredientRecords: { id: number }[] = [];
+    if (Array.isArray(ingredients) && ingredients.length > 0) {
+      ingredientRecords = await prisma.ingredient.findMany({
+        where: { name: { in: ingredients } },
+        select: { id: true },
+      });
+    }
+
+    // Find size IDs by size string
+    let productSizeCreates: any[] = [];
+    if (Array.isArray(sizes) && sizes.length > 0) {
+      const sizeRecords = await prisma.size.findMany({
+        where: { size: { in: sizes.map((s: any) => String(s.size)) } },
+        select: { id: true, size: true },
+      });
+      productSizeCreates = sizes.map((s: any) => {
+        const found = sizeRecords.find((rec) => rec.size === String(s.size));
+        return found ? { sizeId: found.id } : undefined;
+      }).filter(Boolean);
+    }
+
+    const product = await prisma.product.create({
+      data: {
+        name,
+        imageUrl: safeImageUrl,
+        category,
+        price: finalPrice,
+        description,
+        ProductIngredient: {
+          create: ingredientRecords.map((ing) => ({ ingredientId: ing.id })),
+        },
+        ProductSize: {
+          create: productSizeCreates,
+        },
+      },
+      include: {
+        ProductIngredient: { include: { Ingredient: true } },
+        ProductSize: { include: { Size: true } },
+      },
+    });
+    return Response.json(product, { status: 201 });
+  } catch (error: any) {
+    console.log("--ERROR-----------------------------------------------")
     console.error(error);
-    return Response.json({ error: error }, { status: 500 });
+    return Response.json({ error: error?.message || "Failed to create product" }, { status: 500 });
   }
 }
 
