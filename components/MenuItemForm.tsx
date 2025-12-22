@@ -14,19 +14,13 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
     sizes: item?.sizes || [{ size: 30, price: 0 }],
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const ingredientsArr = formData.ingredients
       .split(",")
       .map((i: string) => i.trim())
       .filter((i: string) => i.length > 0);
-    for (const ingredient of ingredientsArr) {
-      try {
-        await createIngredient(ingredient);
-      } catch (err) {
-        console.error("Failed to create ingredient", ingredient, err);
-      }
-    }
+
     onSave({
       name: formData.name,
       imageUrl: formData.imageUrl,
@@ -125,12 +119,12 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
         {formData.sizes.map((size: MenuItemSize, index: number) => (
           <div key={index} className="flex gap-2 mb-2">
             <input
-              type="number"
+              type="text"
               placeholder="Size"
               required
               value={size.size}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                updateSize(index, "size", parseInt(e.target.value))
+                updateSize(index, "size", e.target.value as any)
               }
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
             />
@@ -180,23 +174,4 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
       </div>
     </form>
   );
-}
-
-async function createIngredient(name: string) {
-  const trimmed = name.trim();
-  if (!trimmed) return;
-  const res = await fetch("/api/ingredient", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: trimmed }),
-  });
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    let msg = "Error adding ingredient";
-    if (data?.error && /unique|exists|duplicate/i.test(data.error)) {
-      msg = "Ingredient already in database";
-    }
-    throw new Error(msg);
-  }
-  return await res.json();
 }
