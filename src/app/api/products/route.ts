@@ -4,7 +4,7 @@ import { prisma } from "../../../lib/prisma";
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const { name, imageUrl, category, price, defaultPrice, ingredients, sizes, description } = data;
+    const { name, imageUrl, category, price, ingredients, sizes, description } = data;
 
     // Validate required fields
     if (!name || !imageUrl || !category) {
@@ -17,8 +17,8 @@ export async function POST(request: Request) {
     // Ensure price is a valid number
     let finalPrice = typeof price === "number" && !isNaN(price)
       ? price
-      : typeof defaultPrice === "number" && !isNaN(defaultPrice)
-        ? defaultPrice
+      : typeof price === "number" && !isNaN(price)
+        ? price
         : 0;
 
     // Find ingredient IDs by name
@@ -72,14 +72,61 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
+    const url = new URL(request.url);
+    const queryId = url.searchParams.get("id");
     const body = await request.json();
-    const { id, ...data } = body;
+    let id = body.id ?? queryId;
     if (!id) {
       return Response.json({ error: "Missing product id" }, { status: 400 });
     }
+
+    // Extract updatable fields
+    const { name, imageUrl, category, price, description, ingredients, sizes, ...rest } = body;
+    const updateData: any = { ...rest };
+    if (name !== undefined) updateData.name = name;
+    if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
+    if (category !== undefined) updateData.category = category;
+    if (price !== undefined) updateData.price = price;
+    if (description !== undefined) updateData.description = description;
+
+    // Handle ingredients update
+    if (Array.isArray(ingredients)) {
+      // Remove all existing relations
+      await prisma.productIngredient.deleteMany({ where: { productId: Number(id) } });
+      // Find ingredient IDs by name
+      const ingredientRecords = await prisma.ingredient.findMany({
+        where: { name: { in: ingredients } },
+        select: { id: true },
+      });
+      updateData.ProductIngredient = {
+        create: ingredientRecords.map((ing) => ({ ingredientId: ing.id })),
+      };
+    }
+
+    // Handle sizes update
+    if (Array.isArray(sizes)) {
+      // Remove all existing relations
+      await prisma.productSize.deleteMany({ where: { productId: Number(id) } });
+      // Find size IDs by size string
+      const sizeRecords = await prisma.size.findMany({
+        where: { size: { in: sizes.map((s: any) => String(s.size)) } },
+        select: { id: true, size: true },
+      });
+      updateData.ProductSize = {
+        create: sizes.map((s: any) => {
+          const found = sizeRecords.find((rec) => rec.size === String(s.size));
+          return found ? { sizeId: found.id } : undefined;
+        }).filter(Boolean),
+      };
+    }
+
     const updated = await prisma.product.update({
-      where: { id },
-      data,
+      where: { id: Number(id) },
+      data: updateData,
+      include: {
+        ProductIngredient: { include: { Ingredient: true } },
+        ProductSize: { include: { Size: true } },
+      },
     });
     return Response.json(updated);
   } catch (error) {

@@ -16,7 +16,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
     imageUrl: item?.imageUrl || "",
     ingredients: item?.ingredients || [],
     category: item?.category || "pizza",
-    defaultPrice: item?.defaultPrice || 0,
+    price: item?.defaultPrice || 0,
     sizes: item?.sizes || [{ size: "30cm", price: 0 }],
   });
 
@@ -41,14 +41,13 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const { name, imageUrl, ingredients, category, defaultPrice, sizes } =
-      formData;
+    const { name, imageUrl, ingredients, category, price, sizes } = formData;
     onSave({
       name,
       imageUrl,
       ingredients,
       category,
-      defaultPrice,
+      price,
       sizes,
     });
   };
@@ -135,11 +134,11 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
         <input
           type="number"
           required
-          value={formData.defaultPrice}
+          value={formData.price}
           onChange={(e) =>
             setFormData((prev) => ({
               ...prev,
-              defaultPrice: Number(e.target.value),
+              price: Number(e.target.value),
             }))
           }
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
