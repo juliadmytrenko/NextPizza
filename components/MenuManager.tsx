@@ -97,33 +97,34 @@ export default function MenuManager({}: any) {
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
-            {cat.charAt(0).toUpperCase() + cat.slice(1)}
+            {cat}
           </button>
         ))}
       </div>
       {categoryFilter === "ingredient" && <IngredientForm />}
-      {isEditing ? (
-        <MenuItemForm
-          item={editingItem}
-          onSave={handleSave}
-          onCancel={() => {
-            setIsEditing(false);
-            setEditingItem(null);
-          }}
-        />
-      ) : (
-        <div className="grid gap-4">
-          {filteredItems.map((item) => (
-            <MenuItemCard
-              key={item.id}
-              item={item}
-              setEditingItem={setEditingItem}
-              setIsEditing={setIsEditing}
-              setMenuItems={setMenuItems}
-            />
-          ))}
-        </div>
-      )}
+      {categoryFilter !== "ingredient" &&
+        (isEditing ? (
+          <MenuItemForm
+            item={editingItem}
+            onSave={handleSave}
+            onCancel={() => {
+              setIsEditing(false);
+              setEditingItem(null);
+            }}
+          />
+        ) : (
+          <div className="grid gap-4">
+            {filteredItems.map((item) => (
+              <MenuItemCard
+                key={item.id}
+                item={item}
+                setEditingItem={setEditingItem}
+                setIsEditing={setIsEditing}
+                setMenuItems={setMenuItems}
+              />
+            ))}
+          </div>
+        ))}
     </div>
   );
 }
