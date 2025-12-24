@@ -126,6 +126,7 @@ export default function IngredientForm() {
                   className="ml-2 text-red-600 hover:text-red-800 font-bold px-2 py-0.5 rounded-full focus:outline-none"
                   title="Delete ingredient"
                   onClick={() => handleDeleteIngredient(ing.id)}
+                  style={{ cursor: "pointer" }}
                 >
                   ×
                 </button>
