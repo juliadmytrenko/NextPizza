@@ -95,7 +95,13 @@ export async function DELETE(request: Request) {
     if (!id) {
       return Response.json({ error: "Missing product id" }, { status: 400 });
     }
-    await prisma.product.delete({ where: { id: Number(id) } });
+    const productId = Number(id);
+    // Remove all ProductIngredient relations for this product
+    await prisma.productIngredient.deleteMany({ where: { productId } });
+    // Remove all ProductSize relations for this product
+    await prisma.productSize.deleteMany({ where: { productId } });
+    // Now delete the product
+    await prisma.product.delete({ where: { id: productId } });
     return Response.json({ success: true });
   } catch (error) {
     console.error(error);
