@@ -9,7 +9,10 @@ interface CardTileInterface {
   name: string;
   imageUrl: string;
   ingredients?: { Ingredient: { name: string } }[];
-  sizes?: { Size: { size: string; price: number } }[];
+  sizes?: {
+    price: number;
+    Size: { size: string };
+  }[];
   price: number;
 }
 
@@ -27,14 +30,16 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
 
   const hasSizes = Array.isArray(sizes) && sizes.length > 0;
   // If sizes exist, use first size as default, else use product price and default size label
-  const defaultSizeObj = hasSizes ? sizes[0] : { Size: { size: "", price } };
+  const defaultSizeObj = hasSizes
+    ? sizes[0]
+    : { Size: { size: "" }, price: price };
   const [selectedSize, setSelectedSize] = React.useState(defaultSizeObj);
   const handleAddToCart = () => {
     if (!selectedSize) return;
     addToCart({
       name,
       size: selectedSize.Size.size,
-      price: selectedSize.Size.price,
+      price: selectedSize.price,
       imageUrl: imageUrl,
     });
     setIsCartOpen(true);
@@ -97,7 +102,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
             <span className="text-xl sm:text-2xl font-bold text-orange-600">
-              {selectedSize?.Size.price} zł
+              {selectedSize.price} zł
             </span>
             {!hideAddToCart && (
               <button
