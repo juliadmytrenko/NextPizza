@@ -16,7 +16,28 @@ export async function GET(request: Request) {
 		return new Response(JSON.stringify({ error: "Failed to fetch ingredient(s)" }), { status: 500 });
 	}
 }
+
 import { prisma } from "@/lib/prisma";
+// DELETE /api/ingredients/:id
+export async function DELETE(request: Request) {
+	try {
+		const url = new URL(request.url);
+		const id = url.searchParams.get("id");
+		if (!id || isNaN(Number(id))) {
+			return new Response(JSON.stringify({ error: "Invalid ingredient id" }), { status: 400 });
+		}
+		// Remove all ProductIngredient relations for this ingredient
+		await prisma.productIngredient.deleteMany({ where: { ingredientId: Number(id) } });
+		// Now delete the ingredient
+		const deleted = await prisma.ingredient.delete({ where: { id: Number(id) } });
+		return new Response(JSON.stringify(deleted), { status: 200 });
+	} catch (error: any) {
+		if (error.code === 'P2025') {
+			return new Response(JSON.stringify({ error: "Ingredient not found" }), { status: 404 });
+		}
+		return new Response(JSON.stringify({ error: "Failed to delete ingredient" }), { status: 500 });
+	}
+}
 
 export async function POST(request: Request) {
 	try {

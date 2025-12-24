@@ -52,6 +52,30 @@ export default function IngredientForm() {
     setTimeout(() => setIngredientMsg(null), 2000);
   };
 
+  // Handler to delete an ingredient
+  const handleDeleteIngredient = async (id: any) => {
+    try {
+      console.log("Deleting ingredient with id:", id);
+      // Use fetch with DELETE method to /api/ingredients, passing id as query param
+      const res = await fetch(`/api/ingredients?id=${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        setIngredientMsg("Error deleting ingredient");
+        setTimeout(() => setIngredientMsg(null), 2000);
+        return;
+      }
+      // Refresh the ingredients list from the API
+      const updated = await fetch("/api/ingredients").then((r) => r.json());
+      setIngredients(updated);
+      setIngredientMsg("Ingredient deleted");
+      setTimeout(() => setIngredientMsg(null), 2000);
+    } catch {
+      setIngredientMsg("Error deleting ingredient");
+      setTimeout(() => setIngredientMsg(null), 2000);
+    }
+  };
+
   return (
     <>
       <form
@@ -94,9 +118,17 @@ export default function IngredientForm() {
             ingredients.map((ing) => (
               <span
                 key={ing.id}
-                className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-900"
+                className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-900 flex items-center gap-2"
               >
                 {ing.name}
+                <button
+                  type="button"
+                  className="ml-2 text-red-600 hover:text-red-800 font-bold px-2 py-0.5 rounded-full focus:outline-none"
+                  title="Delete ingredient"
+                  onClick={() => handleDeleteIngredient(ing.id)}
+                >
+                  ×
+                </button>
               </span>
             ))
           )}
