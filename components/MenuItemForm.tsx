@@ -29,6 +29,23 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
       .catch(() => setAllIngredients([]));
   }, []);
 
+  // When editing, set selected ingredients from item (if present)
+  useEffect(() => {
+    if (item && item.ProductIngredient) {
+      setFormData((prev) => ({
+        ...prev,
+        ingredients: item.ProductIngredient.map(
+          (pi: any) => pi.Ingredient.name
+        ),
+      }));
+    } else if (item && item.ingredients) {
+      setFormData((prev) => ({
+        ...prev,
+        ingredients: item.ingredients,
+      }));
+    }
+  }, [item]);
+
   // Toggle ingredient selection
   const toggleIngredient = (ingredient: string) => {
     setFormData((prev) => ({
