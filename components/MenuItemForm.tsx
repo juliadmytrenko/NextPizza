@@ -17,7 +17,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
     ingredients: item?.ingredients || [],
     category: item?.category || "pizza",
     price: item?.defaultPrice || 0,
-    sizes: item?.sizes || [{ size: "30cm", price: 0 }],
+    sizes: item?.sizes || [{ size: "", price: 0 }],
   });
 
   const [allIngredients, setAllIngredients] = useState<Ingredient[]>([]);
@@ -31,17 +31,32 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
 
   // When editing, set selected ingredients from item (if present)
   useEffect(() => {
-    if (item && item.ProductIngredient) {
-      setFormData((prev) => ({
-        ...prev,
-        ingredients: item.ProductIngredient.map(
+    if (item) {
+      // Load ingredients from ProductIngredient relation or fallback to ingredients array
+      let loadedIngredients = [];
+      if (item.ProductIngredient) {
+        loadedIngredients = item.ProductIngredient.map(
           (pi: any) => pi.Ingredient.name
-        ),
-      }));
-    } else if (item && item.ingredients) {
+        );
+      } else if (item.ingredients) {
+        loadedIngredients = item.ingredients;
+      }
+
+      // Load sizes and prices from ProductSize relation or fallback to sizes array
+      let loadedSizes = [];
+      if (item.ProductSize) {
+        loadedSizes = item.ProductSize.map((ps: any) => ({
+          size: ps.Size.size,
+          price: ps.price ?? 0,
+        }));
+      } else if (item.sizes) {
+        loadedSizes = item.sizes;
+      }
+
       setFormData((prev) => ({
         ...prev,
-        ingredients: item.ingredients,
+        ingredients: loadedIngredients,
+        sizes: loadedSizes,
       }));
     }
   }, [item]);
@@ -59,13 +74,20 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const { name, imageUrl, ingredients, category, price, sizes } = formData;
+    // Ensure sizes are sent as array of { size, price }
+    const cleanedSizes = Array.isArray(sizes)
+      ? sizes.map((s: any) => ({
+          size: String(s.size),
+          price: Number(s.price),
+        }))
+      : [];
     onSave({
       name,
       imageUrl,
       ingredients,
       category,
       price,
-      sizes,
+      sizes: cleanedSizes,
     });
   };
 

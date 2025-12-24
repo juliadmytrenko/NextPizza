@@ -1,48 +1,43 @@
 import { prisma } from "../../../lib/prisma";
-// POST handler moved to end of file
+
+// Utility: get ingredient IDs by name
+async function getIngredientIds(ingredients: string[]) {
+  if (!Array.isArray(ingredients) || ingredients.length === 0) return [];
+  const records = await prisma.ingredient.findMany({
+    where: { name: { in: ingredients } },
+    select: { id: true },
+  });
+  return records.map((r) => r.id);
+}
+
+// Utility: get size records by size string
+async function getSizeRecords(sizes: any[]) {
+  if (!Array.isArray(sizes) || sizes.length === 0) return [];
+  return prisma.size.findMany({
+    where: { size: { in: sizes.map((s) => String(s.size)) } },
+    select: { id: true, size: true },
+  });
+}
 
 export async function POST(request: Request) {
   try {
     const data = await request.json();
     const { name, imageUrl, category, price, ingredients, sizes, description } = data;
-
-    // Validate required fields
     if (!name || !imageUrl || !category) {
       return Response.json({ error: "Missing required fields" }, { status: 400 });
     }
-
-    // Truncate imageUrl if needed
-    let safeImageUrl = typeof imageUrl === "string" && imageUrl.length > 191 ? imageUrl.slice(0, 191) : imageUrl;
-
-    // Ensure price is a valid number
-    let finalPrice = typeof price === "number" && !isNaN(price)
-      ? price
-      : typeof price === "number" && !isNaN(price)
-        ? price
-        : 0;
-
-    // Find ingredient IDs by name
-    let ingredientRecords: { id: number }[] = [];
-    if (Array.isArray(ingredients) && ingredients.length > 0) {
-      ingredientRecords = await prisma.ingredient.findMany({
-        where: { name: { in: ingredients } },
-        select: { id: true },
-      });
-    }
-
-    // Find size IDs by size string
-    let productSizeCreates: any[] = [];
-    if (Array.isArray(sizes) && sizes.length > 0) {
-      const sizeRecords = await prisma.size.findMany({
-        where: { size: { in: sizes.map((s: any) => String(s.size)) } },
-        select: { id: true, size: true },
-      });
-      productSizeCreates = sizes.map((s: any) => {
-        const found = sizeRecords.find((rec) => rec.size === String(s.size));
-        return found ? { sizeId: found.id } : undefined;
-      }).filter(Boolean);
-    }
-
+    const safeImageUrl = typeof imageUrl === "string" && imageUrl.length > 191 ? imageUrl.slice(0, 191) : imageUrl;
+    const finalPrice = typeof price === "number" && !isNaN(price) ? price : 0;
+    const ingredientIds = await getIngredientIds(ingredients);
+    const sizeRecords = await getSizeRecords(sizes);
+    const productSizeCreates = Array.isArray(sizes)
+      ? sizes
+          .map((s: any) => {
+            const found = sizeRecords.find((rec) => rec.size === String(s.size));
+            return found ? { sizeId: found.id, price: Number(s.price) } : undefined;
+          })
+          .filter((v): v is { sizeId: number; price: number } => v !== undefined)
+      : [];
     const product = await prisma.product.create({
       data: {
         name,
@@ -51,7 +46,7 @@ export async function POST(request: Request) {
         price: finalPrice,
         description,
         ProductIngredient: {
-          create: ingredientRecords.map((ing) => ({ ingredientId: ing.id })),
+          create: ingredientIds.map((id) => ({ ingredientId: id })),
         },
         ProductSize: {
           create: productSizeCreates,
@@ -64,7 +59,6 @@ export async function POST(request: Request) {
     });
     return Response.json(product, { status: 201 });
   } catch (error: any) {
-    console.log("--ERROR-----------------------------------------------")
     console.error(error);
     return Response.json({ error: error?.message || "Failed to create product" }, { status: 500 });
   }
@@ -75,12 +69,10 @@ export async function PUT(request: Request) {
     const url = new URL(request.url);
     const queryId = url.searchParams.get("id");
     const body = await request.json();
-    let id = body.id ?? queryId;
+    const id = body.id ?? queryId;
     if (!id) {
       return Response.json({ error: "Missing product id" }, { status: 400 });
     }
-
-    // Extract updatable fields
     const { name, imageUrl, category, price, description, ingredients, sizes, ...rest } = body;
     const updateData: any = { ...rest };
     if (name !== undefined) updateData.name = name;
@@ -88,38 +80,32 @@ export async function PUT(request: Request) {
     if (category !== undefined) updateData.category = category;
     if (price !== undefined) updateData.price = price;
     if (description !== undefined) updateData.description = description;
-
-    // Handle ingredients update
+    // Ingredients
     if (Array.isArray(ingredients)) {
-      // Remove all existing relations
       await prisma.productIngredient.deleteMany({ where: { productId: Number(id) } });
-      // Find ingredient IDs by name
-      const ingredientRecords = await prisma.ingredient.findMany({
-        where: { name: { in: ingredients } },
-        select: { id: true },
-      });
+      const ingredientIds = await getIngredientIds(ingredients);
       updateData.ProductIngredient = {
-        create: ingredientRecords.map((ing) => ({ ingredientId: ing.id })),
+        create: ingredientIds.map((ingredientId) => ({ ingredientId })),
       };
     }
-
-    // Handle sizes update
+    // Sizes
     if (Array.isArray(sizes)) {
-      // Remove all existing relations
       await prisma.productSize.deleteMany({ where: { productId: Number(id) } });
-      // Find size IDs by size string
-      const sizeRecords = await prisma.size.findMany({
-        where: { size: { in: sizes.map((s: any) => String(s.size)) } },
-        select: { id: true, size: true },
-      });
+      const sizeRecords = await getSizeRecords(sizes);
+      const uniqueSizeIds = new Set();
       updateData.ProductSize = {
-        create: sizes.map((s: any) => {
-          const found = sizeRecords.find((rec) => rec.size === String(s.size));
-          return found ? { sizeId: found.id } : undefined;
-        }).filter(Boolean),
+        create: sizes
+          .map((s: any) => {
+            const found = sizeRecords.find((rec) => rec.size === String(s.size));
+            if (found && !uniqueSizeIds.has(found.id)) {
+              uniqueSizeIds.add(found.id);
+              return { sizeId: found.id, price: Number(s.price) };
+            }
+            return undefined;
+          })
+          .filter(Boolean),
       };
     }
-
     const updated = await prisma.product.update({
       where: { id: Number(id) },
       data: updateData,
@@ -129,9 +115,9 @@ export async function PUT(request: Request) {
       },
     });
     return Response.json(updated);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return Response.json({ error: error }, { status: 500 });
+    return Response.json({ error: error?.message || "Failed to update product" }, { status: 500 });
   }
 }
 
@@ -143,16 +129,13 @@ export async function DELETE(request: Request) {
       return Response.json({ error: "Missing product id" }, { status: 400 });
     }
     const productId = Number(id);
-    // Remove all ProductIngredient relations for this product
     await prisma.productIngredient.deleteMany({ where: { productId } });
-    // Remove all ProductSize relations for this product
     await prisma.productSize.deleteMany({ where: { productId } });
-    // Now delete the product
     await prisma.product.delete({ where: { id: productId } });
     return Response.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return Response.json({ error: error }, { status: 500 });
+    return Response.json({ error: error?.message || "Failed to delete product" }, { status: 500 });
   }
 }
 
@@ -160,21 +143,13 @@ export async function GET() {
   try {
     const products = await prisma.product.findMany({
       include: {
-        ProductIngredient: {
-          include: {
-            Ingredient: true,
-          },
-        },
-        ProductSize: {
-          include: {
-            Size: true,
-          },
-        },
+        ProductIngredient: { include: { Ingredient: true } },
+        ProductSize: { include: { Size: true } },
       },
     });
     return Response.json(products);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return Response.json({ error: error }, { status: 500 });
+    return Response.json({ error: error?.message || "Failed to fetch products" }, { status: 500 });
   }
 }
