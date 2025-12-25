@@ -15,12 +15,6 @@ model Customer {
   Order   Order[]
 }
 
-model Size {
-  id          Int           @id @default(autoincrement())
-  size        String        @unique
-  ProductSize ProductSize[]
-}
-
 model Ingredient {
   id                Int                 @id @default(autoincrement())
   name              String              @unique
@@ -53,12 +47,17 @@ model Product {
   id                Int                 @id @default(autoincrement())
   name              String              @unique
   description       String?
-  price             Float
   imageUrl          String?
   category          Category
   ProductSize       ProductSize[]
   OrderProduct      OrderProduct[]
   ProductIngredient ProductIngredient[]
+}
+
+model Size {
+  id          Int           @id @default(autoincrement())
+  size        String        @unique
+  ProductSize ProductSize[]
 }
 
 model ProductSize {
