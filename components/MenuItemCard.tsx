@@ -8,7 +8,7 @@ export default function MenuItemCard({
 }: any) {
   return (
     <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start">
         <div className="flex-1">
           <h3 className="text-xl font-bold text-gray-900">{item.name}</h3>
           <p className="text-sm text-gray-900 mb-2">
@@ -20,7 +20,7 @@ export default function MenuItemCard({
               ", "
             )}
           </p>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap mb-2">
             {item.ProductSize.map((size: any, idx: number) => (
               <span
                 key={idx}
@@ -31,14 +31,45 @@ export default function MenuItemCard({
               </span>
             ))}
           </div>
+          {/* Buttons below Ingredients on mobile only */}
+          <div className="flex gap-2 flex-wrap mt-2 sm:hidden">
+            <button
+              onClick={() => {
+                setEditingItem(item);
+                setIsEditing(true);
+              }}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+              style={{ cursor: "pointer" }}
+            >
+              Edit
+            </button>
+            <button
+              onClick={async () => {
+                if (confirm("Are you sure you want to delete this item?")) {
+                  await fetch(`/api/products/?id=${item.id}`, {
+                    method: "DELETE",
+                  });
+                  const updated = await fetch("/api/products").then((r) =>
+                    r.json()
+                  );
+                  setMenuItems(updated);
+                }
+              }}
+              className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition"
+              style={{ cursor: "pointer" }}
+            >
+              Delete
+            </button>
+          </div>
         </div>
-        <div className="flex gap-2">
+        {/* Buttons to the right on desktop only */}
+        <div className="hidden sm:flex gap-2 flex-wrap w-full sm:w-auto sm:mt-0 mt-2 justify-end">
           <button
             onClick={() => {
               setEditingItem(item);
               setIsEditing(true);
             }}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition w-full sm:w-auto"
             style={{ cursor: "pointer" }}
           >
             Edit
@@ -55,7 +86,7 @@ export default function MenuItemCard({
                 setMenuItems(updated);
               }
             }}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition"
+            className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition w-full sm:w-auto"
             style={{ cursor: "pointer" }}
           >
             Delete

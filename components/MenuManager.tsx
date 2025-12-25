@@ -57,7 +57,7 @@ export default function MenuManager({}: any) {
   };
 
   return (
-    <div>
+    <div className="w-full max-w-full overflow-x-hidden">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Menu Management</h2>
         {categoryFilter !== "ingredient" ? (
@@ -88,7 +88,7 @@ export default function MenuManager({}: any) {
           <div style={{ minWidth: 140, minHeight: 44 }}></div>
         )}
       </div>
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {["pizza", "sauces", "drinks", "ingredient"].map((cat) => (
           <button
             key={cat}

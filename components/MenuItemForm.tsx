@@ -116,7 +116,10 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 w-full max-w-full break-words"
+    >
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">
           Name
@@ -186,17 +189,20 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           Sizes & Prices
         </label>
-        {/* Size/Price inputs in their own rows */}
-        <div className="flex flex-col gap-2">
+        {/* Size/Price inputs in their own rows, wrapped if overflow */}
+        <div className="flex flex-col gap-2 max-h-64 overflow-auto pr-2">
           {formData.sizes.map((size: MenuItemSize, index: number) => (
-            <div key={index} className="flex flex-row gap-2 mb-2 items-center">
+            <div
+              key={index}
+              className="flex flex-row gap-2 mb-2 items-center min-w-0"
+            >
               <input
                 type="text"
                 placeholder="Size"
                 required
                 value={size.sizeName}
                 onChange={(e) => updateSize(index, "sizeName", e.target.value)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 min-w-0"
               />
               <input
                 type="number"
@@ -204,7 +210,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
                 required
                 value={Number(size.price)}
                 onChange={(e) => updateSize(index, "price", e.target.value)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 min-w-0"
               />
               {formData.sizes.length > 1 && (
                 <button
@@ -256,10 +262,10 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
           </div>
         )}
       </div>
-      <div className="flex gap-2 mt-16">
+      <div className="flex flex-wrap gap-2 mt-16 w-full">
         <button
           type="submit"
-          className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition"
+          className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition w-full sm:w-auto"
           style={{ cursor: "pointer" }}
         >
           Save
@@ -267,7 +273,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
         <button
           type="button"
           onClick={onCancel}
-          className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-400 transition"
+          className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-400 transition w-full sm:w-auto"
           style={{ cursor: "pointer" }}
         >
           Cancel
