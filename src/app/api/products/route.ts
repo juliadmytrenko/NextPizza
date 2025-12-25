@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     const safeImageUrl = typeof imageUrl === "string" && imageUrl.length > 191 ? imageUrl.slice(0, 191) : imageUrl;
     const finalPrice = typeof price === "number" && !isNaN(price) ? price : 0;
     const ingredientIds = await getIngredientIds(ingredients);
-    // ProductSize creation logic should be updated or removed if Size model is deleted
+    // Create ProductSize records for each size
     const product = await prisma.product.create({
       data: {
         name,
@@ -31,7 +31,14 @@ export async function POST(request: Request) {
         ProductIngredient: {
           create: ingredientIds.map((id) => ({ ingredientId: id })),
         },
-        // ProductSize: { create: ... } // Remove or update if needed
+        ProductSize: {
+          create: Array.isArray(sizes)
+            ? sizes.map((s: any) => ({
+                sizeName: String(s.sizeName),
+                price: Number(s.price),
+              }))
+            : [],
+        },
       },
       include: {
         ProductIngredient: { include: { Ingredient: true } },
@@ -69,7 +76,16 @@ export async function PUT(request: Request) {
         create: ingredientIds.map((ingredientId) => ({ ingredientId })),
       };
     }
-    // Sizes logic removed due to deleted Size model
+    // Update ProductSize: delete old, create new
+    if (Array.isArray(sizes)) {
+      await prisma.productSize.deleteMany({ where: { productId: Number(id) } });
+      updateData.ProductSize = {
+        create: sizes.map((s: any) => ({
+          sizeName: String(s.sizeName),
+          price: Number(s.price),
+        })),
+      };
+    }
     const updated = await prisma.product.update({
       where: { id: Number(id) },
       data: updateData,

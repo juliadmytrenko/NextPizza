@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 interface MenuItemSize {
-  size: string;
+  sizeName: string;
   price: number;
 }
 
@@ -16,25 +16,16 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
     imageUrl: item?.imageUrl || "",
     ingredients: item?.ingredients || [],
     category: item?.category || "pizza",
-    sizes: item?.sizes || [{ size: "", price: 0 }],
+    sizes: item?.sizes || [{ sizeName: "", price: 0 }],
   });
 
   const [allIngredients, setAllIngredients] = useState<Ingredient[]>([]);
-  const [availableSizes, setAvailableSizes] = useState<string[]>([]);
 
   useEffect(() => {
     fetch("/api/ingredients")
       .then((res) => res.json())
       .then((data) => setAllIngredients(data))
       .catch(() => setAllIngredients([]));
-    fetch("/api/sizes")
-      .then((res) => res.json())
-      .then((data) =>
-        setAvailableSizes(
-          Array.isArray(data) ? data.map((s: any) => s.size) : []
-        )
-      )
-      .catch(() => setAvailableSizes([]));
   }, []);
 
   // When editing, set selected ingredients from item (if present)
@@ -54,7 +45,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
       let loadedSizes = [];
       if (item.ProductSize) {
         loadedSizes = item.ProductSize.map((ps: any) => ({
-          size: ps.Size.size,
+          sizeName: ps.Size.sizeName,
           price: ps.price ?? 0,
         }));
       } else if (item.sizes) {
@@ -81,28 +72,23 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const { name, imageUrl, ingredients, category, price, sizes } = formData;
+    console.log("Submitting form data:", formData);
+    const { name, imageUrl, ingredients, category, sizes } = formData;
     // Ensure sizes are sent as array of { size, price }
-    const cleanedSizes = Array.isArray(sizes)
-      ? sizes.map((s: any) => ({
-          size: String(s.size),
-          price: Number(s.price),
-        }))
-      : [];
+
     onSave({
       name,
       imageUrl,
       ingredients,
       category,
-      price,
-      sizes: cleanedSizes,
+      sizes: sizes,
     });
   };
 
   const addSize = () => {
     setFormData((prev) => ({
       ...prev,
-      sizes: [...prev.sizes, { size: "", price: 0 }],
+      sizes: [...prev.sizes, { sizeName: "", price: 0 }],
     }));
   };
 
@@ -113,9 +99,10 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
     }));
   };
 
+  // Update sizeName or price for a size entry
   const updateSize = (
     index: number,
-    field: "size" | "price",
+    field: "sizeName" | "price",
     value: string | number
   ) => {
     setFormData((prev) => {
@@ -205,56 +192,14 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
               key={index}
               className="flex flex-col sm:flex-row gap-2 mb-2 items-center flex-wrap"
             >
-              {availableSizes.length > 0 ? (
-                <>
-                  <select
-                    value={
-                      availableSizes.includes(size.size)
-                        ? size.size
-                        : size.size === ""
-                        ? ""
-                        : "__custom__"
-                    }
-                    onChange={(e) => {
-                      if (e.target.value === "__custom__") {
-                        updateSize(index, "size", "");
-                      } else {
-                        updateSize(index, "size", e.target.value);
-                      }
-                    }}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
-                  >
-                    <option value="">-- Select size --</option>
-                    {availableSizes.map((s) => (
-                      <option key={s} value={s}>
-                        {s}
-                      </option>
-                    ))}
-                    <option value="__custom__">Add new size...</option>
-                  </select>
-                  {(!availableSizes.includes(size.size) && size.size !== "") ||
-                  size.size === "" ? (
-                    <input
-                      type="text"
-                      placeholder="New size"
-                      value={size.size === "__custom__" ? "" : size.size}
-                      onChange={(e) =>
-                        updateSize(index, "size", e.target.value)
-                      }
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
-                    />
-                  ) : null}
-                </>
-              ) : (
-                <input
-                  type="text"
-                  placeholder="Size"
-                  required
-                  value={size.size}
-                  onChange={(e) => updateSize(index, "size", e.target.value)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
-                />
-              )}
+              <input
+                type="text"
+                placeholder="Size"
+                required
+                value={size.sizeName}
+                onChange={(e) => updateSize(index, "sizeName", e.target.value)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
+              />
               <input
                 type="number"
                 placeholder="Price"
@@ -290,43 +235,17 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
             {formData.sizes.map(
               (
                 size: {
-                  size:
-                    | string
-                    | number
-                    | bigint
-                    | boolean
-                    | React.ReactElement<
-                        unknown,
-                        string | React.JSXElementConstructor<any>
-                      >
-                    | Iterable<React.ReactNode>
-                    | React.ReactPortal
-                    | Promise<
-                        | string
-                        | number
-                        | bigint
-                        | boolean
-                        | React.ReactPortal
-                        | React.ReactElement<
-                            unknown,
-                            string | React.JSXElementConstructor<any>
-                          >
-                        | Iterable<React.ReactNode>
-                        | null
-                        | undefined
-                      >
-                    | null
-                    | undefined;
-                  price: any;
+                  sizeName: string;
+                  price: number;
                 },
                 idx: React.Key | null | undefined
               ) =>
-                size.size && (
+                size.sizeName && (
                   <div
                     key={idx}
                     className="bg-orange-100 border border-orange-400 rounded-lg px-3 py-1 text-orange-800 text-sm flex items-center gap-2"
                   >
-                    <span>{size.size}</span>
+                    <span>{size.sizeName}</span>
                     <span className="font-semibold">
                       {Number(size.price).toFixed(2)} zł
                     </span>

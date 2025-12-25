@@ -10,7 +10,7 @@ interface CardTileInterface {
   imageUrl: string;
   ingredients?: { Ingredient: { name: string } }[];
   sizes?: {
-    Size: { size: string };
+    sizeName: string;
     price: number;
   }[];
 }
@@ -36,7 +36,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
     if (!selectedSize) return;
     addToCart({
       name,
-      size: selectedSize.Size.size,
+      size: selectedSize.sizeName,
       price: selectedSize.price,
       imageUrl: imageUrl,
     });
@@ -82,19 +82,16 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
                 {sizes.map((sizeOption, i) => (
                   <button
                     key={i}
-                    onClick={() => {
-                      console.log(sizeOption.Size);
-                      setSelectedSize(sizeOption.Size ? sizeOption : null);
-                    }}
+                    onClick={() => setSelectedSize(sizeOption)}
                     className={`px-2 py-0.5 rounded border text-sm ${
                       selectedSize &&
-                      selectedSize.Size.size === sizeOption.Size.size
+                      selectedSize.sizeName === sizeOption.sizeName
                         ? "bg-orange-500 text-white border-orange-500"
                         : "bg-white text-gray-700 border-gray-300"
                     }`}
                     style={{ cursor: "pointer" }}
                   >
-                    {sizeOption.Size.size}
+                    {sizeOption.sizeName}
                   </button>
                 ))}
               </div>

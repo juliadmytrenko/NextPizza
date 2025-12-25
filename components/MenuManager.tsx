@@ -36,6 +36,8 @@ export default function MenuManager({}: any) {
         });
       } else {
         console.log("POSTING");
+        console.log(formData);
+        console.log(JSON.stringify(formData));
         await fetch("/api/products", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
