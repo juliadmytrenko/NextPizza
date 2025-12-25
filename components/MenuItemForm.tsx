@@ -186,12 +186,10 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           Sizes & Prices
         </label>
-        <div className="flex flex-wrap gap-2">
+        {/* Size/Price inputs in their own rows */}
+        <div className="flex flex-col gap-2">
           {formData.sizes.map((size: MenuItemSize, index: number) => (
-            <div
-              key={index}
-              className="flex flex-col sm:flex-row gap-2 mb-2 items-center flex-wrap"
-            >
+            <div key={index} className="flex flex-row gap-2 mb-2 items-center">
               <input
                 type="text"
                 placeholder="Size"
@@ -221,14 +219,17 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
             </div>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={addSize}
-          className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
-          style={{ cursor: "pointer" }}
-        >
-          Add Size
-        </button>
+        {/* Add Size button in a separate row below */}
+        <div className="mt-2">
+          <button
+            type="button"
+            onClick={addSize}
+            className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+            style={{ cursor: "pointer" }}
+          >
+            Add Size
+          </button>
+        </div>
         {/* Saved sizes as tiles */}
         {formData.sizes.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-2">
