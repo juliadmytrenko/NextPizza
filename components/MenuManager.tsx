@@ -13,8 +13,6 @@ export default function MenuManager({}: any) {
     "pizza" | "sauces" | "drinks" | "ingredient"
   >("pizza");
 
-  const MenuContext = useMenu();
-
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.json())
