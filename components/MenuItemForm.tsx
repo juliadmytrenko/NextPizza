@@ -217,76 +217,83 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           Sizes & Prices
         </label>
-        {formData.sizes.map((size: MenuItemSize, index: number) => (
-          <div key={index} className="flex gap-2 mb-2 items-center">
-            {availableSizes.length > 0 ? (
-              <>
-                <select
-                  value={
-                    availableSizes.includes(size.size)
-                      ? size.size
-                      : size.size === ""
-                      ? ""
-                      : "__custom__"
-                  }
-                  onChange={(e) => {
-                    if (e.target.value === "__custom__") {
-                      updateSize(index, "size", "");
-                    } else {
-                      updateSize(index, "size", e.target.value);
+        <div className="flex flex-wrap gap-2">
+          {formData.sizes.map((size: MenuItemSize, index: number) => (
+            <div
+              key={index}
+              className="flex flex-col sm:flex-row gap-2 mb-2 items-center flex-wrap"
+            >
+              {availableSizes.length > 0 ? (
+                <>
+                  <select
+                    value={
+                      availableSizes.includes(size.size)
+                        ? size.size
+                        : size.size === ""
+                        ? ""
+                        : "__custom__"
                     }
-                  }}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
-                >
-                  <option value="">-- Select size --</option>
-                  {availableSizes.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                  <option value="__custom__">Add new size...</option>
-                </select>
-                {(!availableSizes.includes(size.size) && size.size !== "") ||
-                size.size === "" ? (
-                  <input
-                    type="text"
-                    placeholder="New size"
-                    value={size.size === "__custom__" ? "" : size.size}
-                    onChange={(e) => updateSize(index, "size", e.target.value)}
+                    onChange={(e) => {
+                      if (e.target.value === "__custom__") {
+                        updateSize(index, "size", "");
+                      } else {
+                        updateSize(index, "size", e.target.value);
+                      }
+                    }}
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
-                  />
-                ) : null}
-              </>
-            ) : (
+                  >
+                    <option value="">-- Select size --</option>
+                    {availableSizes.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                    <option value="__custom__">Add new size...</option>
+                  </select>
+                  {(!availableSizes.includes(size.size) && size.size !== "") ||
+                  size.size === "" ? (
+                    <input
+                      type="text"
+                      placeholder="New size"
+                      value={size.size === "__custom__" ? "" : size.size}
+                      onChange={(e) =>
+                        updateSize(index, "size", e.target.value)
+                      }
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
+                    />
+                  ) : null}
+                </>
+              ) : (
+                <input
+                  type="text"
+                  placeholder="Size"
+                  required
+                  value={size.size}
+                  onChange={(e) => updateSize(index, "size", e.target.value)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
+                />
+              )}
               <input
-                type="text"
-                placeholder="Size"
+                type="number"
+                placeholder="Price"
                 required
-                value={size.size}
-                onChange={(e) => updateSize(index, "size", e.target.value)}
+                value={Number(size.price)}
+                onChange={(e) => updateSize(index, "price", e.target.value)}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
               />
-            )}
-            <input
-              type="number"
-              placeholder="Price"
-              required
-              value={Number(size.price)}
-              onChange={(e) => updateSize(index, "price", e.target.value)}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
-            />
-            {formData.sizes.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeSize(index)}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
-                style={{ cursor: "pointer" }}
-              >
-                Remove
-              </button>
-            )}
-          </div>
-        ))}
+              {formData.sizes.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeSize(index)}
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+                  style={{ cursor: "pointer" }}
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
         <button
           type="button"
           onClick={addSize}
