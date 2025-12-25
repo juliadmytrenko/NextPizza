@@ -10,27 +10,6 @@ async function getIngredientIds(ingredients: string[]) {
   return records.map((r) => r.id);
 }
 
-// Utility: get size records by size string
-async function getSizeRecords(sizes: any[]) {
-  if (!Array.isArray(sizes) || sizes.length === 0) return [];
-  return prisma.size.findMany({
-    where: { size: { in: sizes.map((s) => String(s.size)) } },
-    select: { id: true, size: true },
-  });
-}
-
-// Zwraca sizeId dla każdego rozmiaru, tworzy jeśli nie istnieje
-async function getOrCreateSizeIds(sizes: { size: string }[]) {
-  const result: { [size: string]: number } = {};
-  for (const s of sizes) {
-    let sizeRecord = await prisma.size.findUnique({ where: { size: s.size } });
-    if (!sizeRecord) {
-      sizeRecord = await prisma.size.create({ data: { size: s.size } });
-    }
-    result[s.size] = sizeRecord.id;
-  }
-  return result;
-}
 
 export async function POST(request: Request) {
   try {
@@ -42,12 +21,7 @@ export async function POST(request: Request) {
     const safeImageUrl = typeof imageUrl === "string" && imageUrl.length > 191 ? imageUrl.slice(0, 191) : imageUrl;
     const finalPrice = typeof price === "number" && !isNaN(price) ? price : 0;
     const ingredientIds = await getIngredientIds(ingredients);
-    const sizeRecords = await getSizeRecords(sizes);
-    const sizeIdMap = await getOrCreateSizeIds(sizes); // sizes: [{size, price}]
-    const productSizeCreates = sizes.map((s: { size: string | number; price: any; }) => ({
-      sizeId: sizeIdMap[s.size],
-      price: Number(s.price),
-    }));
+    // ProductSize creation logic should be updated or removed if Size model is deleted
     const product = await prisma.product.create({
       data: {
         name,
@@ -57,13 +31,11 @@ export async function POST(request: Request) {
         ProductIngredient: {
           create: ingredientIds.map((id) => ({ ingredientId: id })),
         },
-        ProductSize: {
-          create: productSizeCreates,
-        },
+        // ProductSize: { create: ... } // Remove or update if needed
       },
       include: {
         ProductIngredient: { include: { Ingredient: true } },
-        ProductSize: { include: { Size: true } },
+        ProductSize: true,
       },
     });
     return Response.json(product, { status: 201 });
@@ -97,29 +69,13 @@ export async function PUT(request: Request) {
         create: ingredientIds.map((ingredientId) => ({ ingredientId })),
       };
     }
-    // Sizes
-    if (Array.isArray(sizes)) {
-      await prisma.productSize.deleteMany({ where: { productId: Number(id) } });
-      // Ensure all sizes exist in DB (create if not)
-      const sizeIdMap = await getOrCreateSizeIds(sizes);
-      updateData.ProductSize = {
-        create: sizes
-          .map((s: any) => {
-            const sizeId = sizeIdMap[s.size];
-            if (sizeId) {
-              return { sizeId, price: Number(s.price) };
-            }
-            return undefined;
-          })
-          .filter(Boolean),
-      };
-    }
+    // Sizes logic removed due to deleted Size model
     const updated = await prisma.product.update({
       where: { id: Number(id) },
       data: updateData,
       include: {
         ProductIngredient: { include: { Ingredient: true } },
-        ProductSize: { include: { Size: true } },
+        ProductSize: true,
       },
     });
     return Response.json(updated);
@@ -152,7 +108,7 @@ export async function GET() {
     const products = await prisma.product.findMany({
       include: {
         ProductIngredient: { include: { Ingredient: true } },
-        ProductSize: { include: { Size: true } },
+        ProductSize: true,
       },
     });
     return Response.json(products);

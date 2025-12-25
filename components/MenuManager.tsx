@@ -22,9 +22,9 @@ export default function MenuManager({}: any) {
       .catch(() => setMenuItems([]));
   }, []);
 
-  const filteredItems = menuItems.filter(
-    (item) => item.category === categoryFilter
-  );
+  const filteredItems = menuItems.filter
+    ? menuItems.filter((item) => item.category === categoryFilter)
+    : [];
 
   const handleSave = async (formData: any) => {
     try {
@@ -114,15 +114,16 @@ export default function MenuManager({}: any) {
           />
         ) : (
           <div className="grid gap-4">
-            {filteredItems.map((item) => (
-              <MenuItemCard
-                key={item.id}
-                item={item}
-                setEditingItem={setEditingItem}
-                setIsEditing={setIsEditing}
-                setMenuItems={setMenuItems}
-              />
-            ))}
+            {filteredItems &&
+              filteredItems.map((item) => (
+                <MenuItemCard
+                  key={item.id}
+                  item={item}
+                  setEditingItem={setEditingItem}
+                  setIsEditing={setIsEditing}
+                  setMenuItems={setMenuItems}
+                />
+              ))}
           </div>
         ))}
     </div>

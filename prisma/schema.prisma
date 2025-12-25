@@ -54,21 +54,14 @@ model Product {
   ProductIngredient ProductIngredient[]
 }
 
-model Size {
-  id          Int           @id @default(autoincrement())
-  size        String        @unique
-  ProductSize ProductSize[]
-}
-
 model ProductSize {
   productId Int
-  sizeId    Int
+  sizeName  String
   price     Float
   Product   Product @relation(fields: [productId], references: [id])
-  Size      Size    @relation(fields: [sizeId], references: [id])
 
-  @@id([productId, sizeId])
-  @@index([sizeId])
+  @@id([productId, sizeName])
+  @@index([sizeName])
 }
 
 enum Category {
