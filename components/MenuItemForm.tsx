@@ -45,7 +45,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
       let loadedSizes = [];
       if (item.ProductSize) {
         loadedSizes = item.ProductSize.map((ps: any) => ({
-          sizeName: ps.Size.sizeName,
+          sizeName: ps.sizeName,
           price: ps.price ?? 0,
         }));
       } else if (item.sizes) {

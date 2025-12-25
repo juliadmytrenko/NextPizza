@@ -26,7 +26,7 @@ export default function MenuItemCard({
                 key={idx}
                 className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-900"
               >
-                {size.Size?.size ?? size.size}:{" "}
+                {size.Size?.size ?? size.sizeName}:{" "}
                 {size.price ?? size.Size?.price ?? ""} zł
               </span>
             ))}
