@@ -24,9 +24,9 @@ export default function OrdersList() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Orders</h2>
-        <div className="flex gap-2">
+      <div className="flex flex-wrap gap-y-2 justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800 mr-2">Orders</h2>
+        <div className="flex gap-2 flex-wrap">
           {["all", "pending", "preparing", "ready"].map((status) => (
             <button
               key={status}
