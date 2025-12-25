@@ -53,7 +53,6 @@ export async function POST(request: Request) {
         name,
         imageUrl: safeImageUrl,
         category,
-        price: finalPrice,
         description,
         ProductIngredient: {
           create: ingredientIds.map((id) => ({ ingredientId: id })),

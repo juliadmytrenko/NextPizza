@@ -10,17 +10,16 @@ interface CardTileInterface {
   imageUrl: string;
   ingredients?: { Ingredient: { name: string } }[];
   sizes?: {
-    price: number;
     Size: { size: string };
+    price: number;
   }[];
-  price: number;
 }
 
 // Fallback logic for image: only allow valid URLs or absolute paths
 const fallbackImage = "/images/fallback.png";
 
 export const CardTile: React.FC<CardTileInterface> = (props) => {
-  const { name, imageUrl, ingredients, sizes, price } = props;
+  const { name, imageUrl, ingredients, sizes } = props;
   const validInitialSrc = isValidImageSrc(imageUrl) ? imageUrl : fallbackImage;
 
   const [imgSrc, setImgSrc] = React.useState(validInitialSrc);
@@ -30,10 +29,9 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
 
   const hasSizes = Array.isArray(sizes) && sizes.length > 0;
   // If sizes exist, use first size as default, else use product price and default size label
-  const defaultSizeObj = hasSizes
-    ? sizes[0]
-    : { Size: { size: "" }, price: price };
-  const [selectedSize, setSelectedSize] = React.useState(defaultSizeObj);
+  const [selectedSize, setSelectedSize] = React.useState(
+    Array.isArray(sizes) && sizes.length > 0 ? sizes[0] : null
+  );
   const handleAddToCart = () => {
     if (!selectedSize) return;
     addToCart({
@@ -84,7 +82,10 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
                 {sizes.map((sizeOption, i) => (
                   <button
                     key={i}
-                    onClick={() => setSelectedSize(sizeOption)}
+                    onClick={() => {
+                      console.log(sizeOption.Size);
+                      setSelectedSize(sizeOption.Size ? sizeOption : null);
+                    }}
                     className={`px-2 py-0.5 rounded border text-sm ${
                       selectedSize &&
                       selectedSize.Size.size === sizeOption.Size.size
@@ -102,7 +103,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
             <span className="text-xl sm:text-2xl font-bold text-orange-600">
-              {selectedSize.price} zł
+              {selectedSize ? `${selectedSize.price} zł` : ""}
             </span>
             {!hideAddToCart && (
               <button

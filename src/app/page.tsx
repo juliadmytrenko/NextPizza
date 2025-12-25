@@ -18,7 +18,6 @@ export type Product = {
   category: string;
   ProductIngredient?: { Ingredient: { name: string } }[];
   ProductSize?: { Size: { size: string; price: number } }[];
-  price: number;
 };
 
 export default function Home() {
@@ -48,6 +47,7 @@ export default function Home() {
         const pizzas = productsArray.filter(
           (item: any) => item.category === "pizza"
         );
+        console.log("Fetched pizzas:", pizzas);
         setPizzas(pizzas);
         const sauces = productsArray.filter(
           (item: any) => item.category === "sauces"
@@ -114,7 +114,6 @@ export default function Home() {
                         imageUrl={product.imageUrl}
                         ingredients={product.ProductIngredient}
                         sizes={product.ProductSize}
-                        price={product.price}
                       />
                     ))}
                 <br />
@@ -170,7 +169,6 @@ export default function Home() {
                         imageUrl={product.imageUrl}
                         ingredients={product.ProductIngredient}
                         sizes={product.ProductSize}
-                        price={product.price}
                       />
                     ))}
               </>
