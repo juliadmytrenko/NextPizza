@@ -11,7 +11,7 @@ interface Ingredient {
 }
 
 export default function MenuItemForm({ item, onSave, onCancel }: any) {
-    const [ingredientSearch, setIngredientSearch] = useState("");
+  const [ingredientSearch, setIngredientSearch] = useState("");
   const [formData, setFormData] = useState({
     name: item?.name || "",
     imageUrl: item?.imageUrl || "",
@@ -119,7 +119,9 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
   // Filtered ingredients for search
   const filteredIngredients = ingredientSearch.trim()
     ? allIngredients.filter((ingredient) =>
-        ingredient.name.toLowerCase().includes(ingredientSearch.trim().toLowerCase())
+        ingredient.name
+          .toLowerCase()
+          .includes(ingredientSearch.trim().toLowerCase())
       )
     : allIngredients;
 
