@@ -11,6 +11,7 @@ interface Ingredient {
 }
 
 export default function MenuItemForm({ item, onSave, onCancel }: any) {
+    const [ingredientSearch, setIngredientSearch] = useState("");
   const [formData, setFormData] = useState({
     name: item?.name || "",
     imageUrl: item?.imageUrl || "",
@@ -115,6 +116,13 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
     });
   };
 
+  // Filtered ingredients for search
+  const filteredIngredients = ingredientSearch.trim()
+    ? allIngredients.filter((ingredient) =>
+        ingredient.name.toLowerCase().includes(ingredientSearch.trim().toLowerCase())
+      )
+    : allIngredients;
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -168,8 +176,15 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
         <label className="block text-sm font-semibold text-gray-700 mb-1">
           Ingredients
         </label>
+        <input
+          type="text"
+          placeholder="Search ingredients..."
+          value={ingredientSearch}
+          onChange={(e) => setIngredientSearch(e.target.value)}
+          className="w-full mb-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
+        />
         <div className="flex flex-wrap gap-2">
-          {allIngredients.map((ingredient: Ingredient) => (
+          {filteredIngredients.map((ingredient: Ingredient) => (
             <span
               key={ingredient.id}
               onClick={() => toggleIngredient(ingredient.name)}
