@@ -1,29 +1,15 @@
 import { prisma } from "../../../lib/prisma";
 import { z } from "zod";
+import {
+  productSchema,
+  productUpdateSchema,
+  productSizeSchema,
+  idParamSchema,
+  getQuerySchema,
+} from "../../../schemas/product.schema";
 
-// --- Zod Schemas ---
-const productSizeSchema = z.object({
-  sizeName: z.string().min(1),
-  price: z.number().nonnegative(),
-});
 
-const productSchema = z.object({
-  name: z.string().min(1),
-  imageUrl: z.string().url().max(191),
-  category: z.string().min(1),
-  price: z.number().nonnegative().optional(),
-  description: z.string().optional(),
-  ingredients: z.array(z.string()).optional(),
-  sizes: z.array(productSizeSchema).optional(),
-});
 
-const productUpdateSchema = productSchema.partial().extend({
-  id: z.number().optional(),
-});
-
-const idParamSchema = z.object({
-  id: z.string().regex(/^\d+$/),
-});
 
 // --- Utility ---
 async function getIngredientIds(ingredients: string[]) {
@@ -144,13 +130,6 @@ export async function DELETE(request: Request) {
     return Response.json({ error: error?.message || "Failed to delete product" }, { status: 500 });
   }
 }
-
-const getQuerySchema = z.object({
-  name: z.string().optional(),
-  category: z.string().optional(),
-  page: z.string().regex(/^\d+$/).optional(),
-  pageSize: z.string().regex(/^\d+$/).optional(),
-});
 
 export async function GET(request: Request) {
   try {
