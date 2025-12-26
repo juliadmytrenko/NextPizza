@@ -6,9 +6,9 @@ const Contact = () => {
       <h3 className="text-2xl sm:text-3xl font-bold text-orange-700 text-center my-6">
         Contact
       </h3>
-      <div className="border-2 border-orange-200 rounded-xl p-4 sm:p-6 md:p-8 shadow-lg bg-gradient-to-br from-white to-orange-50">
-        <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-          <div>
+      <div className="rounded-xl p-4 sm:p-6 md:p-8 flex items-center justify-center min-h-[220px]">
+        <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 justify-center">
+          <div className="text-center">
             <h4 className="text-lg sm:text-xl font-bold text-orange-600 mb-3">
               Location
             </h4>
@@ -20,7 +20,7 @@ const Contact = () => {
             </p>
             <p className="text-gray-700 text-sm sm:text-base">United States</p>
           </div>
-          <div>
+          <div className="text-center">
             <h4 className="text-lg sm:text-xl font-bold text-orange-600 mb-3">
               Get in Touch
             </h4>
