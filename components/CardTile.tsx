@@ -10,8 +10,10 @@ interface CardTileInterface {
   imageUrl: string;
   ingredients?: { Ingredient: { name: string } }[];
   sizes?: {
-    sizeName: string;
-    price: number;
+    Size: {
+      size: string;
+      price: number;
+    };
   }[];
 }
 

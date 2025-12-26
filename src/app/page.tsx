@@ -141,7 +141,6 @@ export default function Home() {
                         imageUrl={product.imageUrl}
                         ingredients={product.ProductIngredient}
                         sizes={product.ProductSize}
-                        price={product.price}
                       />
                     ))}
                 <br />
