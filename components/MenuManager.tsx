@@ -13,6 +13,13 @@ export default function MenuManager({}: any) {
     "pizza" | "sauces" | "drinks" | "ingredient"
   >("pizza");
 
+  const [snackbar, setSnackbar] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
+
+  const closeSnackbar = () => setSnackbar(null);
+
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.json())
@@ -20,14 +27,22 @@ export default function MenuManager({}: any) {
       .catch(() => setMenuItems([]));
   }, []);
 
+  useEffect(() => {
+    if (snackbar) {
+      const timer = setTimeout(() => setSnackbar(null), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [snackbar]);
+
   const filteredItems = menuItems.filter
     ? menuItems.filter((item) => item.category === categoryFilter)
     : [];
 
   const handleSave = async (formData: any) => {
     try {
+      let response;
       if (editingItem?.id) {
-        await fetch(`/api/products/?id=${editingItem.id}`, {
+        response = await fetch(`/api/products/?id=${editingItem.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
@@ -36,22 +51,43 @@ export default function MenuManager({}: any) {
         console.log("POSTING");
         console.log(formData);
         console.log(JSON.stringify(formData));
-        await fetch("/api/products", {
+        response = await fetch("/api/products", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         });
       }
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (response.status === 400) {
+          setSnackbar({
+            message:
+              "Validation error: " +
+              (errorData.error?.[0]?.message || "Invalid data"),
+            type: "error",
+          });
+        } else {
+          setSnackbar({ message: "Error saving item", type: "error" });
+        }
+        setIsEditing(true);
+        // setEditingItem(null);
+        return;
+      }
+
       const updated = await fetch("/api/products").then((r) => r.json());
+
       setMenuItems(updated);
+      setSnackbar({ message: "Product saved successfully!", type: "success" });
     } catch (error) {
       alert("Error saving item");
       console.log(error);
-      setIsEditing(false);
-      setEditingItem(null);
+      setSnackbar({ message: "Error saving item", type: "error" });
+      setIsEditing(true);
+      // setEditingItem(null);
     }
     setIsEditing(false);
-    setEditingItem(null);
+    setEditingItem(null); // co tutaj dać?
   };
 
   return (
@@ -126,6 +162,28 @@ export default function MenuManager({}: any) {
               ))}
           </div>
         ))}
+      {snackbar && (
+        <div
+          className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg text-white transition
+      ${snackbar.type === "success" ? "bg-green-600" : "bg-red-600"}`}
+          style={{
+            zIndex: 1000,
+            minWidth: 220,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <span className="flex-1">{snackbar.message}</span>
+          <button
+            onClick={closeSnackbar}
+            className="ml-4 px-2 py-1 text-orange-900 font-bold"
+            aria-label="Close"
+            style={{ fontSize: 18, lineHeight: 1, cursor: "pointer" }}
+          >
+            ×
+          </button>
+        </div>
+      )}
     </div>
   );
 }

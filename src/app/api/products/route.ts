@@ -1,6 +1,31 @@
 import { prisma } from "../../../lib/prisma";
+import { z } from "zod";
 
-// Utility: get ingredient IDs by name
+// --- Zod Schemas ---
+const productSizeSchema = z.object({
+  sizeName: z.string().min(1),
+  price: z.number().nonnegative(),
+});
+
+const productSchema = z.object({
+  name: z.string().min(1),
+  imageUrl: z.string().url().max(191),
+  category: z.string().min(1),
+  price: z.number().nonnegative().optional(),
+  description: z.string().optional(),
+  ingredients: z.array(z.string()).optional(),
+  sizes: z.array(productSizeSchema).optional(),
+});
+
+const productUpdateSchema = productSchema.partial().extend({
+  id: z.number().optional(),
+});
+
+const idParamSchema = z.object({
+  id: z.string().regex(/^\d+$/),
+});
+
+// --- Utility ---
 async function getIngredientIds(ingredients: string[]) {
   if (!Array.isArray(ingredients) || ingredients.length === 0) return [];
   const records = await prisma.ingredient.findMany({
@@ -10,32 +35,30 @@ async function getIngredientIds(ingredients: string[]) {
   return records.map((r) => r.id);
 }
 
-
+// --- POST ---
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const { name, imageUrl, category, price, ingredients, sizes, description } = data;
-    if (!name || !imageUrl || !category) {
-      return Response.json({ error: "Missing required fields" }, { status: 400 });
+    const parsed = productSchema.safeParse(data);
+    if (!parsed.success) {
+      return Response.json({ error: parsed.error.issues }, { status: 400 });
     }
-    const safeImageUrl = typeof imageUrl === "string" && imageUrl.length > 191 ? imageUrl.slice(0, 191) : imageUrl;
-    const finalPrice = typeof price === "number" && !isNaN(price) ? price : 0;
-    const ingredientIds = await getIngredientIds(ingredients);
-    // Create ProductSize records for each size
+    const { name, imageUrl, category, ingredients, sizes, description } = parsed.data;
+    const ingredientIds = await getIngredientIds(ingredients || []);
     const product = await prisma.product.create({
       data: {
         name,
-        imageUrl: safeImageUrl,
-        category,
+        imageUrl,
+        category: category as any, // Cast to 'any' or import and use 'as Category' if available
         description,
         ProductIngredient: {
           create: ingredientIds.map((id) => ({ ingredientId: id })),
         },
         ProductSize: {
           create: Array.isArray(sizes)
-            ? sizes.map((s: any) => ({
-                sizeName: String(s.sizeName),
-                price: Number(s.price),
+            ? sizes.map((s) => ({
+                sizeName: s.sizeName,
+                price: s.price,
               }))
             : [],
         },
@@ -47,28 +70,32 @@ export async function POST(request: Request) {
     });
     return Response.json(product, { status: 201 });
   } catch (error: any) {
-    console.error(error);
     return Response.json({ error: error?.message || "Failed to create product" }, { status: 500 });
   }
 }
 
+// --- PUT ---
 export async function PUT(request: Request) {
   try {
     const url = new URL(request.url);
     const queryId = url.searchParams.get("id");
     const body = await request.json();
     const id = body.id ?? queryId;
-    if (!id) {
-      return Response.json({ error: "Missing product id" }, { status: 400 });
+    const idCheck = idParamSchema.safeParse({ id: String(id) });
+    if (!idCheck.success) {
+      return Response.json({ error: "Missing or invalid product id" }, { status: 400 });
     }
-    const { name, imageUrl, category, price, description, ingredients, sizes, ...rest } = body;
+    const parsed = productUpdateSchema.safeParse(body);
+    if (!parsed.success) {
+      return Response.json({ error: parsed.error.issues }, { status: 400 });
+    }
+    const { name, imageUrl, category, price, description, ingredients, sizes, ...rest } = parsed.data;
     const updateData: any = { ...rest };
     if (name !== undefined) updateData.name = name;
     if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
     if (category !== undefined) updateData.category = category;
     if (price !== undefined) updateData.price = price;
     if (description !== undefined) updateData.description = description;
-    // Ingredients
     if (Array.isArray(ingredients)) {
       await prisma.productIngredient.deleteMany({ where: { productId: Number(id) } });
       const ingredientIds = await getIngredientIds(ingredients);
@@ -76,13 +103,12 @@ export async function PUT(request: Request) {
         create: ingredientIds.map((ingredientId) => ({ ingredientId })),
       };
     }
-    // Update ProductSize: delete old, create new
     if (Array.isArray(sizes)) {
       await prisma.productSize.deleteMany({ where: { productId: Number(id) } });
       updateData.ProductSize = {
-        create: sizes.map((s: any) => ({
-          sizeName: String(s.sizeName),
-          price: Number(s.price),
+        create: sizes.map((s) => ({
+          sizeName: s.sizeName,
+          price: s.price,
         })),
       };
     }
@@ -96,17 +122,18 @@ export async function PUT(request: Request) {
     });
     return Response.json(updated);
   } catch (error: any) {
-    console.error(error);
     return Response.json({ error: error?.message || "Failed to update product" }, { status: 500 });
   }
 }
 
+// --- DELETE ---
 export async function DELETE(request: Request) {
   try {
     const url = new URL(request.url);
     const id = url.searchParams.get("id");
-    if (!id) {
-      return Response.json({ error: "Missing product id" }, { status: 400 });
+    const idCheck = idParamSchema.safeParse({ id: String(id) });
+    if (!idCheck.success) {
+      return Response.json({ error: "Missing or invalid product id" }, { status: 400 });
     }
     const productId = Number(id);
     await prisma.productIngredient.deleteMany({ where: { productId } });
@@ -114,14 +141,39 @@ export async function DELETE(request: Request) {
     await prisma.product.delete({ where: { id: productId } });
     return Response.json({ success: true });
   } catch (error: any) {
-    console.error(error);
     return Response.json({ error: error?.message || "Failed to delete product" }, { status: 500 });
   }
 }
 
-export async function GET() {
+const getQuerySchema = z.object({
+  name: z.string().optional(),
+  category: z.string().optional(),
+  page: z.string().regex(/^\d+$/).optional(),
+  pageSize: z.string().regex(/^\d+$/).optional(),
+});
+
+export async function GET(request: Request) {
   try {
+    const url = new URL(request.url);
+    const params = Object.fromEntries(url.searchParams.entries());
+    const parsed = getQuerySchema.safeParse(params);
+
+    if (!parsed.success) {
+      return Response.json({ error: parsed.error.issues }, { status: 400 });
+    }
+
+    const { name, category, page, pageSize } = parsed.data;
+    const where: any = {};
+    if (name) where.name = { contains: name, mode: "insensitive" };
+    if (category) where.category = category;
+
+    const take = pageSize ? Number(pageSize) : undefined;
+    const skip = page && pageSize ? (Number(page) - 1) * Number(pageSize) : undefined;
+
     const products = await prisma.product.findMany({
+      where,
+      take,
+      skip,
       include: {
         ProductIngredient: { include: { Ingredient: true } },
         ProductSize: true,
@@ -129,7 +181,6 @@ export async function GET() {
     });
     return Response.json(products);
   } catch (error: any) {
-    console.error(error);
     return Response.json({ error: error?.message || "Failed to fetch products" }, { status: 500 });
   }
 }
