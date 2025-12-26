@@ -18,9 +18,7 @@ const Contact = () => {
             <p className="text-gray-700 mb-2 text-sm sm:text-base">
               New York, NY 10001
             </p>
-            <p className="text-gray-700 text-sm sm:text-base">
-              United States
-            </p>
+            <p className="text-gray-700 text-sm sm:text-base">United States</p>
           </div>
           <div>
             <h4 className="text-lg sm:text-xl font-bold text-orange-600 mb-3">
@@ -33,7 +31,8 @@ const Contact = () => {
               <span className="font-semibold">Email:</span> info@nextpizza.com
             </p>
             <p className="text-gray-700 text-sm sm:text-base">
-              <span className="font-semibold">Hours:</span> Mon-Sun 11:00 AM - 11:00 PM
+              <span className="font-semibold">Hours:</span> Mon-Sun 11:00 AM -
+              11:00 PM
             </p>
           </div>
         </div>
