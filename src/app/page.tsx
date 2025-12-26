@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { CardTile } from "../../components/CardTile";
 import { Banner } from "../../components/Banner";
+import AboutUs from "../../components/AboutUs";
 import { useMenu } from "../../context/MenuContext";
 import { prisma } from "../lib/prisma";
 
@@ -174,30 +175,7 @@ export default function Home() {
             )}
 
             {/* About Us Section */}
-            <div id="about" className="mt-8 pt-8 scroll-mt-24">
-              <h3 className="text-2xl sm:text-3xl font-bold text-orange-700 text-center mb-6">
-                About Us
-              </h3>
-              <div className="border-2 border-orange-200 rounded-xl p-4 sm:p-6 md:p-8 shadow-lg bg-gradient-to-br from-white to-orange-50">
-                <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed mb-4">
-                  Welcome to Next Pizza! We are passionate about creating
-                  delicious, authentic pizzas using only the finest ingredients.
-                  Our recipes have been perfected over years of experience,
-                  bringing you the perfect combination of crispy crust,
-                  flavorful sauce, and premium toppings.
-                </p>
-                <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed mb-4">
-                  Every pizza is made fresh to order, ensuring that you receive
-                  the highest quality product every time. From classic
-                  Margherita to creative specialty pizzas, we have something for
-                  everyone.
-                </p>
-                <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed">
-                  Thank you for choosing Next Pizza. We look forward to serving
-                  you!
-                </p>
-              </div>
-            </div>
+            <AboutUs />
             {/* Contact Section */}
             <div id="contact" className="mt-6">
               <h3 className="text-2xl sm:text-3xl font-bold text-orange-700 text-center my-6">
