@@ -1,13 +1,15 @@
 import { OpenAPIRegistry, OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
 import { getQuerySchema, idParamSchema, productSchema, productSizeSchema, productUpdateSchema } from "@/schemas/product.schema";
-import { registry } from "@/schemas/product.schema";
+import { registry as productRegistry } from "@/schemas/product.schema";
+import { registry as ingredientRegistry } from "@/schemas/ingredient.schema";
 
-// Example: Create a registry and register schemas
-
-
+// ...existing code...
 // Generate OpenAPI document
 export function generateOpenApi() {
-  const generator = new OpenApiGeneratorV3(registry.definitions);
+  const generator = new OpenApiGeneratorV3([
+  ...productRegistry.definitions,
+  ...ingredientRegistry.definitions,
+]);
   const openApiDoc = generator.generateDocument({
     openapi: "3.0.0",
     info: {
@@ -18,5 +20,4 @@ export function generateOpenApi() {
   return openApiDoc;
 }
 
-
-export { registry };
+export { mainRegistry as registry };

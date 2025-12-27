@@ -123,6 +123,30 @@ registry.registerPath({
   },
 });
 
+// GET /products/{id}
+registry.registerPath({
+  method: "get",
+  path: "/api/products",
+  summary: "GET /products",
+  description: "Get all products with optional filters",
+  request: {
+    params: UpdateProductParamsSchema,
+  },
+  responses: {
+    200: {
+      description: "Product found",
+      content: {
+        "application/json": {
+          schema: UpdateProductResponseSchema,
+        },
+      },
+    },
+    404: {
+      description: "Product not found",
+    },
+  },
+});
+
 // POST /products
 registry.registerPath({
   method: "post",
