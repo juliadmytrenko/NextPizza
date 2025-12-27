@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { ingredientIdParamSchema, ingredientSchema } from "@/schemas/ingredient.schema";
 
 // --- GET ---
 export async function GET(
@@ -6,10 +7,14 @@ export async function GET(
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;
+
+  // Walidacja id przez Zod
+  const idValidation = ingredientIdParamSchema.safeParse({ id });
+  if (!idValidation.success) {
+    return new Response(JSON.stringify({ error: "Invalid ingredient id" }), { status: 400 });
+  }
+
   try {
-    if (!id || isNaN(Number(id))) {
-      return new Response(JSON.stringify({ error: "Invalid ingredient id" }), { status: 400 });
-    }
     const ingredient = await prisma.ingredient.findUnique({ where: { id: Number(id) } });
     if (!ingredient) {
       return new Response(JSON.stringify({ error: "Ingredient not found" }), { status: 404 });
@@ -26,10 +31,14 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;
+
+  // Walidacja id przez Zod
+  const idValidation = ingredientIdParamSchema.safeParse({ id });
+  if (!idValidation.success) {
+    return new Response(JSON.stringify({ error: "Invalid ingredient id" }), { status: 400 });
+  }
+
   try {
-    if (!id || isNaN(Number(id))) {
-      return new Response(JSON.stringify({ error: "Invalid ingredient id" }), { status: 400 });
-    }
     await prisma.productIngredient.deleteMany({ where: { ingredientId: Number(id) } });
     const deleted = await prisma.ingredient.delete({ where: { id: Number(id) } });
     return new Response(JSON.stringify(deleted), { status: 200 });
@@ -41,25 +50,30 @@ export async function DELETE(
   }
 }
 
-
 // --- PUT ---
 export async function PUT(
   request: Request,
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;
+
+  // Walidacja id przez Zod
+  const idValidation = ingredientIdParamSchema.safeParse({ id });
+  if (!idValidation.success) {
+    return new Response(JSON.stringify({ error: "Invalid ingredient id" }), { status: 400 });
+  }
+
   try {
-    if (!id || isNaN(Number(id))) {
-      return new Response(JSON.stringify({ error: "Invalid ingredient id" }), { status: 400 });
-    }
     const body = await request.json();
-    const { name } = body;
-    if (!name || typeof name !== "string") {
-      return new Response(JSON.stringify({ error: "Name is required" }), { status: 400 });
+    // Walidacja body przez Zod
+    const bodyValidation = ingredientSchema.safeParse(body);
+    if (!bodyValidation.success) {
+      return new Response(JSON.stringify({ error: bodyValidation.error.issues }), { status: 400 });
     }
+
     const updated = await prisma.ingredient.update({
       where: { id: Number(id) },
-      data: { name },
+      data: { name: bodyValidation.data.name },
     });
     return new Response(JSON.stringify(updated), { status: 200 });
   } catch (error: any) {

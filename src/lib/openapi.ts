@@ -1,5 +1,4 @@
-import { OpenAPIRegistry, OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
-import { getQuerySchema, idParamSchema, productSchema, productSizeSchema, productUpdateSchema } from "@/schemas/product.schema";
+import { OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
 import { registry as productRegistry } from "@/schemas/product.schema";
 import { registry as ingredientRegistry } from "@/schemas/ingredient.schema";
 

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { ingredientSchema } from "@/schemas/ingredient.schema";
 
 export async function GET() {
   try {
@@ -13,12 +14,13 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name } = body;
-    if (!name || typeof name !== "string") {
-      return new Response(JSON.stringify({ error: "Name is required" }), { status: 400 });
+    // Walidacja body przez Zod
+    const validation = ingredientSchema.safeParse(body);
+    if (!validation.success) {
+      return new Response(JSON.stringify({ error: validation.error.issues }), { status: 400 });
     }
     const ingredient = await prisma.ingredient.create({
-      data: { name },
+      data: { name: validation.data.name },
     });
     return new Response(JSON.stringify(ingredient), { status: 201 });
   } catch (error) {
