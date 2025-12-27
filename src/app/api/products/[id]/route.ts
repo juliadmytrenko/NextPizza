@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import {
-  productSchema,
   productUpdateSchema,
   idParamSchema,
 } from "@/schemas/product.schema";
@@ -22,7 +21,7 @@ export async function GET(
 ) {
   const { id } = await context.params;
   try {
-    console.log("Fetching product with id:", id);
+    // Walidacja id przez Zod
     const idCheck = idParamSchema.safeParse({ id: String(id) });
     if (!idCheck.success) {
       return Response.json({ error: idCheck.error.issues }, { status: 400 });
@@ -50,11 +49,13 @@ export async function PUT(
 ) {
   try {
     const id = params.id;
-    const body = await request.json();
+    // id validation with Zod
     const idCheck = idParamSchema.safeParse({ id: String(id) });
     if (!idCheck.success) {
       return Response.json({ error: "Missing or invalid product id" }, { status: 400 });
     }
+    const body = await request.json();
+    // id validation with Zod
     const parsed = productUpdateSchema.safeParse(body);
     if (!parsed.success) {
       return Response.json({ error: parsed.error.issues }, { status: 400 });
@@ -103,6 +104,7 @@ export async function DELETE(
 ) {
   try {
     const id = params.id;
+    // id validation with Zod
     const idCheck = idParamSchema.safeParse({ id: String(id) });
     if (!idCheck.success) {
       return Response.json({ error: "Missing or invalid product id" }, { status: 400 });
