@@ -1,17 +1,11 @@
-import { prisma } from "../../../lib/prisma";
-import { z } from "zod";
+import { prisma } from "@/lib/prisma";
 import {
   productSchema,
   productUpdateSchema,
-  productSizeSchema,
   idParamSchema,
-  getQuerySchema,
-} from "../../../schemas/product.schema";
+} from "@/schemas/product.schema";
 
-
-
-
-// --- Utility ---
+// Helper to get ingredient IDs
 async function getIngredientIds(ingredients: string[]) {
   if (!Array.isArray(ingredients) || ingredients.length === 0) return [];
   const records = await prisma.ingredient.findMany({
@@ -21,52 +15,42 @@ async function getIngredientIds(ingredients: string[]) {
   return records.map((r) => r.id);
 }
 
-// --- POST ---
-export async function POST(request: Request) {
+// --- GET ---
+export async function GET(
+  request: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params;
   try {
-    const data = await request.json();
-    const parsed = productSchema.safeParse(data);
-    if (!parsed.success) {
-      return Response.json({ error: parsed.error.issues }, { status: 400 });
+    console.log("Fetching product with id:", id);
+    const idCheck = idParamSchema.safeParse({ id: String(id) });
+    if (!idCheck.success) {
+      return Response.json({ error: idCheck.error.issues }, { status: 400 });
     }
-    const { name, imageUrl, category, ingredients, sizes, description } = parsed.data;
-    const ingredientIds = await getIngredientIds(ingredients || []);
-    const product = await prisma.product.create({
-      data: {
-        name,
-        imageUrl,
-        category: category as any, // Cast to 'any' or import and use 'as Category' if available
-        description,
-        ProductIngredient: {
-          create: ingredientIds.map((id) => ({ ingredientId: id })),
-        },
-        ProductSize: {
-          create: Array.isArray(sizes)
-            ? sizes.map((s) => ({
-                sizeName: s.sizeName,
-                price: s.price,
-              }))
-            : [],
-        },
-      },
+    const product = await prisma.product.findUnique({
+      where: { id: Number(id) },
       include: {
         ProductIngredient: { include: { Ingredient: true } },
         ProductSize: true,
       },
     });
-    return Response.json(product, { status: 201 });
+    if (!product) {
+      return Response.json({ error: "Product not found" }, { status: 404 });
+    }
+    return Response.json(product);
   } catch (error: any) {
-    return Response.json({ error: error?.message || "Failed to create product" }, { status: 500 });
+    return Response.json({ error: error?.message || "Failed to fetch product" }, { status: 500 });
   }
 }
 
 // --- PUT ---
-export async function PUT(request: Request) {
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
-    const url = new URL(request.url);
-    const queryId = url.searchParams.get("id");
+    const id = params.id;
     const body = await request.json();
-    const id = body.id ?? queryId;
     const idCheck = idParamSchema.safeParse({ id: String(id) });
     if (!idCheck.success) {
       return Response.json({ error: "Missing or invalid product id" }, { status: 400 });
@@ -113,10 +97,12 @@ export async function PUT(request: Request) {
 }
 
 // --- DELETE ---
-export async function DELETE(request: Request) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
-    const url = new URL(request.url);
-    const id = url.searchParams.get("id");
+    const id = params.id;
     const idCheck = idParamSchema.safeParse({ id: String(id) });
     if (!idCheck.success) {
       return Response.json({ error: "Missing or invalid product id" }, { status: 400 });
@@ -131,35 +117,44 @@ export async function DELETE(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+// --- POST ---
+export async function POST(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
-    const url = new URL(request.url);
-    const params = Object.fromEntries(url.searchParams.entries());
-    const parsed = getQuerySchema.safeParse(params);
-
+    const data = await request.json();
+    const parsed = productSchema.safeParse(data);
     if (!parsed.success) {
       return Response.json({ error: parsed.error.issues }, { status: 400 });
     }
-
-    const { name, category, page, pageSize } = parsed.data;
-    const where: any = {};
-    if (name) where.name = { contains: name, mode: "insensitive" };
-    if (category) where.category = category;
-
-    const take = pageSize ? Number(pageSize) : undefined;
-    const skip = page && pageSize ? (Number(page) - 1) * Number(pageSize) : undefined;
-
-    const products = await prisma.product.findMany({
-      where,
-      take,
-      skip,
+    const { name, imageUrl, category, ingredients, sizes, description } = parsed.data;
+    const ingredientIds = await getIngredientIds(ingredients || []);
+    const product = await prisma.product.create({
+      data: {
+        name,
+        imageUrl,
+        category: category as any,
+        description,
+        ProductIngredient: {
+          create: ingredientIds.map((id) => ({ ingredientId: id })),
+        },
+        ProductSize: {
+          create: Array.isArray(sizes)
+            ? sizes.map((s) => ({
+                sizeName: s.sizeName,
+                price: s.price,
+              }))
+            : [],
+        },
+      },
       include: {
         ProductIngredient: { include: { Ingredient: true } },
         ProductSize: true,
       },
     });
-    return Response.json(products);
+    return Response.json(product, { status: 201 });
   } catch (error: any) {
-    return Response.json({ error: error?.message || "Failed to fetch products" }, { status: 500 });
+    return Response.json({ error: error?.message || "Failed to create product" }, { status: 500 });
   }
 }
