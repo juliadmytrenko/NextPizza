@@ -7,7 +7,7 @@ import { CardTile } from "../../components/CardTile";
 import { Banner } from "../../components/Banner";
 import AboutUs from "../../components/AboutUs";
 import { useMenu } from "../../context/MenuContext";
-import { prisma } from "../lib/prisma";
+import { prisma } from "../../lib/prisma";
 
 type IngredientObj = {
   Ingredient: { name: string };

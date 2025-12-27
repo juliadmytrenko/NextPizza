@@ -2,7 +2,7 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
 import Image from "next/image";
-import { CartItem } from "./../components/CartItem";
+import { CartItem } from "./CartItem";
 import { usePathname } from "next/navigation";
 import { isValidImageSrc } from "@/lib/utils";
 

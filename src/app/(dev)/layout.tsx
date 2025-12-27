@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { Lobster, Poppins } from "next/font/google";
-import "./globals.css";
+import "@/app/globals.css";
+import { Header } from "@/components/Header";
+import { Main } from "@/components/Main";
+import { Footer } from "@/components/Footer";
 import { CartProvider } from "@/context/CartContext";
 import { AddressProvider } from "@/context/AddressContext";
 import { MenuProvider } from "@/context/MenuContext";
 import { OrdersProvider } from "@/context/OrdersContext";
+import { Cart } from "@/components/Cart";
 
 const lobster = Lobster({
   weight: "400",
