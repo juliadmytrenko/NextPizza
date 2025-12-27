@@ -8,3 +8,20 @@ export async function GET() {
     return new Response(JSON.stringify({ error: error?.message || "Failed to fetch ingredients" }), { status: 500 });
   }
 }
+
+// --- POST ---
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { name } = body;
+    if (!name || typeof name !== "string") {
+      return new Response(JSON.stringify({ error: "Name is required" }), { status: 400 });
+    }
+    const ingredient = await prisma.ingredient.create({
+      data: { name },
+    });
+    return new Response(JSON.stringify(ingredient), { status: 201 });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: "Failed to add ingredient" }), { status: 500 });
+  }
+}
