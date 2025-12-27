@@ -19,5 +19,3 @@ export function generateOpenApi() {
     });
   return openApiDoc;
 }
-
-export { mainRegistry as registry };
