@@ -42,7 +42,7 @@ export default function MenuManager({}: any) {
     try {
       let response;
       if (editingItem?.id) {
-        response = await fetch(`/api/products/?id=${editingItem.id}`, {
+        response = await fetch(`/api/products/${editingItem.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),

@@ -57,7 +57,7 @@ export default function IngredientForm() {
     try {
       console.log("Deleting ingredient with id:", id);
       // Use fetch with DELETE method to /api/ingredients, passing id as query param
-      const res = await fetch(`/api/ingredients?id=${id}`, {
+      const res = await fetch(`/api/ingredients/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) {

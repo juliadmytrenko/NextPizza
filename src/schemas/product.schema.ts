@@ -99,10 +99,65 @@ const UpdateProductResponseSchema = registry.register(
   productSchema
 );
 
+// GET /products/{id}
+registry.registerPath({
+  method: "get",
+  path: "/products/{id}",
+  summary: "GET /products/{id}",
+  description: "Get product by ID",
+  request: {
+    params: UpdateProductParamsSchema,
+  },
+  responses: {
+    200: {
+      description: "Product found",
+      content: {
+        "application/json": {
+          schema: UpdateProductResponseSchema,
+        },
+      },
+    },
+    404: {
+      description: "Product not found",
+    },
+  },
+});
+
+// POST /products
+registry.registerPath({
+  method: "post",
+  path: "/products",
+  summary: "POST /products",
+  description: "Create new product",
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: UpdateProductRequestSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description: "Product created",
+      content: {
+        "application/json": {
+          schema: UpdateProductResponseSchema,
+        },
+      },
+    },
+    400: {
+      description: "Validation errors",
+    },
+  },
+});
+
+// PUT /products/{id}
 registry.registerPath({
   method: "put",
-  path: "/product/{id}",
-  summary: "PUT /product/{id}",
+  path: "/products/{id}",
+  summary: "PUT /products/{id}",
   description: "Update product",
   request: {
     params: UpdateProductParamsSchema,
@@ -126,6 +181,25 @@ registry.registerPath({
     },
     400: {
       description: "Validation errors",
+    },
+  },
+});
+
+// DELETE /products/{id}
+registry.registerPath({
+  method: "delete",
+  path: "/products/{id}",
+  summary: "DELETE /products/{id}",
+  description: "Delete product by ID",
+  request: {
+    params: UpdateProductParamsSchema,
+  },
+  responses: {
+    204: {
+      description: "Product deleted",
+    },
+    404: {
+      description: "Product not found",
     },
   },
 });

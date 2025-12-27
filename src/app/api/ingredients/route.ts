@@ -18,7 +18,7 @@ export async function GET(request: Request) {
 }
 
 import { prisma } from "@/lib/prisma";
-// DELETE /api/ingredients/:id
+// DELETE /api/ingredients/id
 export async function DELETE(request: Request) {
 	try {
 		const url = new URL(request.url);

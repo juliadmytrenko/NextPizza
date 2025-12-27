@@ -1,8 +1,8 @@
 import { OpenAPIRegistry, OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
 import { getQuerySchema, idParamSchema, productSchema, productSizeSchema, productUpdateSchema } from "@/schemas/product.schema";
+import { registry } from "@/schemas/product.schema";
 
 // Example: Create a registry and register schemas
-const registry = new OpenAPIRegistry();
 
 
 // Generate OpenAPI document
