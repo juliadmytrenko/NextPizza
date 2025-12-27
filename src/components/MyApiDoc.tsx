@@ -1,14 +1,15 @@
-import React, { Component } from "react";
-import "rapidoc";
+"use client";
+import React from "react";
+import dynamic from "next/dynamic";
 
-export class MyApiDoc extends Component {
-  render() {
-    return (
-      <rapi-doc
-        spec-url="/api/rapidoc"
-        render-style="read"
-        style={{ height: "100vh", width: "100%" }}
-      ></rapi-doc>
-    );
-  }
+const RapiDoc = dynamic(
+  async () => {
+    await import("rapidoc");
+    return () => <rapi-doc spec-url="/api/rapidoc" />;
+  },
+  { ssr: false }
+);
+
+export default function MyApiDoc() {
+  return <RapiDoc />;
 }
