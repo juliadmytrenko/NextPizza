@@ -102,7 +102,7 @@ const UpdateProductResponseSchema = registry.register(
 // GET /products/{id}
 registry.registerPath({
   method: "get",
-  path: "/products/{id}",
+  path: "/api/products/{id}",
   summary: "GET /products/{id}",
   description: "Get product by ID",
   request: {
@@ -126,7 +126,7 @@ registry.registerPath({
 // POST /products
 registry.registerPath({
   method: "post",
-  path: "/products",
+  path: "/api/products",
   summary: "POST /products",
   description: "Create new product",
   request: {
@@ -156,7 +156,7 @@ registry.registerPath({
 // PUT /products/{id}
 registry.registerPath({
   method: "put",
-  path: "/products/{id}",
+  path: "/api/products/{id}",
   summary: "PUT /products/{id}",
   description: "Update product",
   request: {
@@ -188,7 +188,7 @@ registry.registerPath({
 // DELETE /products/{id}
 registry.registerPath({
   method: "delete",
-  path: "/products/{id}",
+  path: "/api/products/{id}",
   summary: "DELETE /products/{id}",
   description: "Delete product by ID",
   request: {
