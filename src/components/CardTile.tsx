@@ -10,10 +10,8 @@ interface CardTileInterface {
   imageUrl: string;
   ingredients?: { Ingredient: { name: string } }[];
   sizes?: {
-    Size: {
-      size: string;
-      price: number;
-    };
+    sizeName: string;
+    price: number;
   }[];
 }
 
@@ -38,7 +36,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
     if (!selectedSize) return;
     addToCart({
       name,
-      size: selectedSize.sizeName,
+      sizeName: selectedSize.sizeName,
       price: selectedSize.price,
       imageUrl: imageUrl,
     });

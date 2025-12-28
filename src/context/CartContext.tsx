@@ -10,7 +10,7 @@ import React, {
 interface CartItem {
   id: string;
   name: string;
-  size: string;
+  sizeName: string;
   price: number;
   quantity: number;
   imageUrl: string;
@@ -54,7 +54,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const addToCart = (item: Omit<CartItem, "id" | "quantity">) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find(
-        (cartItem) => cartItem.name === item.name && cartItem.size === item.size
+        (cartItem) =>
+          cartItem.name === item.name && cartItem.sizeName === item.sizeName
       );
 
       if (existingItem) {
@@ -67,7 +68,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
       const newItem: CartItem = {
         ...item,
-        id: `${item.name}-${item.size}-${Date.now()}`,
+        id: `${item.name}-${item.sizeName}-${Date.now()}`,
         quantity: 1,
       };
 

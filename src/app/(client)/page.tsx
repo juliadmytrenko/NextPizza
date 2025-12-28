@@ -18,7 +18,7 @@ export type Product = {
   imageUrl: string;
   category: string;
   ProductIngredient?: { Ingredient: { name: string } }[];
-  ProductSize?: { Size: { size: string; price: number } }[];
+  ProductSize?: { sizeName: string; price: number }[];
 };
 
 export default function Home() {
