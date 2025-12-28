@@ -4,6 +4,50 @@ import { useRouter } from "next/navigation";
 import { useAddress } from "../../../context/AddressContext";
 import { FormInput } from "../../../components/FormInput";
 import { FormTextarea } from "../../../components/FormTextarea";
+import { z } from "zod";
+
+// 1. Define the Zod schema
+const addressSchema = z.object({
+  firstName: z
+    .string()
+    .trim()
+    .min(2, "First name must be at least 2 characters")
+    .regex(/^[a-zA-Z\s\u00C0-\u017F]+$/, "First name can only contain letters"),
+  lastName: z
+    .string()
+    .trim()
+    .min(2, "Last name must be at least 2 characters")
+    .regex(/^[a-zA-Z\s\u00C0-\u017F]+$/, "Last name can only contain letters"),
+  email: z.email("Please enter a valid email address").trim(),
+  phone: z
+    .string()
+    .trim()
+    .min(9, "Phone number must be at least 9 digits")
+    .max(15, "Phone number is too long")
+    .regex(
+      /^\D*(\d\D*){9,15}$/,
+      "Phone number must be between 9 and 15 digits"
+    ),
+  street: z
+    .string()
+    .trim()
+    .min(5, "Street address must be at least 5 characters"),
+  city: z
+    .string()
+    .trim()
+    .min(2, "City name must be at least 2 characters")
+    .regex(/^[a-zA-Z\s\u00C0-\u017F-]+$/, "City name can only contain letters"),
+  postalCode: z
+    .string()
+    .trim()
+    .min(3, "Postal code is too short")
+    .regex(/^[0-9A-Z\s-]+$/, "Please enter a valid postal code"),
+  country: z
+    .string()
+    .trim()
+    .min(2, "Country name must be at least 2 characters"),
+  additionalInfo: z.string().trim().optional(),
+});
 
 interface FormErrors {
   firstName?: string;
@@ -35,67 +79,13 @@ export default function AddressPage() {
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
 
   const validateField = (name: string, value: string): string | undefined => {
-    switch (name) {
-      case "firstName":
-        if (!value.trim()) return "First name is required";
-        if (value.trim().length < 2)
-          return "First name must be at least 2 characters";
-        if (!/^[a-zA-Z\s\u00C0-\u017F]+$/.test(value))
-          return "First name can only contain letters";
-        return undefined;
-
-      case "lastName":
-        if (!value.trim()) return "Last name is required";
-        if (value.trim().length < 2)
-          return "Last name must be at least 2 characters";
-        if (!/^[a-zA-Z\s\u00C0-\u017F]+$/.test(value))
-          return "Last name can only contain letters";
-        return undefined;
-
-      case "email":
-        if (!value.trim()) return "Email is required";
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
-          return "Please enter a valid email address";
-        return undefined;
-
-      case "phone":
-        if (!value.trim()) return "Phone number is required";
-        const phoneDigits = value.replace(/\D/g, "");
-        if (phoneDigits.length < 9)
-          return "Phone number must be at least 9 digits";
-        if (phoneDigits.length > 15) return "Phone number is too long";
-        return undefined;
-
-      case "street":
-        if (!value.trim()) return "Street address is required";
-        if (value.trim().length < 5)
-          return "Street address must be at least 5 characters";
-        return undefined;
-
-      case "city":
-        if (!value.trim()) return "City is required";
-        if (value.trim().length < 2)
-          return "City name must be at least 2 characters";
-        if (!/^[a-zA-Z\s\u00C0-\u017F-]+$/.test(value))
-          return "City name can only contain letters";
-        return undefined;
-
-      case "postalCode":
-        if (!value.trim()) return "Postal code is required";
-        if (!/^[0-9A-Z\s-]+$/.test(value))
-          return "Please enter a valid postal code";
-        if (value.trim().length < 3) return "Postal code is too short";
-        return undefined;
-
-      case "country":
-        if (!value.trim()) return "Country is required";
-        if (value.trim().length < 2)
-          return "Country name must be at least 2 characters";
-        return undefined;
-
-      default:
-        return undefined;
+    const partialData = { [name]: value };
+    const partialSchema = addressSchema.pick({ [name]: true });
+    const result = partialSchema.safeParse(partialData);
+    if (!result.success) {
+      return result.error.issues[0]?.message;
     }
+    return undefined;
   };
 
   const validateForm = (): boolean => {
