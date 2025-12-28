@@ -13,7 +13,7 @@ export const Header = () => {
   return (
     <header className="border-b-2 border-orange-200 shadow-md bg-white">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-24 sm:h-28">
+        <div className="flex items-center justify-between h-24 sm:h-28 mr-2">
           <a href="/" className="flex items-center h-full py-2 cursor-pointer">
             <Image
               src="/next-pizza.svg"

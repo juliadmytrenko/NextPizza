@@ -6,6 +6,5 @@ export function isValidImageSrc(src: any) {
       src.startsWith("http://") ||
       src.startsWith("https://") ||
       src.startsWith("/")
-      
     );
   }
