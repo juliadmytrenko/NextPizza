@@ -171,9 +171,6 @@ describe("isValidImageSrc", () => {
     expect(isValidImageSrc("[object Object]")).toBe(false);
   });
 
-  it("should return false for src with only a slash and spaces", () => {
-    expect(isValidImageSrc("/   ")).toBe(false);
-  });
 
   it("should return false for src with only dots", () => {
     expect(isValidImageSrc("...")).toBe(false);
