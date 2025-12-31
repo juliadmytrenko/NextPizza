@@ -82,6 +82,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
                 {sizes.map((sizeOption, i) => (
                   <button
                     key={i}
+                    name={sizeOption.sizeName}
                     onClick={() => setSelectedSize(sizeOption)}
                     className={`px-2 py-0.5 rounded border text-sm ${
                       selectedSize &&
