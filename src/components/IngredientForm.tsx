@@ -83,10 +83,14 @@ export default function IngredientForm() {
         className="mb-4 flex gap-2 items-end"
       >
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">
+          <label
+            htmlFor="ingredientName"
+            className="block text-sm font-semibold text-gray-700 mb-1"
+          >
             Add Ingredient
           </label>
           <input
+            id="ingredientName"
             type="text"
             value={ingredientName}
             onChange={(e) => setIngredientName(e.target.value)}
@@ -102,7 +106,10 @@ export default function IngredientForm() {
           Add
         </button>
         {ingredientMsg && (
-          <span className="ml-4 text-sm font-semibold text-gray-800 bg-gray-100 px-4 py-2 rounded-lg border border-gray-300">
+          <span
+            aria-label="ingredient message"
+            className="ml-4 text-sm font-semibold text-gray-800 bg-gray-100 px-4 py-2 rounded-lg border border-gray-300"
+          >
             {ingredientMsg}
           </span>
         )}
