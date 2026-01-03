@@ -1,93 +1,26 @@
 import React, { useState } from "react";
+import Ingredient from "./Ingredient";
 
-export default function IngredientForm() {
-  const [ingredientName, setIngredientName] = useState("");
-  const [ingredientMsg, setIngredientMsg] = useState<string | null>(null);
-  const [ingredients, setIngredients] = useState<any[]>([]);
+interface IngredientFormProps {
+  onSubmit: (e: React.FormEvent) => void;
+  ingredientName: string;
+  setIngredientName: React.Dispatch<React.SetStateAction<string>>;
+  ingredientMsg: string | null;
+  ingredients: any[];
+  onDelete: (id: number) => void;
+}
 
-  React.useEffect(() => {
-    fetch("/api/ingredients")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) throw new Error(data.error);
-        setIngredients(data);
-      })
-      .catch(() => {
-        setIngredients([]);
-        setIngredientMsg("Error fetching ingredients");
-      });
-  }, []);
-
-  const handleIngredientSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const name = ingredientName.trim();
-    if (!name) return;
-    const exists = ingredients.some(
-      (ing) => ing.name.toLowerCase() === name.toLowerCase()
-    );
-    if (exists) {
-      setIngredientMsg("Ingredient already exists in database.");
-      setTimeout(() => setIngredientMsg(null), 3000);
-      return;
-    }
-    try {
-      const res = await fetch("/api/ingredients", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
-      });
-      if (!res.ok) {
-        let msg = "Error adding ingredient";
-        try {
-          const data = await res.json();
-          if (data?.error && /unique|exists|duplicate/i.test(data.error)) {
-            msg = "Ingredient already in database";
-          }
-        } catch {}
-        setIngredientMsg(msg);
-        setTimeout(() => setIngredientMsg(null), 2000);
-        return;
-      }
-      setIngredientMsg("Ingredient added!");
-      setIngredientName("");
-      const updated = await fetch("/api/ingredients").then((r) => r.json());
-      setIngredients(updated);
-    } catch (err) {
-      setIngredientMsg("Error adding ingredient");
-    }
-    setTimeout(() => setIngredientMsg(null), 2000);
-  };
-
-  // Handler to delete an ingredient
-  const handleDeleteIngredient = async (id: any) => {
-    try {
-      console.log("Deleting ingredient with id:", id);
-      // Use fetch with DELETE method to /api/ingredients, passing id as query param
-      const res = await fetch(`/api/ingredients/${id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) {
-        setIngredientMsg("Error deleting ingredient");
-        setTimeout(() => setIngredientMsg(null), 2000);
-        return;
-      }
-      // Refresh the ingredients list from the API
-      const updated = await fetch("/api/ingredients").then((r) => r.json());
-      setIngredients(updated);
-      setIngredientMsg("Ingredient deleted");
-      setTimeout(() => setIngredientMsg(null), 2000);
-    } catch {
-      setIngredientMsg("Error deleting ingredient");
-      setTimeout(() => setIngredientMsg(null), 2000);
-    }
-  };
-
+export default function IngredientForm({
+  onSubmit,
+  ingredientName,
+  setIngredientName,
+  ingredientMsg,
+  ingredients,
+  onDelete,
+}: IngredientFormProps) {
   return (
     <>
-      <form
-        onSubmit={handleIngredientSubmit}
-        className="mb-4 flex gap-2 items-end"
-      >
+      <form onSubmit={onSubmit} className="mb-4 flex gap-2 items-end">
         <div>
           <label
             htmlFor="ingredientName"
@@ -130,21 +63,7 @@ export default function IngredientForm() {
           ) : (
             ingredients.length > 0 &&
             ingredients.map((ing) => (
-              <span
-                key={ing.id}
-                className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-900 flex items-center gap-2"
-              >
-                {ing.name}
-                <button
-                  type="button"
-                  className="ml-2 text-red-600 hover:text-red-800 font-bold px-2 py-0.5 rounded-full focus:outline-none"
-                  title="Delete ingredient"
-                  onClick={() => handleDeleteIngredient(ing.id)}
-                  style={{ cursor: "pointer" }}
-                >
-                  ×
-                </button>
-              </span>
+              <Ingredient key={ing.id} ingredient={ing} onDelete={onDelete} />
             ))
           )}
         </div>

@@ -90,6 +90,88 @@ export default function MenuManager({}: any) {
     setEditingItem(null); // co tutaj dać?
   };
 
+  // Ingredient api reqests
+  const [ingredientName, setIngredientName] = useState("");
+  const [ingredientMsg, setIngredientMsg] = useState<string | null>(null);
+  const [ingredients, setIngredients] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/ingredients")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) throw new Error(data.error);
+        setIngredients(data);
+      })
+      .catch(() => {
+        setIngredients([]);
+        setIngredientMsg("Error fetching ingredients");
+      });
+  }, []);
+
+  const handleIngredientSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const name = ingredientName.trim();
+    if (!name) return;
+    const exists = ingredients.some(
+      (ing) => ing.name.toLowerCase() === name.toLowerCase()
+    );
+    if (exists) {
+      setIngredientMsg("Ingredient already exists in database.");
+      setTimeout(() => setIngredientMsg(null), 3000);
+      return;
+    }
+    try {
+      const res = await fetch("/api/ingredients", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      if (!res.ok) {
+        let msg = "Error adding ingredient";
+        try {
+          const data = await res.json();
+          if (data?.error && /unique|exists|duplicate/i.test(data.error)) {
+            msg = "Ingredient already in database";
+          }
+        } catch {}
+        setIngredientMsg(msg);
+        setTimeout(() => setIngredientMsg(null), 2000);
+        return;
+      }
+      setIngredientMsg("Ingredient added!");
+      setIngredientName("");
+      const updated = await fetch("/api/ingredients").then((r) => r.json());
+      setIngredients(updated);
+    } catch (err) {
+      setIngredientMsg("Error adding ingredient");
+    }
+    setTimeout(() => setIngredientMsg(null), 2000);
+  };
+
+  // Handler to delete an ingredient
+  const handleDeleteIngredient = async (id: any) => {
+    try {
+      console.log("Deleting ingredient with id:", id);
+      // Use fetch with DELETE method to /api/ingredients, passing id as query param
+      const res = await fetch(`/api/ingredients/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        setIngredientMsg("Error deleting ingredient");
+        setTimeout(() => setIngredientMsg(null), 2000);
+        return;
+      }
+      // Refresh the ingredients list from the API
+      const updated = await fetch("/api/ingredients").then((r) => r.json());
+      setIngredients(updated);
+      setIngredientMsg("Ingredient deleted");
+      setTimeout(() => setIngredientMsg(null), 2000);
+    } catch {
+      setIngredientMsg("Error deleting ingredient");
+      setTimeout(() => setIngredientMsg(null), 2000);
+    }
+  };
+
   return (
     <div className="w-full max-w-full overflow-x-hidden">
       <div className="flex justify-between items-center mb-6">
@@ -137,7 +219,16 @@ export default function MenuManager({}: any) {
           </button>
         ))}
       </div>
-      {categoryFilter === "ingredient" && <IngredientForm />}
+      {categoryFilter === "ingredient" && (
+        <IngredientForm
+          onSubmit={handleIngredientSubmit}
+          onDelete={handleDeleteIngredient}
+          ingredientName={ingredientName}
+          setIngredientName={setIngredientName}
+          ingredientMsg={ingredientMsg}
+          ingredients={ingredients}
+        />
+      )}
       {categoryFilter !== "ingredient" &&
         (isEditing ? (
           <MenuItemForm
