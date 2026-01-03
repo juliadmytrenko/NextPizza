@@ -8,8 +8,14 @@ export default function IngredientForm() {
   React.useEffect(() => {
     fetch("/api/ingredients")
       .then((res) => res.json())
-      .then((data) => setIngredients(data))
-      .catch(() => setIngredients([]));
+      .then((data) => {
+        if (data.error) throw new Error(data.error);
+        setIngredients(data);
+      })
+      .catch(() => {
+        setIngredients([]);
+        setIngredientMsg("Error fetching ingredients");
+      });
   }, []);
 
   const handleIngredientSubmit = async (e: React.FormEvent) => {
@@ -20,8 +26,8 @@ export default function IngredientForm() {
       (ing) => ing.name.toLowerCase() === name.toLowerCase()
     );
     if (exists) {
-      setIngredientMsg("Ingredient already in database");
-      setTimeout(() => setIngredientMsg(null), 2000);
+      setIngredientMsg("Ingredient already exists in database.");
+      setTimeout(() => setIngredientMsg(null), 3000);
       return;
     }
     try {
@@ -122,6 +128,7 @@ export default function IngredientForm() {
           {ingredients.length === 0 ? (
             <span className="text-gray-500">No ingredients found.</span>
           ) : (
+            ingredients.length > 0 &&
             ingredients.map((ing) => (
               <span
                 key={ing.id}
