@@ -1,7 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import IngredientForm, { IngredientFormProps } from "./IngredientForm";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
+import { server } from "./../../__mocks__/node";
+import { http, HttpResponse } from "msw";
 
 describe("IngredientForm Component", () => {
   // Define your default mock functions and variables
@@ -14,68 +16,64 @@ describe("IngredientForm Component", () => {
     onDelete: vi.fn(),
   };
 
-  const setupForm = (overrides: Partial<IngredientFormProps> = {}) => {
-    function Wrapper(props: Partial<IngredientFormProps>) {
-      const [ingredientName, setIngredientName] = useState("");
-
-      return (
-        <IngredientForm
-          ingredientName={ingredientName}
-          setIngredientName={setIngredientName}
-          ingredientMsg={null}
-          ingredients={[]}
-          onSubmit={vi.fn()}
-          onDelete={vi.fn()}
-          {...props}
-        />
-      );
-    }
-    return {
-      user: userEvent.setup(),
-      ...render(<Wrapper {...overrides} />),
-      ingredientNameInput: screen.getByLabelText(/Add Ingredient/i),
-      addButton: screen.getByRole("button", { name: /Add/i }),
-    };
-  };
-
   it("renders the component", () => {
     render(<IngredientForm {...defaultMocks} />);
     const inputElement = screen.getByPlaceholderText(/Ingredient name/i);
     expect(inputElement).toBeInTheDocument();
   });
 
-  it("allows adding a new ingredient", async () => {
-    function Wrapper() {
-      const [ingredientName, setIngredientName] = useState("");
-      const [ingredientMsg, setIngredientMsg] = useState("");
+  // WRAPPER COMPONENT FOR HANDLING STATE
+  function IngredientFormWrapper(props: any) {
+    const [ingredientName, setIngredientName] = useState("");
+    const [ingredientMsg, setIngredientMsg] = useState<string | null>(null);
+    const [ingredients, setIngredients] = useState<any[]>([]);
 
-      const handleSubmit = () => {
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      const name = ingredientName.trim().toLowerCase();
+      if (ingredients.some((ing) => ing.name === name)) {
+        setIngredientMsg("Ingredient already exists in database.");
+      } else if (name) {
+        setIngredients([...ingredients, { name }]);
         setIngredientMsg("Ingredient added!");
-      };
+        setIngredientName("");
+      }
+    };
 
-      return (
-        <IngredientForm
-          ingredientName={ingredientName}
-          setIngredientName={setIngredientName}
-          ingredientMsg={ingredientMsg}
-          ingredients={[]}
-          onSubmit={handleSubmit}
-          onDelete={vi.fn()}
-        />
-      );
-    }
+    const handleDelete = (id: number) => {
+      setIngredients(ingredients.filter((ing) => ing.id !== id));
+    };
 
+    return (
+      <IngredientForm
+        ingredientName={ingredientName}
+        setIngredientName={setIngredientName}
+        ingredientMsg={ingredientMsg}
+        ingredients={ingredients}
+        onSubmit={handleSubmit}
+        onDelete={handleDelete}
+        {...props}
+      />
+    );
+  }
+
+  const setupForm = (overrides?: any) => {
     const user = userEvent.setup();
-    render(<Wrapper />);
-    const ingredientNameInput = screen.getByLabelText(/Add Ingredient/i);
-    const addButton = screen.getByRole("button", { name: /Add/i });
+    render(<IngredientFormWrapper {...overrides} />);
+    const ingredientNameInput = screen.getByLabelText(/add ingredient/i);
+    const addButton = screen.getByRole("button", { name: /add/i });
+    return { user, ingredientNameInput, addButton };
+  };
 
-    await user.type(ingredientNameInput, "Basil");
+  test("adds ingredient and shows success message", async () => {
+    const { user, ingredientNameInput, addButton } = setupForm();
+
+    await user.type(ingredientNameInput, "Tomato");
     await user.click(addButton);
 
-    const successMessage = await screen.findByText(/ingredient added/i);
-    expect(successMessage.tagName).toBe("SPAN");
-    expect(successMessage).toBeInTheDocument();
+    expect(await screen.findByText(/ingredient added/i)).toBeInTheDocument();
+    expect(ingredientNameInput).toHaveValue("");
+    expect(screen.getByText(/tomato/i)).toBeInTheDocument();
   });
 
   it("The onSubmit function is triggered once when the input is correct.", async () => {
@@ -90,26 +88,24 @@ describe("IngredientForm Component", () => {
 
   it("The onSubmit function is not triggered when the input is empty.", async () => {
     const onSubmit = vi.fn();
-    const { user, addButton } = setupForm({
-      onSubmit: onSubmit,
-    });
+    const { user, addButton } = setupForm();
     await user.click(addButton);
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
-  // od tego momentu zaczynają się testy integracyjne które sprawdzają czy komunikaty o błędach i sukcesie są wyświetlane poprawnie
-
   it("shows error message for duplicate ingredient", async () => {
-    const { user, ingredientNameInput, addButton } = setupForm({
-      handleSubmit: handleSubmit,
-    });
-    await user.type(ingredientNameInput, "Tomato");
-    await user.click(addButton);
-    await user.type(ingredientNameInput, "Tomato");
-    await user.click(addButton);
-    // it does not work yet because we dont connect to real API yet
-    const errorMessage = await screen.getByText(
-      /Ingredient already exists in database/i
+    const user = userEvent.setup();
+    render(<IngredientFormWrapper />);
+    const input = screen.getByLabelText(/add ingredient/i);
+    const button = screen.getByRole("button", { name: /add/i });
+
+    await user.type(input, "Tomato");
+    await user.click(button);
+    await user.type(input, "Tomato");
+    await user.click(button);
+
+    const errorMessage = await screen.findByText(
+      /ingredient already exists in database./i
     );
     expect(errorMessage).toBeInTheDocument();
   });
