@@ -39,4 +39,14 @@ export const handlers = [
             return HttpResponse.json({ error: 'Ingredient not found' }, { status: 404 })
         }
     }),
+    http.delete('api/ingredients/:id', ({ params }) => {
+        const { id } = params;
+        const index = INGREDIENTS.findIndex(ing => ing.id === Number(id));
+        if (index !== -1) {
+            INGREDIENTS.splice(index, 1);
+            return HttpResponse.json({ message: 'Ingredient deleted' }, { status: 200 });
+        } else {
+            return HttpResponse.json({ error: 'Ingredient not found' }, { status: 404 });
+        }
+    }),
 ]

@@ -15,6 +15,7 @@ const Ingredient = ({ ingredient, onDelete }: IngredientProps) => {
       {ingredient.name}
       <button
         type="button"
+        aria-label={`delete ${ingredient.name}`}
         className="ml-2 text-red-600 hover:text-red-800 font-bold px-2 py-0.5 rounded-full focus:outline-none"
         title="Delete ingredient"
         onClick={() => onDelete(ingredient.id)}
