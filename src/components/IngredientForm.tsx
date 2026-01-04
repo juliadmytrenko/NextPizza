@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Ingredient from "./Ingredient";
 
-interface IngredientFormProps {
+export interface IngredientFormProps {
   onSubmit: (e: React.FormEvent) => void;
   ingredientName: string;
   setIngredientName: React.Dispatch<React.SetStateAction<string>>;

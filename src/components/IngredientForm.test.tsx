@@ -1,40 +1,82 @@
 import { render, screen } from "@testing-library/react";
-import IngredientForm from "./IngredientForm";
+import IngredientForm, { IngredientFormProps } from "./IngredientForm";
 import userEvent from "@testing-library/user-event";
-import { JSX } from "react";
+import { useState } from "react";
 
 describe("IngredientForm Component", () => {
-  const setupForm = (overrides = {}) => {
+  // Define your default mock functions and variables
+  const defaultMocks: IngredientFormProps = {
+    onSubmit: vi.fn(),
+    ingredientName: "",
+    setIngredientName: vi.fn(),
+    ingredientMsg: null,
+    ingredients: [],
+    onDelete: vi.fn(),
+  };
+
+  const setupForm = (overrides: Partial<IngredientFormProps> = {}) => {
+    function Wrapper(props: Partial<IngredientFormProps>) {
+      const [ingredientName, setIngredientName] = useState("");
+
+      return (
+        <IngredientForm
+          ingredientName={ingredientName}
+          setIngredientName={setIngredientName}
+          ingredientMsg={null}
+          ingredients={[]}
+          onSubmit={vi.fn()}
+          onDelete={vi.fn()}
+          {...props}
+        />
+      );
+    }
     return {
       user: userEvent.setup(),
-      ...render(<IngredientForm {...overrides} />),
+      ...render(<Wrapper {...overrides} />),
       ingredientNameInput: screen.getByLabelText(/Add Ingredient/i),
       addButton: screen.getByRole("button", { name: /Add/i }),
     };
   };
 
   it("renders the component", () => {
-    render(<IngredientForm />);
+    render(<IngredientForm {...defaultMocks} />);
     const inputElement = screen.getByPlaceholderText(/Ingredient name/i);
     expect(inputElement).toBeInTheDocument();
   });
 
   it("allows adding a new ingredient", async () => {
-    const onSubmit = vi.fn();
-    const { user, ingredientNameInput, addButton } = setupForm(onSubmit);
-    await user.type(ingredientNameInput, "Tomato");
+    function Wrapper() {
+      const [ingredientName, setIngredientName] = useState("");
+      const [ingredientMsg, setIngredientMsg] = useState("");
+
+      const handleSubmit = () => {
+        setIngredientMsg("Ingredient added!");
+      };
+
+      return (
+        <IngredientForm
+          ingredientName={ingredientName}
+          setIngredientName={setIngredientName}
+          ingredientMsg={ingredientMsg}
+          ingredients={[]}
+          onSubmit={handleSubmit}
+          onDelete={vi.fn()}
+        />
+      );
+    }
+
+    const user = userEvent.setup();
+    render(<Wrapper />);
+    const ingredientNameInput = screen.getByLabelText(/Add Ingredient/i);
+    const addButton = screen.getByRole("button", { name: /Add/i });
+
+    await user.type(ingredientNameInput, "Basil");
     await user.click(addButton);
-    const successMessage = await screen.findByLabelText(/ingredient message/i);
+
+    const successMessage = await screen.findByText(/ingredient added/i);
+    expect(successMessage.tagName).toBe("SPAN");
     expect(successMessage).toBeInTheDocument();
   });
-
-  // i will handle this validation by making add button disabled when input is empty
-  // it("shows error message for empty input", async () => {
-  //   const { user, addButton } = setupForm();
-  //   await user.click(addButton);
-  //   const errorMessage = await screen.findByText(/Wypełnij to pole/i);
-  //   expect(errorMessage).toBeInTheDocument();
-  // });
 
   it("The onSubmit function is triggered once when the input is correct.", async () => {
     const handleSubmit = vi.fn();
