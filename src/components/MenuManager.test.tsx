@@ -72,12 +72,9 @@ describe("MenuManager - ingredient integration", () => {
     const deleteButton = screen.getByRole("button", { name: /delete onion/i });
     await userEvent.click(deleteButton);
 
-    expect(
-      await screen.findByText(/Ingredient deleted/i, {}, { timeout: 3000 })
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/Ingredient deleted/i)).toBeInTheDocument();
     // Sprawdź, że składnik zniknął z listy
-    await waitFor(() => {
-      expect(screen.queryByText(/onion/i)).toBeNull();
-    });
+
+    expect(screen.queryByText(/onion/i)).toBeNull();
   });
 });
