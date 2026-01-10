@@ -16,7 +16,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
     name: item?.name || "",
     imageUrl: item?.imageUrl || "",
     ingredients: item?.ingredients || [],
-    category: item?.category || "pizza",
+    category: item?.category?.toLowerCase?.() || "pizza",
     sizes: item?.sizes || [{ sizeName: "", price: 0 }],
   });
 

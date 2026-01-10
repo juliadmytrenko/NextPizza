@@ -180,4 +180,8 @@ describe("isValidImageSrc", () => {
   it("should return false for src with only slashes", () => {
     expect(isValidImageSrc("/////")).toBe(false);
   });
+
+   it("should return true for valid image path", () => {
+    expect(isValidImageSrc("/images/margharita.png")).toBe(true);
+  });
 });

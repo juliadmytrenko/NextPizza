@@ -16,10 +16,14 @@ export const productSchema = z.object({
     description: "product name",
     example: "Margherita",
   }),
-  imageUrl: z.string().url().max(191).openapi({
+  imageUrl: z.string().max(191).refine(
+  (val) =>
+    /^https?:\/\//.test(val) || /^\/?[\w\-./]+$/.test(val),
+    { message: "Invalid image URL" }
+  ).openapi({
     description: "The product image URL",
     example: "https://example.com/images/margherita.jpg",
-  }),
+}),
   category: z.string().min(1).openapi({
     description: "The product category",
     example: "Pizza",

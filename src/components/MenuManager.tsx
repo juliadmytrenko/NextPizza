@@ -51,7 +51,7 @@ export default function MenuManager({}: any) {
         console.log("POSTING");
         console.log(formData);
         console.log(JSON.stringify(formData));
-        response = await fetch("/api/products", {
+        response = await fetch(`/api/products`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
