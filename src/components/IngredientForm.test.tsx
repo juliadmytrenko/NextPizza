@@ -3,6 +3,8 @@ import userEvent from "@testing-library/user-event";
 import IngredientForm, { IngredientFormProps } from "./IngredientForm";
 import { useState } from "react";
 
+// I only test UI logic here, not API calls
+
 // Simple wrapper to provide state for the form
 function IngredientFormWrapper(props: Partial<IngredientFormProps> = {}) {
   const [ingredientName, setIngredientName] = useState("");
