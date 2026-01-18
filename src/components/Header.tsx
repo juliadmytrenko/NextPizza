@@ -3,6 +3,7 @@ import React from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCart } from "../context/CartContext";
+import { IoLogIn } from "react-icons/io5";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -87,6 +88,19 @@ export const Header = () => {
             >
               Contact
             </a>
+            <a
+              href="/#contact"
+              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors text-sm lg:text-base"
+            >
+              Login
+            </a>
+            <a
+              href="/#contact"
+              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors text-sm lg:text-base"
+            >
+              Sign Up!
+            </a>
+
             {!hideCart && (
               <button
                 onClick={() => setIsCartOpen(true)}
@@ -148,6 +162,20 @@ export const Header = () => {
               className="text-gray-700 hover:text-orange-600 font-semibold transition-colors py-2"
             >
               Contact
+            </a>
+            <a
+              href="/#contact"
+              onClick={() => setIsMenuOpen(false)}
+              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors py-2"
+            >
+              Login
+            </a>
+            <a
+              href="/#signup"
+              onClick={() => setIsMenuOpen(false)}
+              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors py-2"
+            >
+              Sign Up!
             </a>
           </nav>
         )}
