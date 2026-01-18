@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     "Order delicious pizza online with Next Pizza. Fast delivery, fresh ingredients, and amazing taste!",
 };
 
-export default function RootLayout({
+export default function GlobalLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
