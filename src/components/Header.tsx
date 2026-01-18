@@ -106,6 +106,7 @@ export const Header = () => {
                 onClick={() => setIsCartOpen(true)}
                 className="relative text-orange-600 hover:text-orange-700 transition-colors"
                 aria-label="Open cart"
+                style={{ cursor: "pointer" }}
               >
                 <svg
                   className="w-6 h-6"
