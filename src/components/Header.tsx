@@ -3,13 +3,14 @@ import React from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCart } from "../context/CartContext";
-import { IoLogIn } from "react-icons/io5";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const pathname = usePathname();
   const { setIsCartOpen } = useCart();
   const hideCart = pathname === "/address" || pathname === "/checkout";
+  const { data: session } = useSession();
 
   return (
     <header className="border-b-2 border-orange-200 shadow-md bg-white">
@@ -89,13 +90,14 @@ export const Header = () => {
               Contact
             </a>
             <a
-              href="/#contact"
+              href="/#signin"
               className="text-gray-700 hover:text-orange-600 font-semibold transition-colors text-sm lg:text-base"
+              onClick={() => signIn()}
             >
               Login
             </a>
             <a
-              href="/#contact"
+              href="/#signup"
               className="text-gray-700 hover:text-orange-600 font-semibold transition-colors text-sm lg:text-base"
             >
               Sign Up!
@@ -166,7 +168,10 @@ export const Header = () => {
             </a>
             <a
               href="/#contact"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={() => {
+                setIsMenuOpen(false);
+                signIn();
+              }}
               className="text-gray-700 hover:text-orange-600 font-semibold transition-colors py-2"
             >
               Login

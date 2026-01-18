@@ -9,6 +9,7 @@ import { AddressProvider } from "@/context/AddressContext";
 import { MenuProvider } from "@/context/MenuContext";
 import { OrdersProvider } from "@/context/OrdersContext";
 import { Cart } from "@/components/Cart";
+import ClientLayout from "./ClientLayout";
 
 const lobster = Lobster({
   weight: "400",
@@ -44,10 +45,12 @@ export default function RootLayout({
           <OrdersProvider>
             <AddressProvider>
               <CartProvider>
-                <Header></Header>
-                <Main>{children}</Main>
-                <Footer></Footer>
-                <Cart />
+                <ClientLayout>
+                  <Header></Header>
+                  <Main>{children}</Main>
+                  <Footer></Footer>
+                  <Cart />
+                </ClientLayout>
               </CartProvider>
             </AddressProvider>
           </OrdersProvider>
