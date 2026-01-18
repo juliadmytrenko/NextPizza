@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
 import { Lobster, Poppins } from "next/font/google";
-import "@/app/globals.css";
-import { Header } from "@/components/Header";
-import { Main } from "@/components/Main";
-import { Footer } from "@/components/Footer";
+import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { AddressProvider } from "@/context/AddressContext";
 import { MenuProvider } from "@/context/MenuContext";
 import { OrdersProvider } from "@/context/OrdersContext";
-import { Cart } from "@/components/Cart";
 
 const lobster = Lobster({
   weight: "400",
@@ -43,12 +39,7 @@ export default function RootLayout({
         <MenuProvider>
           <OrdersProvider>
             <AddressProvider>
-              <CartProvider>
-                <Header></Header>
-                <Main>{children}</Main>
-                <Footer></Footer>
-                <Cart />
-              </CartProvider>
+              <CartProvider>{children}</CartProvider>
             </AddressProvider>
           </OrdersProvider>
         </MenuProvider>
