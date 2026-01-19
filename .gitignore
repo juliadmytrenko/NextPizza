@@ -47,3 +47,4 @@ storybook-static
 prisma/migrations
 
 /src/generated/prisma
+Test_Plan_Sample.pdf
