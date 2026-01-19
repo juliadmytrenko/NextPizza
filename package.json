@@ -2,6 +2,7 @@
   "name": "next-pizza",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,7 +12,8 @@
     "build-storybook": "storybook build",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "prepare": "husky"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^8.2.0",
@@ -50,12 +52,15 @@
     "@vitest/browser-playwright": "^4.0.15",
     "@vitest/coverage-v8": "^4.0.15",
     "@vitest/ui": "^4.0.15",
-    "eslint": "^9",
+    "eslint": "^9.39.2",
     "eslint-config-next": "16.0.7",
     "eslint-plugin-storybook": "^10.1.6",
+    "husky": "^9.1.7",
     "jsdom": "^27.4.0",
+    "lint-staged": "^16.2.7",
     "msw": "^2.12.7",
     "playwright": "^1.57.0",
+    "prettier": "^3.8.0",
     "prisma": "^7.2.0",
     "storybook": "^10.1.6",
     "tailwindcss": "^4",
