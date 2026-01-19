@@ -6,7 +6,7 @@ import { useCart } from "../context/CartContext";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { login, logout } from "@/lib/actions/auth";
 
-import { Session } from "next-auth";
+import type { Session } from "next-auth";
 
 export const Header = ({ session }: { session?: Session | null }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
