@@ -6,12 +6,14 @@ import { useCart } from "../context/CartContext";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { login, logout } from "@/lib/actions/auth";
 
-export const Header = () => {
+import { Session } from "next-auth";
+
+export const Header = ({ session }: { session?: Session | null }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const pathname = usePathname();
   const { setIsCartOpen } = useCart();
   const hideCart = pathname === "/address" || pathname === "/checkout";
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
   return (
     <header className="border-b-2 border-orange-200 shadow-md bg-white">
@@ -90,19 +92,31 @@ export const Header = () => {
             >
               Contact
             </a>
-            <a
-              href="/#signin"
-              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors text-sm lg:text-base"
-              onClick={() => login()}
-            >
-              Login
-            </a>
-            <a
-              href="/#signup"
-              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors text-sm lg:text-base"
-            >
-              Sign Up!
-            </a>
+            {session?.user ? (
+              <a
+                href="/#signout"
+                className="text-gray-700 hover:text-orange-600 font-semibold transition-colors text-sm lg:text-base"
+                onClick={() => logout()}
+              >
+                Log out
+              </a>
+            ) : (
+              <>
+                <a
+                  href="/#signin"
+                  className="text-gray-700 hover:text-orange-600 font-semibold transition-colors text-sm lg:text-base"
+                  onClick={() => login()}
+                >
+                  Login
+                </a>
+                <a
+                  href="/#signup"
+                  className="text-gray-700 hover:text-orange-600 font-semibold transition-colors text-sm lg:text-base"
+                >
+                  Sign Up!
+                </a>
+              </>
+            )}
 
             {!hideCart && (
               <button
@@ -167,23 +181,41 @@ export const Header = () => {
             >
               Contact
             </a>
-            <a
-              href="/#contact"
-              onClick={() => {
-                setIsMenuOpen(false);
-                login();
-              }}
-              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors py-2"
-            >
-              Login
-            </a>
-            <a
-              href="/#signup"
-              onClick={() => setIsMenuOpen(false)}
-              className="text-gray-700 hover:text-orange-600 font-semibold transition-colors py-2"
-            >
-              Sign Up!
-            </a>
+            {!session?.user ? (
+              <>
+                <a
+                  href="/#contact"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    login();
+                  }}
+                  className="text-gray-700 hover:text-orange-600 font-semibold transition-colors py-2"
+                >
+                  Login
+                </a>
+                <a
+                  href="/#signup"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    login();
+                  }}
+                  className="text-gray-700 hover:text-orange-600 font-semibold transition-colors py-2"
+                >
+                  Sign Up!
+                </a>
+              </>
+            ) : (
+              <a
+                href="/#signup"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  logout();
+                }}
+                className="text-gray-700 hover:text-orange-600 font-semibold transition-colors py-2"
+              >
+                Sign Out <div>{session?.user?.name}</div>
+              </a>
+            )}
           </nav>
         )}
       </div>

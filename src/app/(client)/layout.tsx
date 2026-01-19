@@ -9,6 +9,7 @@ import { AddressProvider } from "@/context/AddressContext";
 import { MenuProvider } from "@/context/MenuContext";
 import { OrdersProvider } from "@/context/OrdersContext";
 import { Cart } from "@/components/Cart";
+import { auth } from "@/auth";
 
 const lobster = Lobster({
   weight: "400",
@@ -30,11 +31,13 @@ export const metadata: Metadata = {
     "Order delicious pizza online with Next Pizza. Fast delivery, fresh ingredients, and amazing taste!",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html lang="en">
       <body
@@ -44,7 +47,7 @@ export default function RootLayout({
           <OrdersProvider>
             <AddressProvider>
               <CartProvider>
-                <Header></Header>
+                <Header session={session}></Header>
                 <Main>{children}</Main>
                 <Footer></Footer>
                 <Cart />
