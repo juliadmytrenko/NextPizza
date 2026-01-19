@@ -4,6 +4,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCart } from "../context/CartContext";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { login, logout } from "@/lib/actions/auth";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -92,7 +93,7 @@ export const Header = () => {
             <a
               href="/#signin"
               className="text-gray-700 hover:text-orange-600 font-semibold transition-colors text-sm lg:text-base"
-              onClick={() => signIn()}
+              onClick={() => login()}
             >
               Login
             </a>
@@ -170,7 +171,7 @@ export const Header = () => {
               href="/#contact"
               onClick={() => {
                 setIsMenuOpen(false);
-                signIn();
+                login();
               }}
               className="text-gray-700 hover:text-orange-600 font-semibold transition-colors py-2"
             >
