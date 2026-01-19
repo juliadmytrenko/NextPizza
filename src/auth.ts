@@ -1,27 +1,47 @@
-// filepath: src/app/api/auth/[...nextauth]/route.ts
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
+import { randomUUID } from "crypto";
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import { prisma } from "@/lib/prisma"
 
-export const {auth, handlers, signIn, signOut } = NextAuth({
+export const { auth, handlers, signIn, signOut } = NextAuth({
+  // adapter: PrismaAdapter(prisma),
+
+  // session: {
+  //   strategy: "database",
+  // },
+
   providers: [
-    CredentialsProvider({
+    Credentials({
       name: "Credentials",
       credentials: {
         username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
       },
-      authorize(credentials, req) {
-        // Tu dodaj logikę autoryzacji
-        if (credentials?.username === "admin" && credentials?.password === "admin") {
-          return { id: "1", name: "Admin" };
+      async authorize(credentials) {
+        if (!credentials) return null;
+
+        if (
+          credentials.username === "admin" &&
+          credentials.password === "admin"
+        ) {
+          return {
+            id: randomUUID(),
+            name: "Admin",
+            email: "admin@test.local",
+          };
         }
+
         return null;
-      }
+      },
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
-    })
-  ]
+
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+  ],
+
+  secret: process.env.AUTH_SECRET,
 });

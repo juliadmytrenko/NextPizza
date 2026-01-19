@@ -7,76 +7,129 @@ datasource db {
   provider = "mysql"
 }
 
-model Customer {
+model customer {
   id      Int     @id @default(autoincrement())
   name    String
-  email   String  @unique
+  email   String  @unique(map: "Customer_email_key")
   address String?
-  Order   Order[]
+  order   order[]
 }
 
-model Ingredient {
+model ingredient {
   id                Int                 @id @default(autoincrement())
-  name              String              @unique
-  ProductIngredient ProductIngredient[]
+  name              String              @unique(map: "Ingredient_name_key")
+  productingredient productingredient[]
 }
 
-model Order {
+model order {
   id           Int            @id @default(autoincrement())
   createdAt    DateTime       @default(now())
   customerId   Int
   status       String         @default("pending")
-  Customer     Customer       @relation(fields: [customerId], references: [id])
-  OrderProduct OrderProduct[]
+  customer     customer       @relation(fields: [customerId], references: [id], map: "Order_customerId_fkey")
+  orderproduct orderproduct[]
 
   @@index([customerId], map: "Order_customerId_fkey")
 }
 
-model OrderProduct {
+model orderproduct {
   orderId   Int
   productId Int
   quantity  Int     @default(1)
-  Order     Order   @relation(fields: [orderId], references: [id])
-  Product   Product @relation(fields: [productId], references: [id])
+  order     order   @relation(fields: [orderId], references: [id], map: "OrderProduct_orderId_fkey")
+  product   product @relation(fields: [productId], references: [id], map: "OrderProduct_productId_fkey")
 
   @@id([orderId, productId])
   @@index([productId], map: "OrderProduct_productId_fkey")
 }
 
-model Product {
+model product {
   id                Int                 @id @default(autoincrement())
-  name              String              @unique
+  name              String              @unique(map: "Product_name_key")
   description       String?
   imageUrl          String?
-  category          Category
-  ProductSize       ProductSize[]
-  OrderProduct      OrderProduct[]
-  ProductIngredient ProductIngredient[]
+  category          product_category
+  orderproduct      orderproduct[]
+  productingredient productingredient[]
+  productsize       productsize[]
 }
 
-model ProductSize {
-  productId Int
-  sizeName  String
-  price     Float
-  Product   Product @relation(fields: [productId], references: [id])
-
-  @@id([productId, sizeName])
-  @@index([sizeName])
-}
-
-enum Category {
-  pizza
-  sauces
-  drinks
-  ingredient
-}
-
-model ProductIngredient {
+model productingredient {
   productId    Int
   ingredientId Int
-  Ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
-  Product      Product    @relation(fields: [productId], references: [id])
+  ingredient   ingredient @relation(fields: [ingredientId], references: [id], map: "ProductIngredient_ingredientId_fkey")
+  product      product    @relation(fields: [productId], references: [id], map: "ProductIngredient_productId_fkey")
 
   @@id([productId, ingredientId])
   @@index([ingredientId], map: "ProductIngredient_ingredientId_fkey")
+}
+
+model productsize {
+  productId Int
+  sizeName  String
+  price     Float
+  product   product @relation(fields: [productId], references: [id], map: "ProductSize_productId_fkey")
+
+  @@id([productId, sizeName])
+  @@index([sizeName], map: "ProductSize_sizeName_idx")
+}
+
+enum product_category {
+  PIZZA
+  DRINK
+  SAUSE
+}
+
+// NextAuth models
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String?   @unique
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String? // dla Credentials login
+  role           Role      @default(USER)
+  accounts       Account[]
+  sessions       Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
