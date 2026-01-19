@@ -45,19 +45,25 @@ export default function Home() {
         const data = await res.json();
         const productsArray = Array.isArray(data) ? data : data.products;
         setProducts(productsArray);
-        const pizzas = productsArray.filter(
-          (item: any) => item.category === "pizza"
-        );
-        console.log("Fetched pizzas:", pizzas);
-        setPizzas(pizzas);
-        const sauces = productsArray.filter(
-          (item: any) => item.category === "sauces"
-        );
-        setSauces(sauces);
-        const drinks = productsArray.filter(
-          (item: any) => item.category === "drinks"
-        );
-        setDrinks(drinks);
+
+        if (productsArray) {
+          const pizzas = productsArray.filter(
+            (item: any) => item.category === "pizza",
+          );
+          console.log("Fetched pizzas:", pizzas);
+          setPizzas(pizzas);
+          const sauces = productsArray.filter(
+            (item: any) => item.category === "sauces",
+          );
+          setSauces(sauces);
+          const drinks = productsArray.filter(
+            (item: any) => item.category === "drinks",
+          );
+          setDrinks(drinks);
+        } else {
+          setLoadError(true);
+        }
+
         setLoading(false);
         clearTimeout(timeoutId);
       } catch (err) {
@@ -85,7 +91,7 @@ export default function Home() {
         <main className="bg-black flex min-h-screen w-full max-w-6xl flex-col items-center justify-center py-8 sm:py-12 md:py-16 px-4 sm:px-8 md:px-16">
           <div className="flex flex-col gap-4 w-full max-w-4xl">
             {loadError ? (
-              <div className="text-center text-red-600 font-bold my-4">
+              <div className="text-center text-red-600 font-bold my-4 text-xl">
                 Error loading products. Please try again later.
               </div>
             ) : (
@@ -112,57 +118,70 @@ export default function Home() {
                     </div>
                   </div>
                 )}
+                {pizzas.length > 0 && (
+                  <>
+                    <h3
+                      id="pizzas"
+                      className="text-2xl sm:text-3xl font-bold text-orange-700 text-center sm:mt-0 md:mt-8 lg:mt-0"
+                    >
+                      Pizzas
+                    </h3>
+                    {!loading &&
+                      pizzas.map((product, index) => (
+                        <CardTile
+                          key={`${product.name}-${index}`}
+                          name={product.name}
+                          imageUrl={product.imageUrl}
+                          ingredients={product.ProductIngredient}
+                          sizes={product.ProductSize}
+                        />
+                      ))}
+                  </>
+                )}
+                <br />
+                {sauces.length > 0 && (
+                  <>
+                    {" "}
+                    <h3
+                      id="sauces"
+                      className="text-2xl sm:text-3xl font-bold text-orange-700 text-center"
+                    >
+                      Sauces
+                    </h3>
+                    {!loading &&
+                      sauces.map((product, index) => (
+                        <CardTile
+                          key={`${product.name}-${index}`}
+                          name={product.name}
+                          imageUrl={product.imageUrl}
+                          ingredients={product.ProductIngredient}
+                          sizes={product.ProductSize}
+                        />
+                      ))}
+                  </>
+                )}
 
-                <h3
-                  id="pizzas"
-                  className="text-2xl sm:text-3xl font-bold text-orange-700 text-center sm:mt-0 md:mt-8 lg:mt-0"
-                >
-                  Pizzas
-                </h3>
-                {!loading &&
-                  pizzas.map((product, index) => (
-                    <CardTile
-                      key={`${product.name}-${index}`}
-                      name={product.name}
-                      imageUrl={product.imageUrl}
-                      ingredients={product.ProductIngredient}
-                      sizes={product.ProductSize}
-                    />
-                  ))}
                 <br />
-                <h3
-                  id="sauces"
-                  className="text-2xl sm:text-3xl font-bold text-orange-700 text-center"
-                >
-                  Sauces
-                </h3>
-                {!loading &&
-                  sauces.map((product, index) => (
-                    <CardTile
-                      key={`${product.name}-${index}`}
-                      name={product.name}
-                      imageUrl={product.imageUrl}
-                      ingredients={product.ProductIngredient}
-                      sizes={product.ProductSize}
-                    />
-                  ))}
-                <br />
-                <h3
-                  id="drinks"
-                  className="text-2xl sm:text-3xl font-bold text-orange-700 text-center"
-                >
-                  Drinks
-                </h3>
-                {!loading &&
-                  drinks.map((product, index) => (
-                    <CardTile
-                      key={`${product.name}-${index}`}
-                      name={product.name}
-                      imageUrl={product.imageUrl}
-                      ingredients={product.ProductIngredient}
-                      sizes={product.ProductSize}
-                    />
-                  ))}
+                {drinks.length > 0 && (
+                  <>
+                    <h3
+                      id="drinks"
+                      className="text-2xl sm:text-3xl font-bold text-orange-700 text-center"
+                    >
+                      Drinks
+                    </h3>
+                    {!loading &&
+                      drinks.map((product, index) => (
+                        <CardTile
+                          key={`${product.name}-${index}`}
+                          name={product.name}
+                          imageUrl={product.imageUrl}
+                          ingredients={product.ProductIngredient}
+                          sizes={product.ProductSize}
+                        />
+                      ))}
+                  </>
+                )}
               </>
             )}
             <AboutUs />
