@@ -1,14 +1,14 @@
 'use client';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCart } from '../../../context/CartContext';
-import { useAddress } from '../../../context/AddressContext';
-import { useOrders } from '../../../context/OrdersContext';
+import { useCart } from '@/context/CartContext';
+import { useAddress } from '@/context/AddressContext';
+import { useOrders } from '@/context/OrdersContext';
 import { useState } from 'react';
 import Image from 'next/image';
 import { isValidImageSrc } from '@/lib/utils';
-import { OrderCartItem } from '../../../components/OrderCartItem';
-import CheckoutWrapper from './CheckoutWrapper';
+import { OrderCartItem } from '@/components/OrderCartItem';
+import CheckoutWrapper from '@/components/CheckoutWrapper';
 
 export default function CheckoutPage() {
   const router = useRouter();
