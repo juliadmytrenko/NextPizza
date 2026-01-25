@@ -18,7 +18,7 @@ model customer {
 model ingredient {
   id                Int                 @id @default(autoincrement())
   name              String              @unique(map: "Ingredient_name_key")
-  productingredient productingredient[]
+  productIngredient productIngredient[]
 }
 
 model order {
@@ -27,12 +27,12 @@ model order {
   customerId   Int
   status       String         @default("pending")
   customer     customer       @relation(fields: [customerId], references: [id], map: "Order_customerId_fkey")
-  orderproduct orderproduct[]
+  orderProduct orderProduct[]
 
   @@index([customerId], map: "Order_customerId_fkey")
 }
 
-model orderproduct {
+model orderProduct {
   orderId   Int
   productId Int
   quantity  Int     @default(1)
@@ -49,12 +49,12 @@ model product {
   description       String?
   imageUrl          String?
   category          product_category
-  orderproduct      orderproduct[]
-  productingredient productingredient[]
-  productsize       productsize[]
+  orderProduct      orderProduct[]
+  productIngredient productIngredient[]
+  productSize       productSize[]
 }
 
-model productingredient {
+model productIngredient {
   productId    Int
   ingredientId Int
   ingredient   ingredient @relation(fields: [ingredientId], references: [id], map: "ProductIngredient_ingredientId_fkey")
@@ -64,7 +64,7 @@ model productingredient {
   @@index([ingredientId], map: "ProductIngredient_ingredientId_fkey")
 }
 
-model productsize {
+model productSize {
   productId Int
   sizeName  String
   price     Float
