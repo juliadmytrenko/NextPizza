@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ImageUploaderLocal from '@/components/ImageUploaderLocal';
 
 interface MenuItemSize {
   sizeName: string;
@@ -76,6 +77,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
     console.log('Submitting form data:', formData);
     const { name, imageUrl, ingredients, category, sizes } = formData;
     // Ensure sizes are sent as array of { size, price }
+    //
 
     onSave({
       name,
@@ -148,7 +150,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
         <label className="block text-sm font-semibold text-gray-700 mb-1">
           Image URL
         </label>
-        <input
+        {/* <input
           type="text"
           required
           value={formData.imageUrl}
@@ -156,6 +158,12 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
             setFormData((prev) => ({ ...prev, imageUrl: e.target.value }))
           }
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
+        /> */}
+        <ImageUploaderLocal
+          onUploaded={(url) => {
+            console.log('Saved at', url);
+            setFormData((prev) => ({ ...prev, imageUrl: url }));
+          }}
         />
       </div>
       <div>
@@ -175,7 +183,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
         </select>
       </div>
       <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
           Ingredients
         </label>
         <input

@@ -1,9 +1,9 @@
-"use client";
-import React, { useEffect } from "react";
-import Image from "next/image";
-import { useCart } from "../context/CartContext";
-import { usePathname } from "next/navigation";
-import { isValidImageSrc } from "@/lib/utils";
+'use client';
+import React, { useEffect } from 'react';
+import Image from 'next/image';
+import { useCart } from '../context/CartContext';
+import { usePathname } from 'next/navigation';
+import { isValidImageSrc } from '@/lib/utils';
 
 interface CardTileInterface {
   name: string;
@@ -16,21 +16,25 @@ interface CardTileInterface {
 }
 
 // Fallback logic for image: only allow valid URLs or absolute paths
-const fallbackImage = "/images/fallback.png";
+const fallbackImage = '/images/fallback.png';
 
 export const CardTile: React.FC<CardTileInterface> = (props) => {
   const { name, imageUrl, ingredients, sizes } = props;
-  const validInitialSrc = isValidImageSrc(imageUrl) ? imageUrl : fallbackImage;
+  // const validInitialSrc = isValidImageSrc(imageUrl) ? imageUrl : fallbackImage;
+  const validInitialSrc =
+    imageUrl?.startsWith('/uploads/') || isValidImageSrc(imageUrl)
+      ? imageUrl
+      : fallbackImage;
 
   const [imgSrc, setImgSrc] = React.useState(validInitialSrc);
   const { addToCart, setIsCartOpen } = useCart();
   const pathname = usePathname();
-  const hideAddToCart = pathname === "/address" || pathname === "/checkout";
+  const hideAddToCart = pathname === '/address' || pathname === '/checkout';
 
   const hasSizes = Array.isArray(sizes) && sizes.length > 0;
   // If sizes exist, use first size as default, else use product price and default size label
   const [selectedSize, setSelectedSize] = React.useState(
-    Array.isArray(sizes) && sizes.length > 0 ? sizes[0] : null
+    Array.isArray(sizes) && sizes.length > 0 ? sizes[0] : null,
   );
   const handleAddToCart = () => {
     if (!selectedSize) return;
@@ -51,7 +55,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
           alt={name}
           fill
           className="object-cover rounded-lg"
-          onError={() => setImgSrc("/images/fallback.png")}
+          onError={() => setImgSrc('/images/fallback.png')}
         />
       </div>
 
@@ -66,8 +70,8 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
             </label>
             <p className="text-gray-600 text-xs sm:text-sm">
               {ingredients && ingredients.length > 0
-                ? ingredients.map((ing) => ing.Ingredient.name).join(", ")
-                : "No ingredients"}
+                ? ingredients.map((ing) => ing.Ingredient.name).join(', ')
+                : 'No ingredients'}
             </p>
           </div>
         </div>
@@ -87,10 +91,10 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
                     className={`px-2 py-0.5 rounded border text-sm ${
                       selectedSize &&
                       selectedSize.sizeName === sizeOption.sizeName
-                        ? "bg-orange-500 text-white border-orange-500"
-                        : "bg-white text-gray-700 border-gray-300"
+                        ? 'bg-orange-500 text-white border-orange-500'
+                        : 'bg-white text-gray-700 border-gray-300'
                     }`}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: 'pointer' }}
                   >
                     {sizeOption.sizeName}
                   </button>
@@ -101,13 +105,13 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
             <span className="text-xl sm:text-2xl font-bold text-orange-600">
-              {selectedSize ? `${selectedSize.price} zł` : ""}
+              {selectedSize ? `${selectedSize.price} zł` : ''}
             </span>
             {!hideAddToCart && (
               <button
                 onClick={handleAddToCart}
                 className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 sm:px-3 sm:py-1.5 text-sm rounded-md transition-colors"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
               >
                 Add to Cart
               </button>
