@@ -1,13 +1,13 @@
-"use client";
-import Image from "next/image";
-import Head from "next/head";
-import { useEffect, useState } from "react";
-import React from "react";
-import { CardTile } from "../../components/CardTile";
-import { Banner } from "../../components/Banner";
-import AboutUs from "../../components/AboutUs";
-import { useMenu } from "../../context/MenuContext";
-import { prisma } from "../../lib/prisma";
+'use client';
+import Image from 'next/image';
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import React from 'react';
+import { CardTile } from '../../components/CardTile';
+import { Banner } from '../../components/Banner';
+import AboutUs from '../../components/AboutUs';
+import { useMenu } from '../../context/MenuContext';
+import { prisma } from '../../lib/prisma';
 
 type IngredientObj = {
   Ingredient: { name: string };
@@ -40,7 +40,8 @@ export default function Home() {
 
     const fetchProducts = async () => {
       try {
-        const res = await fetch("/api/products");
+        const res = await fetch('/api/products');
+        console.log('Fetch response:', res);
         if (didTimeout) return;
         const data = await res.json();
         const productsArray = Array.isArray(data) ? data : data.products;
@@ -48,16 +49,16 @@ export default function Home() {
 
         if (productsArray) {
           const pizzas = productsArray.filter(
-            (item: any) => item.category === "pizza",
+            (item: any) => item.category.toLowerCase() === 'pizza',
           );
-          console.log("Fetched pizzas:", pizzas);
+          console.log('Fetched pizzas:', pizzas);
           setPizzas(pizzas);
           const sauces = productsArray.filter(
-            (item: any) => item.category === "sauces",
+            (item: any) => item.category.toLowerCase() === 'sauces',
           );
           setSauces(sauces);
           const drinks = productsArray.filter(
-            (item: any) => item.category === "drinks",
+            (item: any) => item.category.toLowerCase() === 'drinks',
           );
           setDrinks(drinks);
         } else {
@@ -76,7 +77,7 @@ export default function Home() {
           setLoading(false);
         }
         clearTimeout(timeoutId);
-        console.error("Failed to fetch products:", err);
+        console.error('Failed to fetch products:', err);
       }
     };
     fetchProducts();
@@ -141,7 +142,7 @@ export default function Home() {
                 <br />
                 {sauces.length > 0 && (
                   <>
-                    {" "}
+                    {' '}
                     <h3
                       id="sauces"
                       className="text-2xl sm:text-3xl font-bold text-orange-700 text-center"

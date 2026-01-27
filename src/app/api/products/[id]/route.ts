@@ -29,8 +29,8 @@ export async function GET(
     const product = await prisma.product.findUnique({
       where: { id: Number(id) },
       include: {
-        ProductIngredient: { include: { Ingredient: true } },
-        ProductSize: true,
+        productIngredient: { include: { ingredient: true } },
+        productSize: true,
       },
     });
     if (!product) {
@@ -49,51 +49,60 @@ export async function PUT(
 ) {
   try {
     const id = params.id;
-    // id validation with Zod
-    const idCheck = idParamSchema.safeParse({ id: String(id) });
-    if (!idCheck.success) {
-      return Response.json({ error: "Missing or invalid product id" }, { status: 400 });
+
+    const idValidation = idParamSchema.safeParse({ id: String(id) });
+    if (!idValidation.success) {
+      return Response.json({ error: "Invalid product ID" }, { status: 400 });
     }
+
     const body = await request.json();
-    // id validation with Zod
     const parsed = productUpdateSchema.safeParse(body);
     if (!parsed.success) {
       return Response.json({ error: parsed.error.issues }, { status: 400 });
     }
-    const { name, imageUrl, category, price, description, ingredients, sizes, ...rest } = parsed.data;
-    const updateData: any = { ...rest };
-    if (name !== undefined) updateData.name = name;
-    if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
-    if (category !== undefined) updateData.category = category;
-    if (price !== undefined) updateData.price = price;
-    if (description !== undefined) updateData.description = description;
+
+    const { name, imageUrl, category, description, ingredients, sizes } =
+      parsed.data;
+
+    const updateData: any = {};
+    if (name) updateData.name = name;
+    if (imageUrl) updateData.imageUrl = imageUrl;
+    if (category) updateData.category = category;
+    if (description) updateData.description = description;
+
     if (Array.isArray(ingredients)) {
-      await prisma.productIngredient.deleteMany({ where: { productId: Number(id) } });
       const ingredientIds = await getIngredientIds(ingredients);
-      updateData.ProductIngredient = {
+      updateData.productIngredient = {
+        deleteMany: {},
         create: ingredientIds.map((ingredientId) => ({ ingredientId })),
       };
     }
+
     if (Array.isArray(sizes)) {
-      await prisma.productSize.deleteMany({ where: { productId: Number(id) } });
-      updateData.ProductSize = {
-        create: sizes.map((s) => ({
-          sizeName: s.sizeName,
-          price: s.price,
+      updateData.productSize = {
+        deleteMany: {},
+        create: sizes.map((size) => ({
+          sizeName: size.sizeName,
+          price: size.price,
         })),
       };
     }
-    const updated = await prisma.product.update({
+
+    const updatedProduct = await prisma.product.update({
       where: { id: Number(id) },
       data: updateData,
       include: {
-        ProductIngredient: { include: { Ingredient: true } },
-        ProductSize: true,
+        productIngredient: { include: { ingredient: true } },
+        productSize: true,
       },
     });
-    return Response.json(updated);
+
+    return Response.json(updatedProduct, { status: 200 });
   } catch (error: any) {
-    return Response.json({ error: error?.message || "Failed to update product" }, { status: 500 });
+    return Response.json(
+      { error: error?.message || "Failed to update product" },
+      { status: 500 }
+    );
   }
 }
 
@@ -104,17 +113,23 @@ export async function DELETE(
 ) {
   try {
     const id = params.id;
-    // id validation with Zod
+
     const idCheck = idParamSchema.safeParse({ id: String(id) });
     if (!idCheck.success) {
-      return Response.json({ error: "Missing or invalid product id" }, { status: 400 });
+      return Response.json({ error: "Invalid product ID" }, { status: 400 });
     }
+
     const productId = Number(id);
+
     await prisma.productIngredient.deleteMany({ where: { productId } });
     await prisma.productSize.deleteMany({ where: { productId } });
     await prisma.product.delete({ where: { id: productId } });
-    return Response.json({ success: true });
+
+    return Response.json({ success: true }, { status: 200 });
   } catch (error: any) {
-    return Response.json({ error: error?.message || "Failed to delete product" }, { status: 500 });
+    return Response.json(
+      { error: error?.message || "Failed to delete product" },
+      { status: 500 }
+    );
   }
 }

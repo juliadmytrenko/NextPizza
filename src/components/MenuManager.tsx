@@ -1,27 +1,27 @@
-import { useState, useEffect, Key } from "react";
-import { useMenu } from "../context/MenuContext";
-import MenuItemForm from "./MenuItemForm";
-import MenuItemCard from "./MenuItemCard";
-import IngredientForm from "./IngredientForm";
-import { error } from "console";
+import { useState, useEffect, Key } from 'react';
+import { useMenu } from '../context/MenuContext';
+import MenuItemForm from './MenuItemForm';
+import MenuItemCard from './MenuItemCard';
+import IngredientForm from './IngredientForm';
+import { error } from 'console';
 
 export default function MenuManager({}: any) {
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [categoryFilter, setCategoryFilter] = useState<
-    "pizza" | "sauces" | "drinks" | "ingredient"
-  >("pizza");
+    'PIZZA' | 'SAUCES' | 'DRINKS' | 'INGREDIENT'
+  >('PIZZA');
 
   const [snackbar, setSnackbar] = useState<{
     message: string;
-    type: "success" | "error";
+    type: 'success' | 'error';
   } | null>(null);
 
   const closeSnackbar = () => setSnackbar(null);
 
   useEffect(() => {
-    fetch("/api/products")
+    fetch('/api/products')
       .then((res) => res.json())
       .then((data) => setMenuItems(data))
       .catch(() => setMenuItems([]));
@@ -43,17 +43,17 @@ export default function MenuManager({}: any) {
       let response;
       if (editingItem?.id) {
         response = await fetch(`/api/products/${editingItem.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
         });
       } else {
-        console.log("POSTING");
+        console.log('POSTING');
         console.log(formData);
         console.log(JSON.stringify(formData));
         response = await fetch(`/api/products`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
         });
       }
@@ -63,26 +63,26 @@ export default function MenuManager({}: any) {
         if (response.status === 400) {
           setSnackbar({
             message:
-              "Validation error: " +
-              (errorData.error?.[0]?.message || "Invalid data"),
-            type: "error",
+              'Validation error: ' +
+              (errorData.error?.[0]?.message || 'Invalid data'),
+            type: 'error',
           });
         } else {
-          setSnackbar({ message: "Error saving item", type: "error" });
+          setSnackbar({ message: 'Error saving item', type: 'error' });
         }
         setIsEditing(true);
         // setEditingItem(null);
         return;
       }
 
-      const updated = await fetch("/api/products").then((r) => r.json());
+      const updated = await fetch('/api/products').then((r) => r.json());
 
       setMenuItems(updated);
-      setSnackbar({ message: "Product saved successfully!", type: "success" });
+      setSnackbar({ message: 'Product saved successfully!', type: 'success' });
     } catch (error) {
-      alert("Error saving item");
+      alert('Error saving item');
       console.log(error);
-      setSnackbar({ message: "Error saving item", type: "error" });
+      setSnackbar({ message: 'Error saving item', type: 'error' });
       setIsEditing(true);
       // setEditingItem(null);
     }
@@ -91,12 +91,12 @@ export default function MenuManager({}: any) {
   };
 
   // Ingredient api reqests
-  const [ingredientName, setIngredientName] = useState("");
+  const [ingredientName, setIngredientName] = useState('');
   const [ingredientMsg, setIngredientMsg] = useState<string | null>(null);
   const [ingredients, setIngredients] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("/api/ingredients")
+    fetch('/api/ingredients')
       .then((res) => res.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);
@@ -104,7 +104,7 @@ export default function MenuManager({}: any) {
       })
       .catch(() => {
         setIngredients([]);
-        setIngredientMsg("Error fetching ingredients");
+        setIngredientMsg('Error fetching ingredients');
       });
   }, []);
 
@@ -113,37 +113,37 @@ export default function MenuManager({}: any) {
     const name = ingredientName.trim();
     if (!name) return;
     const exists = ingredients.some(
-      (ing) => ing.name.toLowerCase() === name.toLowerCase()
+      (ing) => ing.name.toLowerCase() === name.toLowerCase(),
     );
     if (exists) {
-      setIngredientMsg("Ingredient already exists in database.");
+      setIngredientMsg('Ingredient already exists in database.');
       setTimeout(() => setIngredientMsg(null), 3000);
       return;
     }
     try {
-      const res = await fetch("/api/ingredients", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/ingredients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name }),
       });
       if (!res.ok) {
-        let msg = "Error adding ingredient";
+        let msg = 'Error adding ingredient';
         try {
           const data = await res.json();
           if (data?.error && /unique|exists|duplicate/i.test(data.error)) {
-            msg = "Ingredient already in database";
+            msg = 'Ingredient already in database';
           }
         } catch {}
         setIngredientMsg(msg);
         setTimeout(() => setIngredientMsg(null), 2000);
         return;
       }
-      setIngredientMsg("Ingredient added!");
-      setIngredientName("");
-      const updated = await fetch("/api/ingredients").then((r) => r.json());
+      setIngredientMsg('Ingredient added!');
+      setIngredientName('');
+      const updated = await fetch('/api/ingredients').then((r) => r.json());
       setIngredients(updated);
     } catch (err) {
-      setIngredientMsg("Error adding ingredient");
+      setIngredientMsg('Error adding ingredient');
     }
     setTimeout(() => setIngredientMsg(null), 2000);
   };
@@ -151,23 +151,23 @@ export default function MenuManager({}: any) {
   // Handler to delete an ingredient
   const handleDeleteIngredient = async (id: any) => {
     try {
-      console.log("Deleting ingredient with id:", id);
+      console.log('Deleting ingredient with id:', id);
       // Use fetch with DELETE method to /api/ingredients, passing id as query param
       const res = await fetch(`/api/ingredients/${id}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
       if (!res.ok) {
-        setIngredientMsg("Error deleting ingredient");
+        setIngredientMsg('Error deleting ingredient');
         setTimeout(() => setIngredientMsg(null), 2000);
         return;
       }
       // Refresh the ingredients list from the API
-      const updated = await fetch("/api/ingredients").then((r) => r.json());
+      const updated = await fetch('/api/ingredients').then((r) => r.json());
       setIngredients(updated);
-      setIngredientMsg("Ingredient deleted");
+      setIngredientMsg('Ingredient deleted');
       setTimeout(() => setIngredientMsg(null), 2000);
     } catch {
-      setIngredientMsg("Error deleting ingredient");
+      setIngredientMsg('Error deleting ingredient');
       setTimeout(() => setIngredientMsg(null), 2000);
     }
   };
@@ -176,7 +176,7 @@ export default function MenuManager({}: any) {
     <div className="w-full max-w-full overflow-x-hidden">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Menu Management</h2>
-        {categoryFilter !== "ingredient" ? (
+        {categoryFilter !== 'INGREDIENT' ? (
           isEditing ? (
             <button
               onClick={() => {
@@ -205,21 +205,21 @@ export default function MenuManager({}: any) {
         )}
       </div>
       <div className="flex flex-wrap gap-2 mb-6">
-        {["pizza", "sauces", "drinks", "ingredient"].map((cat) => (
+        {['PIZZA', 'SAUCES', 'DRINKS', 'INGREDIENT'].map((cat) => (
           <button
             key={cat}
             onClick={() => setCategoryFilter(cat as any)}
             className={`px-4 py-2 rounded-lg font-semibold transition ${
               categoryFilter === cat
-                ? "bg-orange-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                ? 'bg-orange-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
             {cat}
           </button>
         ))}
       </div>
-      {categoryFilter === "ingredient" && (
+      {categoryFilter === 'INGREDIENT' && (
         <IngredientForm
           onSubmit={handleIngredientSubmit}
           onDelete={handleDeleteIngredient}
@@ -229,7 +229,7 @@ export default function MenuManager({}: any) {
           ingredients={ingredients}
         />
       )}
-      {categoryFilter !== "ingredient" &&
+      {categoryFilter !== 'INGREDIENT' &&
         (isEditing ? (
           <MenuItemForm
             item={editingItem}
@@ -256,12 +256,12 @@ export default function MenuManager({}: any) {
       {snackbar && (
         <div
           className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg text-white transition
-      ${snackbar.type === "success" ? "bg-green-600" : "bg-red-600"}`}
+      ${snackbar.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}
           style={{
             zIndex: 1000,
             minWidth: 220,
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
           }}
         >
           <span className="flex-1">{snackbar.message}</span>
@@ -269,7 +269,7 @@ export default function MenuManager({}: any) {
             onClick={closeSnackbar}
             className="ml-4 px-2 py-1 text-orange-900 font-bold"
             aria-label="Close"
-            style={{ fontSize: 18, lineHeight: 1, cursor: "pointer" }}
+            style={{ fontSize: 18, lineHeight: 1, cursor: 'pointer' }}
           >
             ×
           </button>

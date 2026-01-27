@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
 interface MenuItemSize {
   sizeName: string;
@@ -11,19 +11,19 @@ interface Ingredient {
 }
 
 export default function MenuItemForm({ item, onSave, onCancel }: any) {
-  const [ingredientSearch, setIngredientSearch] = useState("");
+  const [ingredientSearch, setIngredientSearch] = useState('');
   const [formData, setFormData] = useState({
-    name: item?.name || "",
-    imageUrl: item?.imageUrl || "",
+    name: item?.name || '',
+    imageUrl: item?.imageUrl || '',
     ingredients: item?.ingredients || [],
-    category: item?.category?.toLowerCase?.() || "pizza",
-    sizes: item?.sizes || [{ sizeName: "", price: 0 }],
+    category: item?.category?.toUpperCase?.() || 'PIZZA',
+    sizes: item?.sizes || [{ sizeName: '', price: 0 }],
   });
 
   const [allIngredients, setAllIngredients] = useState<Ingredient[]>([]);
 
   useEffect(() => {
-    fetch("/api/ingredients")
+    fetch('/api/ingredients')
       .then((res) => res.json())
       .then((data) => setAllIngredients(data))
       .catch(() => setAllIngredients([]));
@@ -34,9 +34,9 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
     if (item) {
       // Load ingredients from ProductIngredient relation or fallback to ingredients array
       let loadedIngredients = [];
-      if (item.ProductIngredient) {
-        loadedIngredients = item.ProductIngredient.map(
-          (pi: any) => pi.Ingredient.name
+      if (item.productIngredient) {
+        loadedIngredients = item.productIngredient.map(
+          (pi: any) => pi.ingredient.name,
         );
       } else if (item.ingredients) {
         loadedIngredients = item.ingredients;
@@ -44,8 +44,8 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
 
       // Load sizes and prices from ProductSize relation or fallback to sizes array
       let loadedSizes = [];
-      if (item.ProductSize) {
-        loadedSizes = item.ProductSize.map((ps: any) => ({
+      if (item.productSize) {
+        loadedSizes = item.productSize.map((ps: any) => ({
           sizeName: ps.sizeName,
           price: ps.price ?? 0,
         }));
@@ -73,7 +73,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting form data:", formData);
+    console.log('Submitting form data:', formData);
     const { name, imageUrl, ingredients, category, sizes } = formData;
     // Ensure sizes are sent as array of { size, price }
 
@@ -89,7 +89,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
   const addSize = () => {
     setFormData((prev) => ({
       ...prev,
-      sizes: [...prev.sizes, { sizeName: "", price: 0 }],
+      sizes: [...prev.sizes, { sizeName: '', price: 0 }],
     }));
   };
 
@@ -103,14 +103,14 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
   // Update sizeName or price for a size entry
   const updateSize = (
     index: number,
-    field: "sizeName" | "price",
-    value: string | number
+    field: 'sizeName' | 'price',
+    value: string | number,
   ) => {
     setFormData((prev) => {
       const newSizes = [...prev.sizes];
       newSizes[index] = {
         ...newSizes[index],
-        [field]: field === "price" ? Number(value) : value,
+        [field]: field === 'price' ? Number(value) : value,
       };
       return { ...prev, sizes: newSizes };
     });
@@ -121,7 +121,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
     ? allIngredients.filter((ingredient) =>
         ingredient.name
           .toLowerCase()
-          .includes(ingredientSearch.trim().toLowerCase())
+          .includes(ingredientSearch.trim().toLowerCase()),
       )
     : allIngredients;
 
@@ -169,9 +169,9 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
           }
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
         >
-          <option value="pizza">Pizza</option>
-          <option value="sauces">Sauces</option>
-          <option value="drinks">Drinks</option>
+          <option value="PIZZA">Pizza</option>
+          <option value="SAUCES">Sauces</option>
+          <option value="DRINKS">Drinks</option>
         </select>
       </div>
       <div>
@@ -192,10 +192,10 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
               onClick={() => toggleIngredient(ingredient.name)}
               className={`cursor-pointer px-3 py-1 rounded-full border text-sm ${
                 formData.ingredients.includes(ingredient.name)
-                  ? "bg-orange-600 text-white border-orange-600"
-                  : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-orange-100"
+                  ? 'bg-orange-600 text-white border-orange-600'
+                  : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-orange-100'
               }`}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: 'pointer' }}
             >
               {ingredient.name}
             </span>
@@ -218,7 +218,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
                 placeholder="Size"
                 required
                 value={size.sizeName}
-                onChange={(e) => updateSize(index, "sizeName", e.target.value)}
+                onChange={(e) => updateSize(index, 'sizeName', e.target.value)}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 min-w-0"
               />
               <input
@@ -226,7 +226,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
                 placeholder="Price"
                 required
                 value={Number(size.price)}
-                onChange={(e) => updateSize(index, "price", e.target.value)}
+                onChange={(e) => updateSize(index, 'price', e.target.value)}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 min-w-0"
               />
               {formData.sizes.length > 1 && (
@@ -234,7 +234,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
                   type="button"
                   onClick={() => removeSize(index)}
                   className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                 >
                   Remove
                 </button>
@@ -248,7 +248,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
             type="button"
             onClick={addSize}
             className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
-            style={{ cursor: "pointer" }}
+            style={{ cursor: 'pointer' }}
           >
             Add Size
           </button>
@@ -262,7 +262,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
                   sizeName: string;
                   price: number;
                 },
-                idx: React.Key | null | undefined
+                idx: React.Key | null | undefined,
               ) =>
                 size.sizeName && (
                   <div
@@ -274,7 +274,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
                       {Number(size.price).toFixed(2)} zł
                     </span>
                   </div>
-                )
+                ),
             )}
           </div>
         )}
@@ -283,7 +283,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
         <button
           type="submit"
           className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition w-full sm:w-auto"
-          style={{ cursor: "pointer" }}
+          style={{ cursor: 'pointer' }}
         >
           Save
         </button>
@@ -291,7 +291,7 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
           type="button"
           onClick={onCancel}
           className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-400 transition w-full sm:w-auto"
-          style={{ cursor: "pointer" }}
+          style={{ cursor: 'pointer' }}
         >
           Cancel
         </button>

@@ -27,10 +27,10 @@ export async function POST(request: Request) {
         imageUrl,
         category: category as any,
         description,
-        ProductIngredient: {
+        productIngredient: {
           create: ingredientIds.map((id) => ({ ingredientId: id })),
         },
-        ProductSize: {
+        productSize: {
           create: Array.isArray(sizes)
             ? sizes.map((s) => ({
                 sizeName: s.sizeName,
@@ -40,12 +40,13 @@ export async function POST(request: Request) {
         },
       },
       include: {
-        ProductIngredient: { include: { Ingredient: true } },
-        ProductSize: true,
+        productIngredient: { include: { ingredient: true } },
+        productSize: true,
       },
     });
     return Response.json(product, { status: 201 });
   } catch (error: any) {
+    console.log("error:", error);
     return Response.json({ error: error?.message || "Failed to create product" }, { status: 500 });
   }
 }
@@ -55,8 +56,8 @@ export async function GET() {
   try {
     const products = await prisma.product.findMany({
       include: {
-        ProductIngredient: { include: { Ingredient: true } },
-        ProductSize: true,
+        productIngredient: { include: { ingredient: true } },
+        productSize: true,
       },
     });
     return Response.json(products);
