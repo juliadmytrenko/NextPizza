@@ -34,12 +34,13 @@ export default function ImageUploaderLocal({ onUploaded }: Props) {
   }
 
   return (
-    <div>
+    <div className="cursor-pointer">
       <input
         type="file"
         accept="image/*"
         onChange={handleChange}
         disabled={isUploading}
+        className="block w-full text-sm mb-2 text-orange-500 cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 file:cursor-pointer"
       />
       {isUploading && <p>Uploading…</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
