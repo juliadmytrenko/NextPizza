@@ -178,8 +178,8 @@ export default function MenuItemForm({ item, onSave, onCancel }: any) {
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
         >
           <option value="PIZZA">Pizza</option>
-          <option value="SAUCES">Sauces</option>
-          <option value="DRINKS">Drinks</option>
+          <option value="SAUCE">Sauces</option>
+          <option value="DRINK">Drinks</option>
         </select>
       </div>
       <div>

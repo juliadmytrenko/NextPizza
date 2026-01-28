@@ -54,11 +54,11 @@ export default function Home() {
           console.log('Fetched pizzas:', pizzas);
           setPizzas(pizzas);
           const sauces = productsArray.filter(
-            (item: any) => item.category.toLowerCase() === 'sauces',
+            (item: any) => item.category.toLowerCase() === 'sauce',
           );
           setSauces(sauces);
           const drinks = productsArray.filter(
-            (item: any) => item.category.toLowerCase() === 'drinks',
+            (item: any) => item.category.toLowerCase() === 'drink',
           );
           setDrinks(drinks);
         } else {

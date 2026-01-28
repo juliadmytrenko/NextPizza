@@ -108,41 +108,41 @@
 //   }
 //   return context;
 // };
-"use client";
+'use client';
 import React, {
   createContext,
   useContext,
   useState,
   useEffect,
   ReactNode,
-} from "react";
+} from 'react';
 
 export interface MenuItem {
   id: string;
   name: string;
   image: string;
   ingredients: string[];
-  category: "pizza" | "sauces" | "drinks";
+  category: 'pizza' | 'sauce' | 'drink';
   sizes: { size: number; price: number }[];
 }
 
 interface MenuContextType {
   menuItems: MenuItem[];
-  addMenuItem: (item: Omit<MenuItem, "id">) => void;
-  updateMenuItem: (id: string, item: Omit<MenuItem, "id">) => void;
+  addMenuItem: (item: Omit<MenuItem, 'id'>) => void;
+  updateMenuItem: (id: string, item: Omit<MenuItem, 'id'>) => void;
   deleteMenuItem: (id: string) => void;
-  getMenuItemsByCategory: (category: MenuItem["category"]) => MenuItem[];
+  getMenuItemsByCategory: (category: MenuItem['category']) => MenuItem[];
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);
 
 const initialMenuItems: MenuItem[] = [
   {
-    id: "1",
-    name: "Margherita",
-    image: "/images/margherita.jpg",
-    ingredients: ["Tomato sauce", "Mozzarella cheese", "Basil"],
-    category: "pizza",
+    id: '1',
+    name: 'Margherita',
+    image: '/images/margherita.jpg',
+    ingredients: ['Tomato sauce', 'Mozzarella cheese', 'Basil'],
+    category: 'pizza',
     sizes: [
       { size: 30, price: 20 },
       { size: 40, price: 30 },
@@ -150,11 +150,11 @@ const initialMenuItems: MenuItem[] = [
     ],
   },
   {
-    id: "2",
-    name: "Pepperoni",
-    image: "/images/pepperoni.jpg",
-    ingredients: ["Tomato sauce", "Mozzarella cheese", "Pepperoni"],
-    category: "pizza",
+    id: '2',
+    name: 'Pepperoni',
+    image: '/images/pepperoni.jpg',
+    ingredients: ['Tomato sauce', 'Mozzarella cheese', 'Pepperoni'],
+    category: 'pizza',
     sizes: [
       { size: 30, price: 25 },
       { size: 40, price: 35 },
@@ -162,11 +162,11 @@ const initialMenuItems: MenuItem[] = [
     ],
   },
   {
-    id: "3",
-    name: "Hawaiian",
-    image: "/images/hawaii.jpg",
-    ingredients: ["Tomato sauce", "Mozzarella cheese", "Ham", "Pineapple"],
-    category: "pizza",
+    id: '3',
+    name: 'Hawaiian',
+    image: '/images/hawaii.jpg',
+    ingredients: ['Tomato sauce', 'Mozzarella cheese', 'Ham', 'Pineapple'],
+    category: 'pizza',
     sizes: [
       { size: 30, price: 26 },
       { size: 40, price: 36 },
@@ -174,17 +174,17 @@ const initialMenuItems: MenuItem[] = [
     ],
   },
   {
-    id: "4",
-    name: "Quattro Formaggi",
-    image: "/images/4cheese.jpg",
+    id: '4',
+    name: 'Quattro Formaggi',
+    image: '/images/4cheese.jpg',
     ingredients: [
-      "Cream sauce",
-      "Mozzarella",
-      "Gorgonzola",
-      "Parmesan",
-      "Ricotta",
+      'Cream sauce',
+      'Mozzarella',
+      'Gorgonzola',
+      'Parmesan',
+      'Ricotta',
     ],
-    category: "pizza",
+    category: 'pizza',
     sizes: [
       { size: 30, price: 28 },
       { size: 40, price: 38 },
@@ -192,18 +192,18 @@ const initialMenuItems: MenuItem[] = [
     ],
   },
   {
-    id: "5",
-    name: "Vegetarian",
-    image: "/images/pepperoni.jpg",
+    id: '5',
+    name: 'Vegetarian',
+    image: '/images/pepperoni.jpg',
     ingredients: [
-      "Tomato sauce",
-      "Mozzarella cheese",
-      "Bell pepper",
-      "Onion",
-      "Mushrooms",
-      "Olives",
+      'Tomato sauce',
+      'Mozzarella cheese',
+      'Bell pepper',
+      'Onion',
+      'Mushrooms',
+      'Olives',
     ],
-    category: "pizza",
+    category: 'pizza',
     sizes: [
       { size: 30, price: 24 },
       { size: 40, price: 34 },
@@ -211,68 +211,68 @@ const initialMenuItems: MenuItem[] = [
     ],
   },
   {
-    id: "6",
-    name: "Garlic sauce",
-    image: "/images/garlic-sauce-1.webp",
-    ingredients: ["Sour cream", "Garlic", "Spices"],
-    category: "sauces",
+    id: '6',
+    name: 'Garlic sauce',
+    image: '/images/garlic-sauce-1.webp',
+    ingredients: ['Sour cream', 'Garlic', 'Spices'],
+    category: 'sauces',
     sizes: [{ size: 50, price: 3 }],
   },
   {
-    id: "7",
-    name: "BBQ sauce",
-    image: "/images/bbq.jpg",
-    ingredients: ["Tomatoes", "Paprika", "Onion", "Spices"],
-    category: "sauces",
+    id: '7',
+    name: 'BBQ sauce',
+    image: '/images/bbq.jpg',
+    ingredients: ['Tomatoes', 'Paprika', 'Onion', 'Spices'],
+    category: 'sauces',
     sizes: [{ size: 50, price: 3 }],
   },
   {
-    id: "8",
-    name: "Spicy sauce",
-    image: "/images/bbq.jpg",
-    ingredients: ["Tomatoes", "Chili", "Paprika", "Spices"],
-    category: "sauces",
+    id: '8',
+    name: 'Spicy sauce',
+    image: '/images/bbq.jpg',
+    ingredients: ['Tomatoes', 'Chili', 'Paprika', 'Spices'],
+    category: 'sauces',
     sizes: [{ size: 50, price: 3 }],
   },
   {
-    id: "9",
-    name: "Coca-Cola",
-    image: "/images/cola.jpg",
-    ingredients: ["Carbonated drink"],
-    category: "drinks",
+    id: '9',
+    name: 'Coca-Cola',
+    image: '/images/cola.jpg',
+    ingredients: ['Carbonated drink'],
+    category: 'drinks',
     sizes: [
       { size: 250, price: 7 },
       { size: 800, price: 9 },
     ],
   },
   {
-    id: "10",
-    name: "Sprite",
-    image: "/images/cola.jpg",
-    ingredients: ["Lemon-lime carbonated drink"],
-    category: "drinks",
+    id: '10',
+    name: 'Sprite',
+    image: '/images/cola.jpg',
+    ingredients: ['Lemon-lime carbonated drink'],
+    category: 'drinks',
     sizes: [
       { size: 250, price: 7 },
       { size: 800, price: 9 },
     ],
   },
   {
-    id: "11",
-    name: "Orange juice",
-    image: "/images/cola.jpg",
-    ingredients: ["100% orange juice"],
-    category: "drinks",
+    id: '11',
+    name: 'Orange juice',
+    image: '/images/cola.jpg',
+    ingredients: ['100% orange juice'],
+    category: 'drinks',
     sizes: [
       { size: 250, price: 7 },
       { size: 800, price: 9 },
     ],
   },
   {
-    id: "12",
-    name: "Mineral water",
-    image: "/images/cola.jpg",
-    ingredients: ["Sparkling spring water"],
-    category: "drinks",
+    id: '12',
+    name: 'Mineral water',
+    image: '/images/cola.jpg',
+    ingredients: ['Sparkling spring water'],
+    category: 'drinks',
     sizes: [
       { size: 250, price: 7 },
       { size: 800, price: 9 },
@@ -285,7 +285,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    const savedMenu = localStorage.getItem("menuItems");
+    const savedMenu = localStorage.getItem('menuItems');
     if (savedMenu) {
       setMenuItems(JSON.parse(savedMenu));
     }
@@ -294,11 +294,11 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (isHydrated) {
-      localStorage.setItem("menuItems", JSON.stringify(menuItems));
+      localStorage.setItem('menuItems', JSON.stringify(menuItems));
     }
   }, [menuItems, isHydrated]);
 
-  const addMenuItem = (item: Omit<MenuItem, "id">) => {
+  const addMenuItem = (item: Omit<MenuItem, 'id'>) => {
     const newItem: MenuItem = {
       ...item,
       id: Date.now().toString(),
@@ -306,9 +306,9 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setMenuItems((prev) => [...prev, newItem]);
   };
 
-  const updateMenuItem = (id: string, item: Omit<MenuItem, "id">) => {
+  const updateMenuItem = (id: string, item: Omit<MenuItem, 'id'>) => {
     setMenuItems((prev) =>
-      prev.map((menuItem) => (menuItem.id === id ? { ...item, id } : menuItem))
+      prev.map((menuItem) => (menuItem.id === id ? { ...item, id } : menuItem)),
     );
   };
 
@@ -316,7 +316,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setMenuItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const getMenuItemsByCategory = (category: MenuItem["category"]) => {
+  const getMenuItemsByCategory = (category: MenuItem['category']) => {
     return menuItems.filter((item) => item.category === category);
   };
 
@@ -338,7 +338,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
 export const useMenu = () => {
   const context = useContext(MenuContext);
   if (!context) {
-    throw new Error("useMenu must be used within a MenuProvider");
+    throw new Error('useMenu must be used within a MenuProvider');
   }
   return context;
 };

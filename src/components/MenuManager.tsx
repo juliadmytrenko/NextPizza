@@ -10,7 +10,7 @@ export default function MenuManager({}: any) {
   const [isEditing, setIsEditing] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [categoryFilter, setCategoryFilter] = useState<
-    'PIZZA' | 'SAUCES' | 'DRINKS' | 'INGREDIENT'
+    'PIZZA' | 'SAUCE' | 'DRINK' | 'INGREDIENT'
   >('PIZZA');
 
   const [snackbar, setSnackbar] = useState<{
@@ -205,7 +205,7 @@ export default function MenuManager({}: any) {
         )}
       </div>
       <div className="flex flex-wrap gap-2 mb-6">
-        {['PIZZA', 'SAUCES', 'DRINKS', 'INGREDIENT'].map((cat) => (
+        {['PIZZA', 'SAUCE', 'DRINK', 'INGREDIENT'].map((cat) => (
           <button
             key={cat}
             onClick={() => setCategoryFilter(cat as any)}

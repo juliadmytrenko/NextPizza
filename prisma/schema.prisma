@@ -77,7 +77,7 @@ model productSize {
 enum product_category {
   PIZZA
   DRINK
-  SAUSE
+  SAUCE
 }
 
 // NextAuth models
