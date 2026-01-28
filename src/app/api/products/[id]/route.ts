@@ -45,10 +45,10 @@ export async function GET(
 // --- PUT ---
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = params.id;
+    const { id } = await context.params;
 
     const idValidation = idParamSchema.safeParse({ id: String(id) });
     if (!idValidation.success) {
