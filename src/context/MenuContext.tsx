@@ -215,7 +215,7 @@ const initialMenuItems: MenuItem[] = [
     name: 'Garlic sauce',
     image: '/images/garlic-sauce-1.webp',
     ingredients: ['Sour cream', 'Garlic', 'Spices'],
-    category: 'sauces',
+    category: 'sauce',
     sizes: [{ size: 50, price: 3 }],
   },
   {
@@ -223,7 +223,7 @@ const initialMenuItems: MenuItem[] = [
     name: 'BBQ sauce',
     image: '/images/bbq.jpg',
     ingredients: ['Tomatoes', 'Paprika', 'Onion', 'Spices'],
-    category: 'sauces',
+    category: 'sauce',
     sizes: [{ size: 50, price: 3 }],
   },
   {
@@ -231,7 +231,7 @@ const initialMenuItems: MenuItem[] = [
     name: 'Spicy sauce',
     image: '/images/bbq.jpg',
     ingredients: ['Tomatoes', 'Chili', 'Paprika', 'Spices'],
-    category: 'sauces',
+    category: 'sauce',
     sizes: [{ size: 50, price: 3 }],
   },
   {
@@ -239,7 +239,7 @@ const initialMenuItems: MenuItem[] = [
     name: 'Coca-Cola',
     image: '/images/cola.jpg',
     ingredients: ['Carbonated drink'],
-    category: 'drinks',
+    category: 'drink',
     sizes: [
       { size: 250, price: 7 },
       { size: 800, price: 9 },
@@ -250,7 +250,7 @@ const initialMenuItems: MenuItem[] = [
     name: 'Sprite',
     image: '/images/cola.jpg',
     ingredients: ['Lemon-lime carbonated drink'],
-    category: 'drinks',
+    category: 'drink',
     sizes: [
       { size: 250, price: 7 },
       { size: 800, price: 9 },
@@ -261,7 +261,7 @@ const initialMenuItems: MenuItem[] = [
     name: 'Orange juice',
     image: '/images/cola.jpg',
     ingredients: ['100% orange juice'],
-    category: 'drinks',
+    category: 'drink',
     sizes: [
       { size: 250, price: 7 },
       { size: 800, price: 9 },
@@ -272,7 +272,7 @@ const initialMenuItems: MenuItem[] = [
     name: 'Mineral water',
     image: '/images/cola.jpg',
     ingredients: ['Sparkling spring water'],
-    category: 'drinks',
+    category: 'drink',
     sizes: [
       { size: 250, price: 7 },
       { size: 800, price: 9 },
