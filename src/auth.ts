@@ -1,5 +1,5 @@
 import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
+import CredentialsProvider from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { randomUUID } from "crypto";
 import { PrismaAdapter } from "@auth/prisma-adapter"
@@ -13,7 +13,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
 
   providers: [
-    Credentials({
+    CredentialsProvider({
       name: "Credentials",
       credentials: {
         username: { label: "Username", type: "text" },
