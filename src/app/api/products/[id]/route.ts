@@ -109,14 +109,14 @@ export async function PUT(
 // --- DELETE ---
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = params.id;
+    const { id } = await context.params;
 
     const idCheck = idParamSchema.safeParse({ id: String(id) });
     if (!idCheck.success) {
-      return Response.json({ error: "Invalid product ID" }, { status: 400 });
+      return Response.json({ error: `Invalid product ID: ${id}` }, { status: 400 });
     }
 
     const productId = Number(id);

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Ingredient from "./Ingredient";
+import React, { useState } from 'react';
+import Ingredient from './Ingredient';
 
 export interface IngredientFormProps {
   onSubmit: (e: React.FormEvent) => void;

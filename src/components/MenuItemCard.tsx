@@ -70,7 +70,11 @@ export default function MenuItemCard({
               </button>
               <button
                 onClick={async () => {
-                  if (confirm('Are you sure you want to delete this item?')) {
+                  if (
+                    confirm(
+                      `Are you sure you want to delete this item? ID:${item.id}`,
+                    )
+                  ) {
                     await fetch(`/api/products/${item.id}`, {
                       method: 'DELETE',
                     });
@@ -102,7 +106,11 @@ export default function MenuItemCard({
           </button>
           <button
             onClick={async () => {
-              if (confirm('Are you sure you want to delete this item?')) {
+              if (
+                confirm(
+                  `Are you sure you want to delete this item? ID: ${item.id}`,
+                )
+              ) {
                 await fetch(`/api/products/${item.id}`, {
                   method: 'DELETE',
                 });
