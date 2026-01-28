@@ -1,3 +1,4 @@
+'use client';
 import { useState, useEffect, Key } from 'react';
 import { useMenu } from '../context/MenuContext';
 import MenuItemForm from './MenuItemForm';

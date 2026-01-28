@@ -1,12 +1,13 @@
-import { useOrders } from "../context/OrdersContext";
-import OrderCard from "./OrderCard";
-import { useState, useEffect } from "react";
+'use client';
+import { useOrders } from '../context/OrdersContext';
+import OrderCard from './OrderCard';
+import { useState, useEffect } from 'react';
 
 export default function OrdersList() {
   const { orders, updateOrderStatus, deleteOrder } = useOrders();
   const [filter, setFilter] = useState<
-    "all" | "pending" | "preparing" | "ready"
-  >("all");
+    'all' | 'pending' | 'preparing' | 'ready'
+  >('all');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,9 +17,9 @@ export default function OrdersList() {
   }, [orders]);
 
   const filteredOrders =
-    filter === "all"
+    filter === 'all'
       ? orders.filter(
-          (o) => o.status !== "delivered" && o.status !== "cancelled"
+          (o) => o.status !== 'delivered' && o.status !== 'cancelled',
         )
       : orders.filter((o) => o.status === filter);
 
@@ -27,14 +28,14 @@ export default function OrdersList() {
       <div className="flex flex-wrap gap-y-2 justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800 mr-2">Orders</h2>
         <div className="flex gap-2 flex-wrap">
-          {["all", "pending", "preparing", "ready"].map((status) => (
+          {['all', 'pending', 'preparing', 'ready'].map((status) => (
             <button
               key={status}
               onClick={() => setFilter(status as any)}
               className={`px-4 py-2 rounded-lg font-semibold transition ${
                 filter === status
-                  ? "bg-orange-600 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  ? 'bg-orange-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
               {status.charAt(0).toUpperCase() + status.slice(1)}
