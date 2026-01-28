@@ -9,16 +9,12 @@ import AboutUs from '../../components/AboutUs';
 import { useMenu } from '../../context/MenuContext';
 import { prisma } from '../../lib/prisma';
 
-type IngredientObj = {
-  Ingredient: { name: string };
-};
-
 export type Product = {
   name: string;
   imageUrl: string;
   category: string;
-  ProductIngredient?: { Ingredient: { name: string } }[];
-  ProductSize?: { sizeName: string; price: number }[];
+  productIngredient?: { Ingredient: { name: string } }[];
+  productSize?: { sizeName: string; price: number }[];
 };
 
 export default function Home() {
@@ -133,8 +129,8 @@ export default function Home() {
                           key={`${product.name}-${index}`}
                           name={product.name}
                           imageUrl={product.imageUrl}
-                          ingredients={product.ProductIngredient}
-                          sizes={product.ProductSize}
+                          ingredients={product.productIngredient}
+                          sizes={product.productSize}
                         />
                       ))}
                   </>
@@ -155,8 +151,8 @@ export default function Home() {
                           key={`${product.name}-${index}`}
                           name={product.name}
                           imageUrl={product.imageUrl}
-                          ingredients={product.ProductIngredient}
-                          sizes={product.ProductSize}
+                          ingredients={product.productIngredient}
+                          sizes={product.productSize}
                         />
                       ))}
                   </>
@@ -177,8 +173,8 @@ export default function Home() {
                           key={`${product.name}-${index}`}
                           name={product.name}
                           imageUrl={product.imageUrl}
-                          ingredients={product.ProductIngredient}
-                          sizes={product.ProductSize}
+                          ingredients={product.productIngredient}
+                          sizes={product.productSize}
                         />
                       ))}
                   </>

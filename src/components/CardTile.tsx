@@ -8,7 +8,7 @@ import { isValidImageSrc } from '@/lib/utils';
 interface CardTileInterface {
   name: string;
   imageUrl: string;
-  ingredients?: { Ingredient: { name: string } }[];
+  ingredients?: { ingredient: { name: string } }[];
   sizes?: {
     sizeName: string;
     price: number;
@@ -70,7 +70,7 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
             </label>
             <p className="text-gray-600 text-xs sm:text-sm">
               {ingredients && ingredients.length > 0
-                ? ingredients.map((ing) => ing.Ingredient.name).join(', ')
+                ? ingredients.map((ing) => ing.ingredient.name).join(', ')
                 : 'No ingredients'}
             </p>
           </div>
