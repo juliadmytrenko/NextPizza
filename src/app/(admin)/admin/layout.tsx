@@ -38,8 +38,11 @@ export default function AdminPage({ children }: { children: React.ReactNode }) {
         <div className="bg-white rounded-lg shadow-md mb-6">
           <div className="flex border-b">
             <button
-              onClick={() => router.push('/admin/orders')}
-              className={`flex-1 px-6 py-4 font-semibold transition ${
+              onClick={() => {
+                router.push('/admin/orders');
+                setActiveTab('orders');
+              }}
+              className={`flex-1 px-6 py-4 font-semibold transition cursor-pointer ${
                 activeTab === 'orders'
                   ? 'bg-orange-600 text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-100'
@@ -48,8 +51,11 @@ export default function AdminPage({ children }: { children: React.ReactNode }) {
               Orders
             </button>
             <button
-              onClick={() => router.push('/admin/menu')}
-              className={`flex-1 px-6 py-4 font-semibold transition ${
+              onClick={() => {
+                router.push('/admin/menu');
+                setActiveTab('menu');
+              }}
+              className={`flex-1 px-6 py-4 font-semibold transition cursor-pointer ${
                 activeTab === 'menu'
                   ? 'bg-orange-600 text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-100'
