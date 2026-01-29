@@ -39,3 +39,7 @@ h6 {
 button {
   cursor: pointer;
 }
+
+html {
+  scrollbar-gutter: stable;
+}
