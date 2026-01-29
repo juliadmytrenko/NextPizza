@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --background: #ffffff;
@@ -25,7 +25,17 @@ body {
   font-family: var(--font-poppins), sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-lobster), cursive;
   font-weight: 400;
+}
+
+/* Custom  */
+button {
+  cursor: pointer;
 }
