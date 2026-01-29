@@ -13,30 +13,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
 
   providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials) return null;
-
-        if (
-          credentials.username === "admin" &&
-          credentials.password === "admin"
-        ) {
-          return {
-            id: randomUUID(),
-            name: "Admin",
-            email: "admin@test.local",
-          };
-        }
-
-        return null;
-      },
-    }),
-
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
