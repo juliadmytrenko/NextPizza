@@ -25,12 +25,13 @@ export default function MenuItemCard({
               className="object-cover rounded-lg border border-gray-200 w-full sm:w-[140px]"
               style={{
                 aspectRatio: '1 / 1',
-                width: '-webkit-fill-available',
-                maxWidth: 400,
+                width: '140px',
+                height: '140px',
               }}
               width={140}
               height={140}
               priority={false}
+              objectFit="cover"
               onError={() => setImgSrc('/images/fallback.png')}
             />
           </div>
