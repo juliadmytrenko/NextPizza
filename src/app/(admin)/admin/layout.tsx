@@ -1,10 +1,11 @@
 'use client';
-import { useState, useEffect, Key } from 'react';
+import { useState, useEffect, Key, useMemo } from 'react';
 
 import { useMenu } from '@/context/MenuContext';
 import { useOrders } from '@/context/OrdersContext';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 interface MenuItemSize {
   size: number;
@@ -14,7 +15,16 @@ interface MenuItemSize {
 export default function AdminPage({ children }: { children: React.ReactNode }) {
   const menuContext = useMenu();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'menu' | 'orders'>('orders');
+  const pathname = usePathname();
+
+  const activeTab = useMemo(() => {
+    if (pathname.includes('/admin/menu')) {
+      return 'menu';
+    } else if (pathname.includes('/admin/orders')) {
+      return 'orders';
+    }
+    return 'orders';
+  }, [pathname]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -40,7 +50,7 @@ export default function AdminPage({ children }: { children: React.ReactNode }) {
             <button
               onClick={() => {
                 router.push('/admin/orders');
-                setActiveTab('orders');
+                // setActiveTab('orders');
               }}
               className={`flex-1 px-6 py-4 font-semibold transition rounded cursor-pointer ${
                 activeTab === 'orders'
@@ -53,7 +63,7 @@ export default function AdminPage({ children }: { children: React.ReactNode }) {
             <button
               onClick={() => {
                 router.push('/admin/menu');
-                setActiveTab('menu');
+                // setActiveTab('menu');
               }}
               className={`flex-1 px-6 py-4 font-semibold transition rounded cursor-pointer ${
                 activeTab === 'menu'
