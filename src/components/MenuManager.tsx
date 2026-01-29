@@ -9,6 +9,7 @@ import { error } from 'console';
 export default function MenuManager({}: any) {
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [categoryFilter, setCategoryFilter] = useState<
     'PIZZA' | 'SAUCE' | 'DRINK' | 'INGREDIENT'
@@ -24,8 +25,14 @@ export default function MenuManager({}: any) {
   useEffect(() => {
     fetch('/api/products')
       .then((res) => res.json())
-      .then((data) => setMenuItems(data))
-      .catch(() => setMenuItems([]));
+      .then((data) => {
+        setMenuItems(data);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setMenuItems([]);
+        setIsLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -229,6 +236,28 @@ export default function MenuManager({}: any) {
           ingredientMsg={ingredientMsg}
           ingredients={ingredients}
         />
+      )}
+      {isLoading && (
+        <div>
+          <div className="rounded-xl p-3 sm:p-5 shadow-lg bg-gradient-to-br from-white to-orange-50 border-2 border-orange-400 animate-pulse mb-6">
+            <div className="relative w-full sm:w-48 h-48 flex-shrink-0 rounded-lg shadow-md bg-gray-200 mb-4"></div>
+            <div className="h-6 bg-gray-300 rounded w-1/3 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+          </div>
+          <div className="rounded-xl p-3 sm:p-5 shadow-lg bg-gradient-to-br from-white to-orange-50 border-2 border-orange-400 animate-pulse mb-6">
+            <div className="relative w-full sm:w-48 h-48 flex-shrink-0 rounded-lg shadow-md bg-gray-200 mb-4"></div>
+            <div className="h-6 bg-gray-300 rounded w-1/3 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+          </div>
+          <div className="rounded-xl p-3 sm:p-5 shadow-lg bg-gradient-to-br from-white to-orange-50 border-2 border-orange-400 animate-pulse mb-6">
+            <div className="relative w-full sm:w-48 h-48 flex-shrink-0 rounded-lg shadow-md bg-gray-200 mb-4"></div>
+            <div className="h-6 bg-gray-300 rounded w-1/3 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+          </div>
+        </div>
       )}
       {categoryFilter !== 'INGREDIENT' &&
         (isEditing ? (
