@@ -7,74 +7,66 @@ datasource db {
   provider = "mysql"
 }
 
-model customer {
-  id      Int     @id @default(autoincrement())
-  name    String
-  email   String  @unique(map: "Customer_email_key")
-  address String?
-  order   order[]
-}
-
-model ingredient {
+model Ingredient {
   id                Int                 @id @default(autoincrement())
   name              String              @unique(map: "Ingredient_name_key")
-  productIngredient productIngredient[]
+  productIngredient ProductIngredient[]
 }
 
-model order {
+model Order {
   id           Int            @id @default(autoincrement())
   createdAt    DateTime       @default(now())
-  customerId   Int
   status       String         @default("pending")
-  customer     customer       @relation(fields: [customerId], references: [id], map: "Order_customerId_fkey")
-  orderProduct orderProduct[]
+  orderProduct OrderProduct[]
+  user         User?          @relation(fields: [userId], references: [id])
+  userId       String?
 
-  @@index([customerId], map: "Order_customerId_fkey")
+  @@index([userId], map: "Order_userId_fkey")
 }
 
-model orderProduct {
+model OrderProduct {
   orderId   Int
   productId Int
   quantity  Int     @default(1)
-  order     order   @relation(fields: [orderId], references: [id], map: "OrderProduct_orderId_fkey")
-  product   product @relation(fields: [productId], references: [id], map: "OrderProduct_productId_fkey")
+  order     Order   @relation(fields: [orderId], references: [id], map: "OrderProduct_orderId_fkey")
+  product   Product @relation(fields: [productId], references: [id], map: "OrderProduct_productId_fkey")
 
   @@id([orderId, productId])
   @@index([productId], map: "OrderProduct_productId_fkey")
 }
 
-model product {
+model Product {
   id                Int                 @id @default(autoincrement())
   name              String              @unique(map: "Product_name_key")
   description       String?
   imageUrl          String?
-  category          product_category
-  orderProduct      orderProduct[]
-  productIngredient productIngredient[]
-  productSize       productSize[]
+  category          ProductCategory
+  orderProduct      OrderProduct[]
+  productIngredient ProductIngredient[]
+  productSize       ProductSize[]
 }
 
-model productIngredient {
+model ProductIngredient {
   productId    Int
   ingredientId Int
-  ingredient   ingredient @relation(fields: [ingredientId], references: [id], map: "ProductIngredient_ingredientId_fkey")
-  product      product    @relation(fields: [productId], references: [id], map: "ProductIngredient_productId_fkey")
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], map: "ProductIngredient_ingredientId_fkey")
+  product      Product    @relation(fields: [productId], references: [id], map: "ProductIngredient_productId_fkey")
 
   @@id([productId, ingredientId])
   @@index([ingredientId], map: "ProductIngredient_ingredientId_fkey")
 }
 
-model productSize {
+model ProductSize {
   productId Int
   sizeName  String
   price     Float
-  product   product @relation(fields: [productId], references: [id], map: "ProductSize_productId_fkey")
+  product   Product @relation(fields: [productId], references: [id], map: "ProductSize_productId_fkey")
 
   @@id([productId, sizeName])
   @@index([sizeName], map: "ProductSize_sizeName_idx")
 }
 
-enum product_category {
+enum ProductCategory {
   PIZZA
   DRINK
   SAUCE
@@ -86,6 +78,16 @@ enum Role {
   ADMIN
 }
 
+model Address {
+  id         Int    @id @default(autoincrement())
+  street     String
+  city       String
+  postalCode String
+  country    String
+  userId     String @unique
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model User {
   id             String    @id @default(cuid())
   name           String?
@@ -93,9 +95,16 @@ model User {
   emailVerified  DateTime?
   image          String?
   hashedPassword String? // dla Credentials login
+  phone          String?
   role           Role      @default(USER)
-  accounts       Account[]
+  verified       DateTime?
+  accounts       Account[] // One user can have multiple OAuth providers
   sessions       Session[]
+  addresses      Address[]
+  orders         Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Account {
