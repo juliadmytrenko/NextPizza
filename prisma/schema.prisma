@@ -13,10 +13,16 @@ model Ingredient {
   productIngredient ProductIngredient[]
 }
 
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
 model Order {
   id           Int            @id @default(autoincrement())
   createdAt    DateTime       @default(now())
-  status       String         @default("pending")
+  status       OrderStatus    @default(PENDING)
   orderProduct OrderProduct[]
   user         User?          @relation(fields: [userId], references: [id])
   userId       String?
