@@ -20,12 +20,18 @@ enum OrderStatus {
 }
 
 model Order {
-  id           Int            @id @default(autoincrement())
-  createdAt    DateTime       @default(now())
-  status       OrderStatus    @default(PENDING)
-  orderProduct OrderProduct[]
-  user         User?          @relation(fields: [userId], references: [id])
-  userId       String?
+  id            Int            @id @default(autoincrement())
+  createdAt     DateTime       @default(now())
+  status        OrderStatus    @default(PENDING)
+  orderProducts OrderProduct[]
+  user          User?          @relation(fields: [userId], references: [id])
+  userId        String?
+  totalPrice    Float
+  notes         String?
+  paymentMethod String
+  deliveryTime  DateTime?
+  address       String
+  isPaid        Boolean        @default(false)
 
   @@index([userId], map: "Order_userId_fkey")
 }
