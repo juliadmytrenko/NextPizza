@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const orders = await prisma.order.findMany({
       include: {
-        orderProduct: {
+        orderProducts: {
           include: {
             product: true
           }
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       data: {
         userId: validatedData.userId || null,
         status: 'PENDING',
-        orderProduct: {
+        orderProducts: {
           create: validatedData.products.map((item) => ({
             productId: item.productId,
             quantity: item.quantity
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
         }
       },
       include: {
-        orderProduct: {
+        orderProducts: {
           include: {
             product: true
           }
