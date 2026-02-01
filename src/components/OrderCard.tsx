@@ -3,15 +3,15 @@ import { useOrders } from '../context/OrdersContext';
 
 function getStatusColor(status: string) {
   switch (status) {
-    case 'pending':
+    case 'PENDING':
       return 'bg-yellow-100 text-yellow-800';
-    case 'preparing':
+    case 'PREPARING':
       return 'bg-blue-100 text-blue-800';
-    case 'ready':
+    case 'READY':
       return 'bg-green-100 text-green-800';
-    case 'delivered':
+    case 'DELIVERED':
       return 'bg-gray-100 text-gray-800';
-    case 'cancelled':
+    case 'CANCELLED':
       return 'bg-red-100 text-red-800';
     default:
       return 'bg-gray-100 text-gray-800';
@@ -19,7 +19,36 @@ function getStatusColor(status: string) {
 }
 
 export default function OrderCard({ order }: any) {
-  const { updateOrderStatus, deleteOrder } = useOrders();
+  // const { updateOrderStatus, deleteOrder } = useOrders();
+  // const { deleteOrder } = useOrders();
+
+  async function updateOrderStatus(orderId: number, newStatus: string) {
+    console.log('Updating order status:', orderId, newStatus);
+    const response = await fetch(`/api/orders/${orderId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status: newStatus }),
+    });
+    console.log('Update response status:', response.status);
+
+    if (!response.ok) {
+      throw new Error('Failed to update order status');
+    }
+
+    return await response.json();
+  }
+
+  async function deleteOrder(orderId: number) {
+    const response = await fetch(`/api/orders/${orderId}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete order');
+    }
+    // Optionally, refresh the orders list or update state here
+  }
 
   return (
     <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
@@ -77,46 +106,46 @@ export default function OrderCard({ order }: any) {
         </div>
       )}
       <div className="flex gap-2 flex-wrap">
-        {order.status === 'pending' && (
+        {order.status === 'PENDING' && (
           <button
-            onClick={() => updateOrderStatus(order.id, 'preparing')}
+            onClick={async () => updateOrderStatus(order.id, 'PREPARING')}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
           >
             Start Preparing
           </button>
         )}
-        {order.status === 'preparing' && (
+        {order.status === 'PREPARING' && (
           <>
             <button
-              onClick={() => updateOrderStatus(order.id, 'pending')}
+              onClick={async () => updateOrderStatus(order.id, 'PENDING')}
               className="bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-600 transition"
             >
               Back to Pending
             </button>
             <button
-              onClick={() => updateOrderStatus(order.id, 'ready')}
+              onClick={async () => updateOrderStatus(order.id, 'READY')}
               className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
             >
               Mark as Ready
             </button>
           </>
         )}
-        {order.status === 'ready' && (
+        {order.status === 'READY' && (
           <>
             <button
-              onClick={() => updateOrderStatus(order.id, 'preparing')}
+              onClick={async () => updateOrderStatus(order.id, 'PREPARING')}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
             >
               Back to Preparing
             </button>
             <button
-              onClick={() => {
+              onClick={async () => {
                 if (
                   confirm(
                     'Are you sure you want to mark this order as delivered?',
                   )
                 ) {
-                  updateOrderStatus(order.id, 'delivered');
+                  await updateOrderStatus(order.id, 'DELIVERED');
                 }
               }}
               className="bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-700 transition"
@@ -126,9 +155,9 @@ export default function OrderCard({ order }: any) {
           </>
         )}
         <button
-          onClick={() => {
+          onClick={async () => {
             if (confirm('Are you sure you want to delete this order?')) {
-              deleteOrder(order.id);
+              await deleteOrder(order.id);
             }
           }}
           className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition"

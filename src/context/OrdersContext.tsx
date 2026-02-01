@@ -1,11 +1,11 @@
-"use client";
+'use client';
 import React, {
   createContext,
   useContext,
   useState,
   useEffect,
   ReactNode,
-} from "react";
+} from 'react';
 
 export interface OrderItem {
   name: string;
@@ -26,17 +26,17 @@ export interface Order {
   city: string;
   zipCode: string;
   notes?: string;
-  paymentMethod: "blik" | "card" | "cash";
-  status: "pending" | "preparing" | "ready" | "delivered" | "cancelled";
+  paymentMethod: 'blik' | 'card' | 'cash';
+  status: 'PENDING' | 'PREPARING' | 'READY' | 'DELIVERED' | 'CANCELLED';
   createdAt: string;
 }
 
 interface OrdersContextType {
   orders: Order[];
-  addOrder: (order: Omit<Order, "id" | "createdAt" | "status">) => void;
-  updateOrderStatus: (id: string, status: Order["status"]) => void;
+  addOrder: (order: Omit<Order, 'id' | 'createdAt' | 'status'>) => void;
+  updateOrderStatus: (id: string, status: Order['status']) => void;
   deleteOrder: (id: string) => void;
-  getOrdersByStatus: (status: Order["status"]) => Order[];
+  getOrdersByStatus: (status: Order['status']) => Order[];
 }
 
 const OrdersContext = createContext<OrdersContextType | undefined>(undefined);
@@ -46,7 +46,7 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    const savedOrders = localStorage.getItem("orders");
+    const savedOrders = localStorage.getItem('orders');
     if (savedOrders) {
       setOrders(JSON.parse(savedOrders));
     }
@@ -55,23 +55,23 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (isHydrated) {
-      localStorage.setItem("orders", JSON.stringify(orders));
+      localStorage.setItem('orders', JSON.stringify(orders));
     }
   }, [orders, isHydrated]);
 
-  const addOrder = (order: Omit<Order, "id" | "createdAt" | "status">) => {
+  const addOrder = (order: Omit<Order, 'id' | 'createdAt' | 'status'>) => {
     const newOrder: Order = {
       ...order,
       id: Date.now().toString(),
-      status: "pending",
+      status: 'PENDING',
       createdAt: new Date().toISOString(),
     };
     setOrders((prev) => [newOrder, ...prev]);
   };
 
-  const updateOrderStatus = (id: string, status: Order["status"]) => {
+  const updateOrderStatus = (id: string, status: Order['status']) => {
     setOrders((prev) =>
-      prev.map((order) => (order.id === id ? { ...order, status } : order))
+      prev.map((order) => (order.id === id ? { ...order, status } : order)),
     );
   };
 
@@ -79,7 +79,7 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
     setOrders((prev) => prev.filter((order) => order.id !== id));
   };
 
-  const getOrdersByStatus = (status: Order["status"]) => {
+  const getOrdersByStatus = (status: Order['status']) => {
     return orders.filter((order) => order.status === status);
   };
 
@@ -101,7 +101,7 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
 export const useOrders = () => {
   const context = useContext(OrdersContext);
   if (!context) {
-    throw new Error("useOrders must be used within an OrdersProvider");
+    throw new Error('useOrders must be used within an OrdersProvider');
   }
   return context;
 };

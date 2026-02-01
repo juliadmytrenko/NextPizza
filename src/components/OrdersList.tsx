@@ -6,8 +6,8 @@ import { useState, useEffect } from 'react';
 export default function OrdersList({ ordersFromDB }: any) {
   const { orders, updateOrderStatus, deleteOrder } = useOrders();
   const [filter, setFilter] = useState<
-    'all' | 'pending' | 'preparing' | 'ready'
-  >('all');
+    'ALL' | 'PENDING' | 'PREPARING' | 'READY' | 'DELIVERED' | 'CANCELLED'
+  >('ALL');
   const [loading, setLoading] = useState(
     !ordersFromDB || !Array.isArray(ordersFromDB),
   );
@@ -18,9 +18,9 @@ export default function OrdersList({ ordersFromDB }: any) {
     }
   }, [ordersFromDB]);
   const filteredOrders =
-    filter === 'all'
+    filter === 'ALL'
       ? ordersFromDB?.filter(
-          (o: any) => o.status !== 'delivered' && o.status !== 'cancelled',
+          (o: any) => o.status !== 'DELIVERED' && o.status !== 'CANCELLED',
         )
       : ordersFromDB?.filter((o: any) => o.status === filter);
   return (
@@ -28,7 +28,7 @@ export default function OrdersList({ ordersFromDB }: any) {
       <div className="flex flex-wrap gap-y-2 justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800 mr-2">Orders</h2>
         <div className="flex gap-2 flex-wrap">
-          {['all', 'pending', 'preparing', 'ready'].map((status) => (
+          {['ALL', 'PENDING', 'PREPARING', 'READY'].map((status) => (
             <button
               key={status}
               onClick={() => setFilter(status as any)}

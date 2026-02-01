@@ -15,7 +15,9 @@ model Ingredient {
 
 enum OrderStatus {
   PENDING
-  COMPLETED
+  PREPARING
+  READY
+  DELIVERED
   CANCELLED
 }
 
