@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { isValidImageSrc } from '@/lib/utils';
 
 interface CardTileInterface {
+  id: string;
   name: string;
   imageUrl: string;
   ingredients?: { ingredient: { name: string } }[];
@@ -19,7 +20,7 @@ interface CardTileInterface {
 const fallbackImage = '/images/fallback.png';
 
 export const CardTile: React.FC<CardTileInterface> = (props) => {
-  const { name, imageUrl, ingredients, sizes } = props;
+  const { id, name, imageUrl, ingredients, sizes } = props;
   // const validInitialSrc = isValidImageSrc(imageUrl) ? imageUrl : fallbackImage;
   const validInitialSrc =
     imageUrl?.startsWith('/uploads/') || isValidImageSrc(imageUrl)
@@ -39,7 +40,8 @@ export const CardTile: React.FC<CardTileInterface> = (props) => {
   const handleAddToCart = () => {
     if (!selectedSize) return;
     addToCart({
-      name,
+      id: id,
+      name: name,
       sizeName: selectedSize.sizeName,
       price: selectedSize.price,
       imageUrl: imageUrl,

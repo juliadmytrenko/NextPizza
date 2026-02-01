@@ -19,6 +19,18 @@ enum OrderStatus {
   CANCELLED
 }
 
+model Address {
+  id         Int     @id @default(autoincrement())
+  fullName   String
+  street     String
+  city       String
+  postalCode String
+  country    String
+  userId     String? @unique
+  user       User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders     Order[]
+}
+
 model Order {
   id            Int            @id @default(autoincrement())
   createdAt     DateTime       @default(now())
@@ -30,7 +42,8 @@ model Order {
   notes         String?
   paymentMethod String
   deliveryTime  DateTime?
-  address       String
+  addressId     Int?
+  address       Address?       @relation(fields: [addressId], references: [id])
   isPaid        Boolean        @default(false)
 
   @@index([userId], map: "Order_userId_fkey")
@@ -38,7 +51,7 @@ model Order {
 
 model OrderProduct {
   orderId   Int
-  productId Int
+  productId String
   quantity  Int     @default(1)
   order     Order   @relation(fields: [orderId], references: [id], map: "OrderProduct_orderId_fkey")
   product   Product @relation(fields: [productId], references: [id], map: "OrderProduct_productId_fkey")
@@ -48,7 +61,7 @@ model OrderProduct {
 }
 
 model Product {
-  id                Int                 @id @default(autoincrement())
+  id                String              @id @default(cuid())
   name              String              @unique(map: "Product_name_key")
   description       String?
   imageUrl          String?
@@ -59,7 +72,7 @@ model Product {
 }
 
 model ProductIngredient {
-  productId    Int
+  productId    String
   ingredientId Int
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id], map: "ProductIngredient_ingredientId_fkey")
   product      Product    @relation(fields: [productId], references: [id], map: "ProductIngredient_productId_fkey")
@@ -69,7 +82,7 @@ model ProductIngredient {
 }
 
 model ProductSize {
-  productId Int
+  productId String
   sizeName  String
   price     Float
   product   Product @relation(fields: [productId], references: [id], map: "ProductSize_productId_fkey")
@@ -88,16 +101,6 @@ enum ProductCategory {
 enum Role {
   USER
   ADMIN
-}
-
-model Address {
-  id         Int    @id @default(autoincrement())
-  street     String
-  city       String
-  postalCode String
-  country    String
-  userId     String @unique
-  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {

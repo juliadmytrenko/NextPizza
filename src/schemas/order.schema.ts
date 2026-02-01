@@ -7,14 +7,22 @@ import {
 extendZodWithOpenApi(z);
 
 export const orderProductSchema = z.object({
-  productId: z.number().int().positive().openapi({
+  productId: z.string().openapi({
     description: 'The product ID',
-    example: 1,
+    example: '!@41#1241241242#@!$',
   }),
   quantity: z.number().int().positive().default(1).openapi({
     description: 'The product quantity',
     example: 2,
   }),
+});
+
+export const addressSchema = z.object({
+  fullName: z.string().min(1).openapi({ example: 'John Doe' }),
+  street: z.string().min(1).openapi({ example: '123 Main St' }),
+  city: z.string().min(1).openapi({ example: 'Springfield' }),
+  postalCode: z.string().min(1).openapi({ example: '12345' }),
+  country: z.string().min(1).openapi({ example: 'Poland' }),
 });
 
 export const createOrderSchema = z.object({
@@ -28,10 +36,28 @@ export const createOrderSchema = z.object({
     .openapi({
       description: 'Array of products to order',
       example: [
-        { productId: 1, quantity: 2 },
-        { productId: 3, quantity: 1 },
+        { productId: '!@41#1241241242#@!$', quantity: 2 },
+        { productId: "!@41#1241241242#@!$", quantity: 1 },
       ],
     }),
+  totalPrice: z.number().positive().openapi({
+    description: 'Total price of the order',
+    example: 49.99,
+  }),
+  paymentMethod: z.string().min(1).openapi({
+    description: 'Payment method',
+    example: 'CASH',
+  }),
+  address: addressSchema.openapi({
+    description: 'Delivery address object',
+    example: {
+      fullName: 'John Doe',
+      street: '123 Main St',
+      city: 'Springfield',
+      postalCode: '12345',
+      country: 'Poland',
+    },
+  }),
 });
 
 export const orderStatusSchema = z
@@ -46,7 +72,7 @@ export const updateOrderStatusSchema = z.object({
 });
 
 export const orderResponseSchema = z.object({
-  id: z.number().openapi({ example: 1 }),
+  id: z.string().openapi({ example: '!@41#1241241242#@!$' }),
   createdAt: z.string().openapi({ example: '2026-01-31T10:00:00Z' }),
   status: orderStatusSchema,
   userId: z.string().nullable().openapi({ example: 'clx1234567890' }),
@@ -55,7 +81,7 @@ export const orderResponseSchema = z.object({
 export const idParamSchema = z.object({
   id: z.string().regex(/^\d+$/).openapi({
     description: 'The order ID parameter in the URL',
-    example: '1',
+    example: '!@41#1241241242#@!$',
   }),
 });
 
@@ -187,6 +213,4 @@ registry.registerPath({
   },
 });
 
-export {
-  registry
-};
+export { registry };

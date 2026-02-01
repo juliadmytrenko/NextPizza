@@ -1,8 +1,9 @@
-import Image from "next/image";
-import { isValidImageSrc } from "@/lib/utils";
-import React from "react";
+import Image from 'next/image';
+import { isValidImageSrc } from '@/lib/utils';
+import React from 'react';
 
 interface CartItemProps {
+  id: string;
   item: any;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
@@ -42,7 +43,7 @@ export const CartItem: React.FC<CartItemProps> = ({
         <button
           onClick={() => removeFromCart(item.id)}
           className="text-red-500 hover:text-red-700 font-bold text-xl"
-          style={{ cursor: "pointer" }}
+          style={{ cursor: 'pointer' }}
         >
           ×
         </button>
@@ -55,7 +56,7 @@ export const CartItem: React.FC<CartItemProps> = ({
           <button
             onClick={() => updateQuantity(item.id, item.quantity - 1)}
             className="bg-orange-500 hover:bg-orange-600 text-white w-7 h-7 rounded-md font-bold"
-            style={{ cursor: "pointer" }}
+            style={{ cursor: 'pointer' }}
           >
             -
           </button>
@@ -65,7 +66,7 @@ export const CartItem: React.FC<CartItemProps> = ({
           <button
             onClick={() => updateQuantity(item.id, item.quantity + 1)}
             className="bg-orange-500 hover:bg-orange-600 text-white w-7 h-7 rounded-md font-bold"
-            style={{ cursor: "pointer" }}
+            style={{ cursor: 'pointer' }}
           >
             +
           </button>

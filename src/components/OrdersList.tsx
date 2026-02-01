@@ -3,26 +3,26 @@ import { useOrders } from '../context/OrdersContext';
 import OrderCard from './OrderCard';
 import { useState, useEffect } from 'react';
 
-export default function OrdersList() {
+export default function OrdersList({ ordersFromDB }: any) {
   const { orders, updateOrderStatus, deleteOrder } = useOrders();
   const [filter, setFilter] = useState<
     'all' | 'pending' | 'preparing' | 'ready'
   >('all');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(
+    !ordersFromDB || !Array.isArray(ordersFromDB),
+  );
 
   useEffect(() => {
-    if (orders && Array.isArray(orders)) {
+    if (ordersFromDB && Array.isArray(ordersFromDB)) {
       setLoading(false);
     }
-  }, [orders]);
-
+  }, [ordersFromDB]);
   const filteredOrders =
     filter === 'all'
-      ? orders.filter(
-          (o) => o.status !== 'delivered' && o.status !== 'cancelled',
+      ? ordersFromDB?.filter(
+          (o: any) => o.status !== 'delivered' && o.status !== 'cancelled',
         )
-      : orders.filter((o) => o.status === filter);
-
+      : ordersFromDB?.filter((o: any) => o.status === filter);
   return (
     <div>
       <div className="flex flex-wrap gap-y-2 justify-between items-center mb-6">

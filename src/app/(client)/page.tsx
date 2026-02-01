@@ -10,6 +10,7 @@ import { useMenu } from '../../context/MenuContext';
 import { prisma } from '../../lib/prisma';
 
 export type Product = {
+  id: string;
   name: string;
   imageUrl: string;
   category: string;
@@ -37,11 +38,12 @@ export default function Home() {
     const fetchProducts = async () => {
       try {
         const res = await fetch('/api/products');
-        console.log('Fetch response:', res);
+
         if (didTimeout) return;
         const data = await res.json();
         const productsArray = Array.isArray(data) ? data : data.products;
         setProducts(productsArray);
+        console.log('Fetch response:', data);
 
         if (productsArray) {
           const pizzas = productsArray.filter(
@@ -127,6 +129,7 @@ export default function Home() {
                       pizzas.map((product, index) => (
                         <CardTile
                           key={`${product.name}-${index}`}
+                          id={product.id}
                           name={product.name}
                           imageUrl={product.imageUrl}
                           ingredients={product.productIngredient}
@@ -148,6 +151,7 @@ export default function Home() {
                     {!loading &&
                       sauces.map((product, index) => (
                         <CardTile
+                          id={product.id}
                           key={`${product.name}-${index}`}
                           name={product.name}
                           imageUrl={product.imageUrl}
@@ -170,6 +174,7 @@ export default function Home() {
                     {!loading &&
                       drinks.map((product, index) => (
                         <CardTile
+                          id={product.id}
                           key={`${product.name}-${index}`}
                           name={product.name}
                           imageUrl={product.imageUrl}

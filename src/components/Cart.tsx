@@ -1,10 +1,10 @@
-"use client";
-import React from "react";
-import { useCart } from "../context/CartContext";
-import Image from "next/image";
-import { CartItem } from "./CartItem";
-import { usePathname } from "next/navigation";
-import { isValidImageSrc } from "@/lib/utils";
+'use client';
+import React from 'react';
+import { useCart } from '../context/CartContext';
+import Image from 'next/image';
+import { CartItem } from './CartItem';
+import { usePathname } from 'next/navigation';
+import { isValidImageSrc } from '@/lib/utils';
 
 export const Cart = () => {
   const {
@@ -21,15 +21,15 @@ export const Cart = () => {
   const pathname = usePathname();
 
   // Fallback logic for image: only allow valid URLs or absolute paths
-  const fallbackImage = "/images/fallback.png";
+  const fallbackImage = '/images/fallback.png';
   return (
     <>
       {/* Floating Cart Button - Only show on main page */}
-      {pathname === "/" && (
+      {pathname === '/' && (
         <button
           onClick={() => setIsCartOpen(!isCartOpen)}
           className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-30 bg-orange-500 hover:bg-orange-600 text-white p-3 sm:p-4 rounded-full shadow-2xl transition-all hover:scale-110"
-          style={{ cursor: "pointer" }}
+          style={{ cursor: 'pointer' }}
         >
           <span className="text-xl sm:text-2xl">🛒</span>
           {getTotalItems() > 0 && (
@@ -57,7 +57,7 @@ export const Cart = () => {
               <button
                 onClick={() => setIsCartOpen(false)}
                 className="text-white hover:text-gray-200 text-3xl font-bold"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
               >
                 ×
               </button>
@@ -75,6 +75,7 @@ export const Cart = () => {
                   {cart.map((item) => (
                     <CartItem
                       key={item.id}
+                      id={item.id}
                       item={item}
                       imageUrl={item.imageUrl}
                       removeFromCart={removeFromCart}
@@ -107,7 +108,7 @@ export const Cart = () => {
                   <button
                     onClick={() => setIsCartOpen(false)}
                     className="w-full bg-orange-200 hover:bg-orange-300 text-orange-800 py-2 rounded-lg font-semibold transition-colors"
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: 'pointer' }}
                   >
                     Continue Shopping
                   </button>

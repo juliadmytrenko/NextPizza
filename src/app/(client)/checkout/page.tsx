@@ -30,35 +30,68 @@ export default function CheckoutPage() {
       return;
     }
 
-    addOrder({
-      items: cart.map((item) => ({
-        name: item.name,
-        size: { size: item.sizeName, price: item.price },
-        price: item.price,
-        quantity: item.quantity,
-        imageUrl: item.imageUrl,
-      })),
-      totalPrice: getTotalPrice(),
-      customerName: `${addressData.firstName} ${addressData.lastName}`,
-      phone: addressData.phone,
-      email: addressData.email,
-      address: addressData.street,
-      city: addressData.city,
-      zipCode: addressData.postalCode,
-      notes: addressData.additionalInfo,
-      paymentMethod,
-    });
+    // const newOrder = {
+    //   // userId: ... // Optionally add userId if you have it
+    //   products: cart.map((item) => ({
+    //     productId: item.id,
+    //     quantity: item.quantity,
+    //   })),
+    //   totalPrice: getTotalPrice(),
+    //   paymentMethod,
+    //   address: {
+    //     fullName: `${addressData.firstName} ${addressData.lastName}`,
+    //     street: addressData.street,
+    //     city: addressData.city,
+    //     postalCode: addressData.postalCode,
+    //     country: addressData.country,
+    //   },
+    // };
 
-    clearCart();
-    alert(
-      'Order placed successfully! Check the admin panel to see your order.',
-    );
-    router.push('/');
-  };
-
-  if (!addressData) {
-    return null;
-  }
+    fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        products: cart.map((item) => ({
+          productId: item.id, // must be string, matching Product.id
+          quantity: item.quantity,
+        })),
+        totalPrice: getTotalPrice(),
+        paymentMethod: paymentMethod.toUpperCase(), // e.g. "CASH", "BLIK", "CARD"
+        address: {
+          fullName: `${addressData.firstName} ${addressData.lastName}`,
+          street: addressData.street,
+          city: addressData.city,
+          postalCode: addressData.postalCode,
+          country: addressData.country,
+        },
+        // Optionally add userId if you have it: userId: "..."
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((err) => {
+            throw new Error(
+              err?.error ||
+                (err?.details && JSON.stringify(err.details)) ||
+                'Network response was not ok',
+            );
+          });
+        }
+        return res.json();
+      })
+      .then((data) => {
+        addOrder(data);
+        clearCart();
+        alert(
+          'Order placed successfully! Check the admin panel to see your order.',
+        );
+        router.push('/');
+      })
+      .catch((error) => {
+        console.error('Error placing order:', error);
+        alert('Error placing order: ' + error.message);
+      });
+  }; // Close handleConfirmOrder function
 
   // Fallback logic for image: only allow valid URLs or absolute paths
   const fallbackImage = '/images/fallback.png';
@@ -121,7 +154,7 @@ export default function CheckoutPage() {
                     Name
                   </p>
                   <p className="text-base sm:text-lg text-gray-800">
-                    {addressData.firstName} {addressData.lastName}
+                    {addressData?.firstName} {addressData?.lastName}
                   </p>
                 </div>
                 <div>
@@ -129,10 +162,10 @@ export default function CheckoutPage() {
                     Contact
                   </p>
                   <p className="text-base sm:text-lg text-gray-800">
-                    {addressData.email}
+                    {addressData?.email}
                   </p>
                   <p className="text-base sm:text-lg text-gray-800">
-                    {addressData.phone}
+                    {addressData?.phone}
                   </p>
                 </div>
                 <div>
@@ -140,22 +173,22 @@ export default function CheckoutPage() {
                     Address
                   </p>
                   <p className="text-base sm:text-lg text-gray-800">
-                    {addressData.street}
+                    {addressData?.street}
                   </p>
                   <p className="text-base sm:text-lg text-gray-800">
-                    {addressData.city}, {addressData.postalCode}
+                    {addressData?.city}, {addressData?.postalCode}
                   </p>
                   <p className="text-base sm:text-lg text-gray-800">
-                    {addressData.country}
+                    {addressData?.country}
                   </p>
                 </div>
-                {addressData.additionalInfo && (
+                {addressData?.additionalInfo && (
                   <div>
                     <p className="text-sm font-semibold text-gray-600 mb-1">
                       Additional Information
                     </p>
                     <p className="text-base sm:text-lg text-gray-800">
-                      {addressData.additionalInfo}
+                      {addressData?.additionalInfo}
                     </p>
                   </div>
                 )}
