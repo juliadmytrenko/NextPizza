@@ -15,6 +15,10 @@ export const orderProductSchema = z.object({
     description: 'The product size',
     example: 'L',
   }),
+  price: z.number().positive().openapi({
+    description: 'The product price for a single unit of this size',
+    example: 19.99,
+  }),
   quantity: z.number().int().positive().default(1).openapi({
     description: 'The product quantity',
     example: 2,
@@ -40,8 +44,8 @@ export const createOrderSchema = z.object({
     .openapi({
       description: 'Array of products to order',
       example: [
-        { productId: '!@41#1241241242#@!$', size: 'L', quantity: 2 },
-        { productId: "!@41#1241241242#@!$", size: '250ml', quantity: 1 },
+        { productId: '!@41#1241241242#@!$', size: 'L', quantity: 2, price: 19.99 },
+        { productId: "!@41#1241241242#@!$", size: '250ml', quantity: 1, price: 4.99 },
       ],
     }),
   totalPrice: z.number().positive().openapi({

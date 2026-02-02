@@ -21,7 +21,7 @@ function getStatusColor(status: string) {
 export default function OrderCard({ order }: any) {
   // const { updateOrderStatus, deleteOrder } = useOrders();
   // const { deleteOrder } = useOrders();
-
+  console.log('Order in OrderCard:', order);
   async function updateOrderStatus(orderId: number, newStatus: string) {
     console.log('Updating order status:', orderId, newStatus);
     const response = await fetch(`/api/orders/${orderId}`, {
@@ -87,10 +87,10 @@ export default function OrderCard({ order }: any) {
       <div className="mb-3">
         <p className="text-sm font-semibold text-gray-700 mb-2">Items:</p>
         <div className="space-y-1">
-          {order.items?.map((item: any, idx: number) => (
+          {order.orderProducts?.map((item: any, idx: number) => (
             <p key={idx} className="text-sm text-gray-600">
-              {item.quantity}x {item.name}
-              {item.size?.size ? ` (${item.size.size})` : ''} -{' '}
+              {item.quantity}x {item.product.name}
+              {item.product.size ? ` (${item.size.size})` : ''} -{' '}
               {item.price * item.quantity} zł
             </p>
           ))}

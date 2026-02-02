@@ -45,7 +45,6 @@ export async function POST(request: Request) {
       postalCode: validatedData.address.postalCode,
       country: validatedData.address.country,
     };
-    // Only connect user if userId is present
     if (validatedData.userId) {
       addressData.user = { connect: { id: validatedData.userId } };
     }
@@ -54,6 +53,33 @@ export async function POST(request: Request) {
     const newAddress = await prisma.address.create({
       data: addressData,
     });
+
+    // Fetch prices for products based on size
+    const productsWithPrices = await Promise.all(
+      validatedData.products.map(async (item) => {
+        const productSize = await prisma.productSize.findUnique({
+          where: {
+            productId_sizeName: {
+              productId: item.productId,
+              sizeName: item.size,
+            },
+          },
+        });
+
+        if (!productSize) {
+          throw new Error(
+            `Product size not found for productId: ${item.productId}, size: ${item.size}`
+          );
+        }
+
+        return {
+          productId: item.productId,
+          size: item.size,
+          quantity: item.quantity,
+          price: productSize.price, // Include the price for the selected size
+        };
+      })
+    );
 
     // Create order with products
     const order = await prisma.order.create({
@@ -64,10 +90,11 @@ export async function POST(request: Request) {
         paymentMethod: validatedData.paymentMethod,
         addressId: newAddress.id,
         orderProducts: {
-          create: validatedData.products.map((item) => ({
+          create: productsWithPrices.map((item) => ({
             productId: item.productId,
             size: item.size,
             quantity: item.quantity,
+            price: item.price, // Save the price in the orderProducts table
           })),
         },
       },

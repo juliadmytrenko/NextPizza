@@ -55,6 +55,7 @@ export default function CheckoutPage() {
           productId: item.id, // must be string, matching Product.id
           size: item.sizeName,
           quantity: item.quantity,
+          price: item.price,
         })),
         totalPrice: getTotalPrice(),
         paymentMethod: paymentMethod.toUpperCase(), // e.g. "CASH", "BLIK", "CARD"
@@ -125,6 +126,7 @@ export default function CheckoutPage() {
                           item={{
                             ...item,
                             size: item.sizeName,
+                            price: item.price,
                             imageUrl: item.imageUrl, // adapt property if needed
                           }}
                           fallbackImage={fallbackImage}
