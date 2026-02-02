@@ -53,6 +53,7 @@ export default function CheckoutPage() {
       body: JSON.stringify({
         products: cart.map((item) => ({
           productId: item.id, // must be string, matching Product.id
+          size: item.sizeName,
           quantity: item.quantity,
         })),
         totalPrice: getTotalPrice(),

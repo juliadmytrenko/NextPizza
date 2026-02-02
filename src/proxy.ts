@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 
 // Routes that require authentication
 // const protectedRoutes = ["/checkout", "/address"];
-const protectedRoutes = ["/admin", "/address", "/checkout"];
+const protectedRoutes = ["/admin"];
 
 export async function proxy(request: NextRequest) {
   const session = await auth();

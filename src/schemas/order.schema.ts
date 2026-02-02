@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { size, z } from 'zod';
 import {
   extendZodWithOpenApi,
   OpenAPIRegistry,
@@ -10,6 +10,10 @@ export const orderProductSchema = z.object({
   productId: z.string().openapi({
     description: 'The product ID',
     example: '!@41#1241241242#@!$',
+  }),
+  size: z.string().openapi({
+    description: 'The product size',
+    example: 'L',
   }),
   quantity: z.number().int().positive().default(1).openapi({
     description: 'The product quantity',
@@ -36,8 +40,8 @@ export const createOrderSchema = z.object({
     .openapi({
       description: 'Array of products to order',
       example: [
-        { productId: '!@41#1241241242#@!$', quantity: 2 },
-        { productId: "!@41#1241241242#@!$", quantity: 1 },
+        { productId: '!@41#1241241242#@!$', size: 'L', quantity: 2 },
+        { productId: "!@41#1241241242#@!$", size: '250ml', quantity: 1 },
       ],
     }),
   totalPrice: z.number().positive().openapi({

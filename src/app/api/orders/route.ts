@@ -66,6 +66,7 @@ export async function POST(request: Request) {
         orderProducts: {
           create: validatedData.products.map((item) => ({
             productId: item.productId,
+            size: item.size,
             quantity: item.quantity,
           })),
         },

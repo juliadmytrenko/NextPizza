@@ -11,14 +11,14 @@ const CheckoutWrapper: React.FC<{ children: React.ReactNode }> = ({
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/api/auth/signin');
-    }
-  }, [isAuthenticated, isLoading, router]);
+  // useEffect(() => {
+  //   if (!isLoading && !isAuthenticated) {
+  //     router.push('/api/auth/signin');
+  //   }
+  // }, [isAuthenticated, isLoading, router]);
 
   if (isLoading) return <div>Loading...</div>;
-  if (!isAuthenticated) return null; // or a spinner
+  // if (!isAuthenticated) return null; // or a spinner
 
   return <>{children}</>;
 };

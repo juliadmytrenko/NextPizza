@@ -55,10 +55,11 @@ model OrderProduct {
   orderId   Int
   productId String
   quantity  Int     @default(1)
+  size      String  @default("M") // Default size if not specified
   order     Order   @relation(fields: [orderId], references: [id], map: "OrderProduct_orderId_fkey")
   product   Product @relation(fields: [productId], references: [id], map: "OrderProduct_productId_fkey")
 
-  @@id([orderId, productId])
+  @@id([orderId, productId, size])
   @@index([productId], map: "OrderProduct_productId_fkey")
 }
 
